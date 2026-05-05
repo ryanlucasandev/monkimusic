@@ -1,0 +1,18 @@
+import 'package:audio_service/audio_service.dart';
+import 'package:get_it/get_it.dart';
+import 'package:monkimusic/services/audio_background_handler.dart';
+
+final locator = GetIt.instance;
+
+Future<void> initializeLocator() async {
+  final audioHandler = await AudioService.init(
+    builder: () => AudioBackgroundHandler(),
+    config: const AudioServiceConfig(
+      androidNotificationChannelId: 'com.monkimusic.monkimusic',
+      androidNotificationChannelName: 'Audio Playback',
+      androidNotificationOngoing: true,
+    ),
+  );
+
+  locator.registerSingleton<AudioBackgroundHandler>(audioHandler);
+}
