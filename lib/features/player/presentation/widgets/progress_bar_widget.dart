@@ -4,7 +4,7 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:monkimusic/services/audio_background_handler.dart';
 
 class ProgressBarWidget extends StatelessWidget {
-  final AudioBackgroundHandler audioHandler;
+  final AudioPlayerHandler audioHandler;
   final MediaItem item;
 
   const ProgressBarWidget({

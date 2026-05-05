@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:monkimusic/services/audio_background_handler.dart';
 
 class ControlButtonsWidget extends StatelessWidget {
-  final AudioBackgroundHandler audioHandler;
+  final AudioPlayerHandler audioHandler;
   final MediaItem item;
 
   const ControlButtonsWidget({

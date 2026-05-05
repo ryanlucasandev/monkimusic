@@ -6,7 +6,7 @@ final locator = GetIt.instance;
 
 Future<void> initializeLocator() async {
   final audioHandler = await AudioService.init(
-    builder: () => AudioBackgroundHandler(),
+    builder: () => AudioPlayerHandler(),
     config: const AudioServiceConfig(
       androidNotificationChannelId: 'com.monkimusic.monkimusic',
       androidNotificationChannelName: 'Audio Playback',
@@ -14,5 +14,5 @@ Future<void> initializeLocator() async {
     ),
   );
 
-  locator.registerSingleton<AudioBackgroundHandler>(audioHandler);
+  locator.registerSingleton<AudioPlayerHandler>(audioHandler);
 }

@@ -6,7 +6,7 @@ import 'package:monkimusic/services/fetch_songs.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class CoverWidget extends StatelessWidget {
-  final AudioBackgroundHandler audioHandler;
+  final AudioPlayerHandler audioHandler;
   final MediaItem item;
   const CoverWidget({
     super.key,

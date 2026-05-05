@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:monkimusic/services/service_locator.dart';
+import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/splash.dart';
 
 Future<void> main() async {

@@ -7,7 +7,7 @@ import 'package:monkimusic/services/audio_background_handler.dart';
 
 class AllSongsListWidget extends StatelessWidget {
   // MyAudioHandler for managing audio playback
-  final AudioBackgroundHandler audioHandler;
+  final AudioPlayerHandler audioHandler;
 
   // MediaItem representing the current song
   final MediaItem item;

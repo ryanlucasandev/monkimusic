@@ -6,7 +6,7 @@ import 'package:monkimusic/features/player/presentation/widgets/progress_bar_wid
 import 'package:monkimusic/services/audio_background_handler.dart';
 
 class PlayerPage extends StatefulWidget {
-  final AudioBackgroundHandler audioHandler;
+  final AudioPlayerHandler audioHandler;
   const PlayerPage({super.key, required this.audioHandler});
 
   @override

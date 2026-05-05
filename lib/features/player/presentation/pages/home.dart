@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:monkimusic/features/player/presentation/widgets/all_songs_list_widget.dart';
 import 'package:monkimusic/services/audio_background_handler.dart';
 import 'package:monkimusic/services/fetch_songs.dart';
-import 'package:monkimusic/services/service_locator.dart';
+import 'package:monkimusic/core/di/service_locator.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,7 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<MediaItem> allSongs = [];
-  final audioHandler = locator<AudioBackgroundHandler>();
+  final audioHandler = locator<AudioPlayerHandler>();
 
   @override
   void initState() {
