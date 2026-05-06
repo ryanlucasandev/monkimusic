@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/instance_manager.dart';
 import 'package:monkimusic/features/player/presentation/pages/player_page.dart';
-import 'package:monkimusic/services/audio_background_handler.dart';
+import 'package:monkimusic/services/audio_player_handler.dart';
 
 class AllSongsListWidget extends StatelessWidget {
   // MyAudioHandler for managing audio playback
