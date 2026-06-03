@@ -1,6 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:get_it/get_it.dart';
-import 'package:monkimusic/services/audio_player_handler.dart';
+import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
 
 final locator = GetIt.instance;
 

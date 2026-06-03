@@ -52,9 +52,9 @@ class AudioPlayerHandler extends BaseAudioHandler
 
     await audioPlayer.setAudioSources(
       audioSource.toList(),
-      // initialIndex: 0,
-      // initialPosition: Duration.zero,
-      // shuffleOrder: DefaultShuffleOrder(),
+      initialIndex: 0,
+      initialPosition: Duration.zero,
+      shuffleOrder: DefaultShuffleOrder(),
     );
 
     final newQueue = queue.value..addAll(songs);

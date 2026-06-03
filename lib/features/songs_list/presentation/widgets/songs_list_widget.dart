@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/instance_manager.dart';
 import 'package:monkimusic/features/player/presentation/pages/player_page.dart';
-import 'package:monkimusic/services/audio_player_handler.dart';
+import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
 
-class AllSongsListWidget extends StatelessWidget {
+class SongsListWidget extends StatelessWidget {
   // MyAudioHandler for managing audio playback
   final AudioPlayerHandler audioHandler;
 
@@ -15,7 +15,7 @@ class AllSongsListWidget extends StatelessWidget {
   // index of the song in the list
   final int index;
 
-  const AllSongsListWidget({
+  const SongsListWidget({
     super.key,
     required this.audioHandler,
     required this.item,

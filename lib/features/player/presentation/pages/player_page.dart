@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:monkimusic/features/player/presentation/widgets/control_buttons_widget.dart';
 import 'package:monkimusic/features/player/presentation/widgets/cover_widget.dart';
 import 'package:monkimusic/features/player/presentation/widgets/progress_bar_widget.dart';
-import 'package:monkimusic/services/audio_player_handler.dart';
+import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
 
 class PlayerPage extends StatefulWidget {
   final AudioPlayerHandler audioHandler;

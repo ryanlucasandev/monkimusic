@@ -33,7 +33,7 @@ Future<Uint8List?> toImage({required Uri uri}) async {
 }
 
 // fetch songs and convert to MediaItem format
-class FetchSongs {
+class FetchDeviceSongs {
   //executefetching songs asynchronously
   static Future<List<MediaItem>> execute() async {
     //initialize an empty list to store media items

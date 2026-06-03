@@ -1,6 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:monkimusic/services/audio_player_handler.dart';
+import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
 
 class ControlButtonsWidget extends StatelessWidget {
   final AudioPlayerHandler audioHandler;

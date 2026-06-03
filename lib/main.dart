@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
-import 'package:monkimusic/features/player/presentation/pages/home.dart';
+import 'package:monkimusic/features/songs_list/presentation/pages/songs_list.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: SongsListPage(),
     );
   }
 }
