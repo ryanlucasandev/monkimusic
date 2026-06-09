@@ -1,6 +1,8 @@
 part of 'player_bloc.dart';
 
 sealed class AudioPlayerEvent extends Equatable {
+  const AudioPlayerEvent();
+
   @override
   List<Object?> get props => [];
 }
@@ -8,26 +10,39 @@ sealed class AudioPlayerEvent extends Equatable {
 final class LoadTrackEvent extends AudioPlayerEvent {
   final int index;
   final MediaItem item;
-  LoadTrackEvent({required this.index, required this.item});
+  const LoadTrackEvent({required this.index, required this.item});
+
+  @override
+  List<Object?> get props => [index, item];
 }
 
 final class UpdateCurrentItemEvent extends AudioPlayerEvent {
   final MediaItem? newItem;
-  UpdateCurrentItemEvent({required this.newItem});
+  const UpdateCurrentItemEvent({required this.newItem});
   @override
   List<Object?> get props => [newItem];
 }
 
 final class UpdatePlaybackStateEvent extends AudioPlayerEvent {
   final PlaybackState state;
-  UpdatePlaybackStateEvent({required this.state});
+  const UpdatePlaybackStateEvent({required this.state});
+
+  @override
+  List<Object?> get props => [state];
 }
 
 final class PlayPausePressedEvent extends AudioPlayerEvent {
   final bool isPlaying;
-  PlayPausePressedEvent({required this.isPlaying});
+  const PlayPausePressedEvent({required this.isPlaying});
+
+  @override
+  List<Object?> get props => [isPlaying];
 }
 
-final class SkipToNextEvent extends AudioPlayerEvent {}
+final class SkipToNextEvent extends AudioPlayerEvent {
+  const SkipToNextEvent();
+}
 
-final class SkipToPreviousEvent extends AudioPlayerEvent {}
+final class SkipToPreviousEvent extends AudioPlayerEvent {
+  const SkipToPreviousEvent();
+}
