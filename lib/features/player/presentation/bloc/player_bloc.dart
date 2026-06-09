@@ -11,7 +11,7 @@ part 'player_state.dart';
 class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   final AudioPlayerHandler _audioHandler;
   StreamSubscription? _mediaItemSubscription;
-  StreamSubscription? _playBackStateSubscription;
+  StreamSubscription? _playbackStateSubscription;
 
   AudioPlayerBloc({required AudioPlayerHandler audioHandler})
     : _audioHandler = audioHandler,
@@ -31,22 +31,16 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
           add(UpdateCurrentItemEvent(newItem: _audioHandler.mediaItem.value));
         });
 
-    _playBackStateSubscription = _audioHandler.playbackState
-        .map(
-          (state) =>
-              state.playing &&
-              state.processingState != AudioProcessingState.completed,
-        )
-        .distinct()
-        .listen((state) {
-          add(UpdatePlaybackStateEvent(isPlaying: state));
-        });
+    _playbackStateSubscription = _audioHandler.playbackState.listen((state) {
+      add(UpdatePlaybackStateEvent(state: state));
+    });
   }
 
   Future<void> _onLoadTrack(
     LoadTrackEvent event,
     Emitter<AudioPlayerState> emit,
   ) async {
+    emit(AudioPlayerLoading());
     _audioHandler.skiptoQueueItem(event.index);
   }
 
@@ -54,19 +48,15 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     UpdateCurrentItemEvent event,
     Emitter<AudioPlayerState> emit,
   ) {
-    if (state is AudioPlayerReady) {
-      final currentState = state as AudioPlayerReady;
-      emit(AudioPlayerLoading());
-      emit(
-        AudioPlayerReady(
-          isPlaying: currentState.isPlaying,
-          currentItem: event.newItem,
-        ),
-      );
-    } else {
-      emit(AudioPlayerLoading());
-      emit(AudioPlayerReady(isPlaying: false, currentItem: event.newItem));
+    if (event.newItem == null) {
+      emit(AudioPlayerIdle());
+      return;
     }
+    final isPlaying = state is AudioPlayerReady
+        ? (state as AudioPlayerReady).isPlaying
+        : false;
+
+    emit(AudioPlayerReady(isPlaying: isPlaying, currentItem: event.newItem));
   }
 
   void _onSkipToNext(SkipToNextEvent event, Emitter<AudioPlayerState> emit) {
@@ -84,12 +74,10 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     PlayPausePressedEvent event,
     Emitter<AudioPlayerState> emit,
   ) async {
-    if (state is AudioPlayerReady) {
-      if (event.isPlaying) {
-        _audioHandler.pause();
-      } else {
-        _audioHandler.play();
-      }
+    if (event.isPlaying) {
+      _audioHandler.pause();
+    } else {
+      _audioHandler.play();
     }
   }
 
@@ -97,11 +85,20 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     UpdatePlaybackStateEvent event,
     Emitter<AudioPlayerState> emit,
   ) {
-    final currentState = state as AudioPlayerReady;
+    final processingState = event.state.processingState;
+
+    if (processingState == AudioProcessingState.idle ||
+        processingState == AudioProcessingState.completed) {
+      emit(AudioPlayerIdle());
+      return;
+    }
+
+    final isPlaying = event.state.playing;
+
     emit(
       AudioPlayerReady(
-        isPlaying: event.isPlaying,
-        currentItem: currentState.currentItem,
+        isPlaying: isPlaying,
+        currentItem: _audioHandler.mediaItem.value,
       ),
     );
   }
@@ -109,7 +106,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   @override
   Future<void> close() {
     _mediaItemSubscription?.cancel();
-    _playBackStateSubscription?.cancel();
+    _playbackStateSubscription?.cancel();
     return super.close();
   }
 }

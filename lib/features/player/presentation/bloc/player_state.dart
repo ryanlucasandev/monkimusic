@@ -15,7 +15,7 @@ final class AudioPlayerReady extends AudioPlayerState {
   AudioPlayerReady({this.currentItem, required this.isPlaying});
 
   @override
-  List<Object?> get props => [isPlaying];
+  List<Object?> get props => [isPlaying, currentItem];
 }
 
 final class AudioPlayerError extends AudioPlayerState {

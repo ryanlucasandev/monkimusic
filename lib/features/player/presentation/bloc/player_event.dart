@@ -19,8 +19,8 @@ final class UpdateCurrentItemEvent extends AudioPlayerEvent {
 }
 
 final class UpdatePlaybackStateEvent extends AudioPlayerEvent {
-  final bool isPlaying;
-  UpdatePlaybackStateEvent({required this.isPlaying});
+  final PlaybackState state;
+  UpdatePlaybackStateEvent({required this.state});
 }
 
 final class PlayPausePressedEvent extends AudioPlayerEvent {
