@@ -12,15 +12,10 @@ final class AudioPlayerLoading extends AudioPlayerState {}
 final class AudioPlayerReady extends AudioPlayerState {
   final MediaItem? currentItem;
   final bool isPlaying;
-  final int index;
-  AudioPlayerReady({
-    this.currentItem,
-    required this.isPlaying,
-    required this.index,
-  });
+  AudioPlayerReady({this.currentItem, required this.isPlaying});
 
   @override
-  List<Object?> get props => [currentItem, isPlaying, index];
+  List<Object?> get props => [isPlaying];
 }
 
 final class AudioPlayerError extends AudioPlayerState {

@@ -14,6 +14,8 @@ final class LoadTrackEvent extends AudioPlayerEvent {
 final class UpdateCurrentItemEvent extends AudioPlayerEvent {
   final MediaItem? newItem;
   UpdateCurrentItemEvent({required this.newItem});
+  @override
+  List<Object?> get props => [newItem];
 }
 
 final class UpdatePlaybackStateEvent extends AudioPlayerEvent {
@@ -24,9 +26,6 @@ final class UpdatePlaybackStateEvent extends AudioPlayerEvent {
 final class PlayPausePressedEvent extends AudioPlayerEvent {
   final bool isPlaying;
   PlayPausePressedEvent({required this.isPlaying});
-
-  @override
-  List<Object?> get props => [isPlaying];
 }
 
 final class SkipToNextEvent extends AudioPlayerEvent {}
