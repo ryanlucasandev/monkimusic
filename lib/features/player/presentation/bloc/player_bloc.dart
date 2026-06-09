@@ -12,6 +12,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   final AudioPlayerHandler _audioHandler;
   StreamSubscription? _mediaItemSubscription;
   StreamSubscription? _playbackStateSubscription;
+  StreamSubscription? _audioServicePosition;
 
   AudioPlayerBloc({required AudioPlayerHandler audioHandler})
     : _audioHandler = audioHandler,
@@ -22,6 +23,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     on<PlayPausePressedEvent>(_onPlayPausePressed);
     on<SkipToNextEvent>(_onSkipToNext);
     on<SkipToPreviousEvent>(_onSkipToPrevious);
+    on<SeekPositionEvent>(_onSeekPosition);
 
     // Listen to the audio handler stream behind the scenes
     _mediaItemSubscription = _audioHandler.mediaItem
@@ -34,6 +36,13 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     _playbackStateSubscription = _audioHandler.playbackState.listen((state) {
       add(UpdatePlaybackStateEvent(state: state));
     });
+  }
+
+  Future<void> _onSeekPosition(
+    SeekPositionEvent event,
+    Emitter<AudioPlayerState> emit,
+  ) async {
+    _audioHandler.seek(event.position);
   }
 
   Future<void> _onLoadTrack(
@@ -55,8 +64,17 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     final isPlaying = state is AudioPlayerReady
         ? (state as AudioPlayerReady).isPlaying
         : false;
+    final position = state is AudioPlayerReady
+        ? (state as AudioPlayerReady).position
+        : Duration.zero;
 
-    emit(AudioPlayerReady(isPlaying: isPlaying, currentItem: event.newItem));
+    emit(
+      AudioPlayerReady(
+        isPlaying: isPlaying,
+        currentItem: event.newItem,
+        position: position,
+      ),
+    );
   }
 
   void _onSkipToNext(SkipToNextEvent event, Emitter<AudioPlayerState> emit) {
@@ -95,10 +113,15 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
 
     final isPlaying = event.state.playing;
 
+    final position = state is AudioPlayerReady
+        ? (state as AudioPlayerReady).position
+        : Duration.zero;
+
     emit(
       AudioPlayerReady(
         isPlaying: isPlaying,
         currentItem: _audioHandler.mediaItem.value,
+        position: position,
       ),
     );
   }
@@ -107,6 +130,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   Future<void> close() {
     _mediaItemSubscription?.cancel();
     _playbackStateSubscription?.cancel();
+    _audioServicePosition?.cancel();
     return super.close();
   }
 }

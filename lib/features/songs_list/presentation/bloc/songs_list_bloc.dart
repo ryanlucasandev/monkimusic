@@ -13,16 +13,21 @@ class SongsListBloc extends Bloc<SongsListEvent, SongsListState> {
   SongsListBloc({required AudioPlayerHandler audioHandler})
     : _audioHandler = audioHandler,
       super(SongsListInitial()) {
-    on<SongsListFetched>((event, emit) async {
-      emit(SongsListLoading());
+    on<SongsListFetched>(_onSongsListFetched);
+  }
 
-      try {
-        final songsValue = await FetchDeviceSongs.execute();
-        emit(SongsListLoaded(allSongs: songsValue));
-        _audioHandler.initSongs(songs: songsValue);
-      } catch (_) {
-        emit(SongsListFailure());
-      }
-    });
+  Future<void> _onSongsListFetched(
+    SongsListFetched event,
+    Emitter<SongsListState> emit,
+  ) async {
+    emit(SongsListLoading());
+
+    try {
+      final songsValue = await FetchDeviceSongs.execute();
+      _audioHandler.initSongs(songs: songsValue);
+      emit(SongsListLoaded(allSongs: songsValue));
+    } catch (_) {
+      emit(SongsListFailure());
+    }
   }
 }

@@ -1,11 +1,8 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
 import 'package:monkimusic/features/player/presentation/widgets/control_buttons_widget.dart';
-import 'package:monkimusic/features/player/presentation/widgets/cover_widget.dart';
 import 'package:monkimusic/features/player/presentation/widgets/progress_bar_widget.dart';
-import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
 
 class PlayerPage extends StatelessWidget {
   const PlayerPage({super.key});
@@ -58,8 +55,8 @@ class PlayerPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // ProgressBarWidget(audioHandler: audioHandler, item: item),
-                  ControlButtonsWidget(item: item),
+                  ProgressBarWidget(item: item),
+                  ControlButtonsWidget(),
                 ],
               );
             }

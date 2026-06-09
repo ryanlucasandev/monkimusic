@@ -5,9 +5,7 @@ import 'package:monkimusic/features/player/data/datasources/audio_player_handler
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
 
 class ControlButtonsWidget extends StatelessWidget {
-  final MediaItem item;
-
-  const ControlButtonsWidget({super.key, required this.item});
+  const ControlButtonsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

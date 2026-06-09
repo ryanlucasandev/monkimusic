@@ -1,9 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
-import 'package:monkimusic/core/di/service_locator.dart';
-import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
 import 'package:monkimusic/features/songs_list/presentation/bloc/songs_list_bloc.dart';
 import 'package:monkimusic/features/songs_list/presentation/widgets/songs_list_widget.dart';
 

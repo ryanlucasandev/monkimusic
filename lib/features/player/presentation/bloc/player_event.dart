@@ -23,6 +23,14 @@ final class UpdateCurrentItemEvent extends AudioPlayerEvent {
   List<Object?> get props => [newItem];
 }
 
+final class SeekPositionEvent extends AudioPlayerEvent {
+  final Duration position;
+  const SeekPositionEvent({required this.position});
+
+  @override
+  List<Object?> get props => [position];
+}
+
 final class UpdatePlaybackStateEvent extends AudioPlayerEvent {
   final PlaybackState state;
   const UpdatePlaybackStateEvent({required this.state});
