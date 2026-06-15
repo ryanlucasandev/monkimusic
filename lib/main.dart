@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
+import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
+import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
+import 'package:monkimusic/features/songs_list/presentation/bloc/songs_list_bloc.dart';
 import 'package:monkimusic/features/songs_list/presentation/pages/songs_list.dart';
+import 'package:monkimusic/simple_bloc_observer.dart';
 
 Future<void> main() async {
+  Bloc.observer = SimpleBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
 
   await initializeLocator();
@@ -17,10 +23,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      debugShowCheckedModeBanner: false,
-      home: SongsListPage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              SongsListBloc(audioHandler: locator<AudioPlayerHandler>())
+                ..add(SongsListFetched()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              AudioPlayerBloc(audioHandler: locator<AudioPlayerHandler>()),
+        ),
+      ],
+      child: GetMaterialApp(
+        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+        debugShowCheckedModeBanner: false,
+        home: SongsListPage(),
+      ),
     );
   }
 }

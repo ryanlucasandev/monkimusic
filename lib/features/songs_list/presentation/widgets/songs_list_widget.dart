@@ -1,13 +1,13 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/instance_manager.dart';
+import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
 import 'package:monkimusic/features/player/presentation/pages/player_page.dart';
-import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
 
 class SongsListWidget extends StatelessWidget {
   // MyAudioHandler for managing audio playback
-  final AudioPlayerHandler audioHandler;
 
   // MediaItem representing the current song
   final MediaItem item;
@@ -15,58 +15,49 @@ class SongsListWidget extends StatelessWidget {
   // index of the song in the list
   final int index;
 
-  const SongsListWidget({
-    super.key,
-    required this.audioHandler,
-    required this.item,
-    required this.index,
-  });
+  const SongsListWidget({super.key, required this.item, required this.index});
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<MediaItem?>(
-      stream: audioHandler.mediaItem,
-      builder: (context, itemSnapshot) {
-        if (itemSnapshot.data != null) {
-          return DecoratedBox(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-            ),
-            child: ListTile(
-              onTap: () {
-                if (itemSnapshot.data == item) {
-                  audioHandler.skipToQueueItem(index);
-                }
+    return BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
+      builder: (context, state) {
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primaryContainer,
+          ),
+          child: ListTile(
+            onTap: () {
+              context.read<AudioPlayerBloc>().add(
+                LoadTrackEvent(index: index, item: item),
+              );
 
-                Get.to(
-                  () => PlayerPage(audioHandler: audioHandler),
-                  transition: Transition.rightToLeft,
-                  duration: const Duration(milliseconds: 700),
-                );
-              },
-              leading: Container(
-                height: 45,
-                width: 45,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                ),
-                child: const Icon(Icons.music_note),
+              Get.to(
+                () => PlayerPage(),
+                transition: Transition.rightToLeft,
+                duration: const Duration(milliseconds: 700),
+              );
+            },
+            leading: Container(
+              height: 45,
+              width: 45,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.primaryContainer,
               ),
-              title: Text(
-                item.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              subtitle: Text(
-                item.artist.toString(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: const Icon(Icons.music_note),
             ),
-          );
-        }
-        return const SizedBox.shrink();
+            title: Text(
+              item.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Text(
+              item.artist.toString(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        );
       },
     );
   }

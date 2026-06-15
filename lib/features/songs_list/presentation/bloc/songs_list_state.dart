@@ -7,9 +7,13 @@ sealed class SongsListState extends Equatable {
   List<Object?> get props => [];
 }
 
-final class SongsListInitial extends SongsListState {}
+final class SongsListInitial extends SongsListState {
+  const SongsListInitial();
+}
 
-final class SongsListLoading extends SongsListState {}
+final class SongsListLoading extends SongsListState {
+  const SongsListLoading();
+}
 
 final class SongsListLoaded extends SongsListState {
   const SongsListLoaded({this.allSongs = const <MediaItem>[]});
