@@ -1,7 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
-import 'package:monkimusic/features/songs_list/data/datasources/fetch_device_songs_datasource.dart';
+import 'package:monkimusic/features/songs/data/datasources/fetch_device_songs_datasource.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class CoverWidget extends StatelessWidget {
