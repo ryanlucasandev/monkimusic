@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
-import 'package:monkimusic/features/songs_list/presentation/bloc/songs_list_bloc.dart';
-import 'package:monkimusic/features/songs_list/presentation/pages/songs_list.dart';
+import 'package:monkimusic/features/songs/presentation/bloc/songs_bloc.dart';
+import 'package:monkimusic/features/songs/presentation/pages/songs_page.dart';
 import 'package:monkimusic/simple_bloc_observer.dart';
 
 Future<void> main() async {
@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) =>
-              SongsListBloc(audioHandler: locator<AudioPlayerHandler>())
-                ..add(SongsListFetched()),
+              SongsBloc(audioHandler: locator<AudioPlayerHandler>())
+                ..add(SongsFetched()),
         ),
         BlocProvider(
           create: (context) =>
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
         debugShowCheckedModeBanner: false,
-        home: SongsListPage(),
+        home: SongsPage(),
       ),
     );
   }

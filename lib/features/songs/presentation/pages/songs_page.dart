@@ -1,27 +1,27 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:monkimusic/features/songs_list/presentation/bloc/songs_list_bloc.dart';
-import 'package:monkimusic/features/songs_list/presentation/widgets/songs_list_widget.dart';
+import 'package:monkimusic/features/songs/presentation/bloc/songs_bloc.dart';
+import 'package:monkimusic/features/songs/presentation/widgets/songs_list_widget.dart';
 
-class SongsListPage extends StatelessWidget {
-  const SongsListPage({super.key});
+class SongsPage extends StatelessWidget {
+  const SongsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Monki Music')),
-      body: BlocBuilder<SongsListBloc, SongsListState>(
+      body: BlocBuilder<SongsBloc, SongsState>(
         builder: (context, state) {
-          if (state is SongsListLoading) {
+          if (state is SongsLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state is SongsListFailure) {
+          if (state is SongsFailure) {
             return const Center(child: Text('Failed to load songs.'));
           }
 
-          if (state is SongsListLoaded) {
+          if (state is SongsLoaded) {
             final songs = state.allSongs;
 
             if (songs.isEmpty) {
