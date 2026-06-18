@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           create: (context) => SongsBloc(
             audioHandler: locator<AudioPlayerHandler>(),
             fetchDeviceSongs: locator<FetchDeviceSongs>(),
-          )..add(SongsFetched()),
+          )..add(LoadSongs()),
         ),
         BlocProvider(
           create: (context) =>

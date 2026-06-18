@@ -7,6 +7,6 @@ sealed class SongsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-final class SongsFetched extends SongsEvent {
-  const SongsFetched();
+final class LoadSongs extends SongsEvent {
+  const LoadSongs();
 }

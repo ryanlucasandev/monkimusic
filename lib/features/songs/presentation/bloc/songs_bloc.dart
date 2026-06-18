@@ -18,11 +18,11 @@ class SongsBloc extends Bloc<SongsEvent, SongsState> {
   }) : _audioHandler = audioHandler,
        _fetchDeviceSongs = fetchDeviceSongs,
        super(SongsInitial()) {
-    on<SongsFetched>(_onSongsListFetched);
+    on<LoadSongs>(_onSongsListFetched);
   }
 
   Future<void> _onSongsListFetched(
-    SongsFetched event,
+    LoadSongs event,
     Emitter<SongsState> emit,
   ) async {
     emit(SongsLoading());
