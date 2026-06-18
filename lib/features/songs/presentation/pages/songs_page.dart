@@ -1,4 +1,3 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/features/songs/presentation/bloc/songs_bloc.dart';
@@ -32,8 +31,8 @@ class SongsPage extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemCount: songs.length,
               itemBuilder: (context, index) {
-                final item = songs[index];
-                return SongsListWidget(item: item, index: index);
+                final song = songs[index];
+                return SongsListWidget(song: song, index: index);
               },
             );
           }

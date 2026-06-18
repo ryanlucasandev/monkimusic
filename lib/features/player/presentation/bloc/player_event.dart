@@ -9,11 +9,10 @@ sealed class AudioPlayerEvent extends Equatable {
 
 final class LoadTrackEvent extends AudioPlayerEvent {
   final int index;
-  final SongsEntity item;
-  const LoadTrackEvent({required this.index, required this.item});
+  const LoadTrackEvent({required this.index});
 
   @override
-  List<Object?> get props => [index, item];
+  List<Object?> get props => [index];
 }
 
 final class UpdateCurrentItemEvent extends AudioPlayerEvent {

@@ -1,4 +1,3 @@
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:get/get_navigation/get_navigation.dart';
@@ -11,12 +10,12 @@ class SongsListWidget extends StatelessWidget {
   // MyAudioHandler for managing audio playback
 
   // MediaItem representing the current song
-  final SongsEntity item;
+  final SongsEntity song;
 
   // index of the song in the list
   final int index;
 
-  const SongsListWidget({super.key, required this.item, required this.index});
+  const SongsListWidget({super.key, required this.song, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +27,7 @@ class SongsListWidget extends StatelessWidget {
           ),
           child: ListTile(
             onTap: () {
-              context.read<AudioPlayerBloc>().add(
-                LoadTrackEvent(index: index, item: item),
-              );
+              context.read<AudioPlayerBloc>().add(LoadTrackEvent(index: index));
 
               Get.to(
                 () => PlayerPage(),
@@ -48,12 +45,12 @@ class SongsListWidget extends StatelessWidget {
               child: const Icon(Icons.music_note),
             ),
             title: Text(
-              item.title,
+              song.title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             subtitle: Text(
-              item.artist.toString(),
+              song.artist.toString(),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
