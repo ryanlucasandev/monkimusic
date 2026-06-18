@@ -1,7 +1,8 @@
+import 'package:monkimusic/features/songs/data/models/songs_model.dart';
 import 'package:on_audio_query_forked/on_audio_query.dart';
 
 abstract class SongsLocalDataSource {
-  Future<List<SongModel>> fetchDeviceSongs();
+  Future<List<SongsModel>> fetchDeviceSongs();
 }
 
 class SongsLocalDataSourceImpl extends SongsLocalDataSource {
@@ -9,9 +10,14 @@ class SongsLocalDataSourceImpl extends SongsLocalDataSource {
   SongsLocalDataSourceImpl(this._audioQuery);
 
   @override
-  Future<List<SongModel>> fetchDeviceSongs() async {
+  Future<List<SongsModel>> fetchDeviceSongs() async {
     bool hasPermission = await _audioQuery.checkAndRequest(retryRequest: true);
     if (!hasPermission) throw Exception('Storage permission denied');
-    return await _audioQuery.querySongs();
+    final songs = await _audioQuery.querySongs();
+
+    return songs
+        .where((song) => song.isMusic == true)
+        .map((song) => SongsModel.fromPackage(song)) // ◄ Map to Data Model here
+        .toList();
   }
 }

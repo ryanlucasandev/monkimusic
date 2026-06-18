@@ -9,18 +9,6 @@ class SongsRepositoryImpl implements SongsRepository {
 
   @override
   Future<List<SongsEntity>> fetchDeviceSongs() async {
-    final songs = await _localDataSource.fetchDeviceSongs();
-
-    return songs
-        .where((song) => song.isMusic == true)
-        .map(
-          (song) => SongsEntity(
-            id: song.uri ?? song.id.toString(),
-            title: song.title,
-            artist: song.artist,
-            duration: Duration(milliseconds: song.duration!),
-          ),
-        )
-        .toList();
+    return await _localDataSource.fetchDeviceSongs();
   }
 }

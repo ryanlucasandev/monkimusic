@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
-import 'package:monkimusic/features/songs/domain/repositories/songs_repository.dart';
+import 'package:monkimusic/features/songs/domain/usecases/fetch_device_songs.dart';
 import 'package:monkimusic/features/songs/presentation/bloc/songs_bloc.dart';
 import 'package:monkimusic/features/songs/presentation/pages/songs_page.dart';
 import 'package:monkimusic/simple_bloc_observer.dart';
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => SongsBloc(
             audioHandler: locator<AudioPlayerHandler>(),
-            songsRepository: locator<SongsRepository>(),
+            fetchDeviceSongs: locator<FetchDeviceSongs>(),
           )..add(SongsFetched()),
         ),
         BlocProvider(
