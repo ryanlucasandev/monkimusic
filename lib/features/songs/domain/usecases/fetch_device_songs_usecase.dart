@@ -2,9 +2,9 @@ import 'package:monkimusic/core/usecases/usecase.dart';
 import 'package:monkimusic/features/songs/domain/entities/song_entity.dart';
 import 'package:monkimusic/features/songs/domain/repositories/songs_repository.dart';
 
-class FetchDeviceSongs implements UseCase<List<SongsEntity>, NoParams> {
+class FetchDeviceSongsUseCase implements UseCase<List<SongsEntity>, NoParams> {
   final SongsRepository _repository;
-  FetchDeviceSongs(this._repository);
+  FetchDeviceSongsUseCase(this._repository);
 
   @override
   Future<List<SongsEntity>> call(NoParams params) async {

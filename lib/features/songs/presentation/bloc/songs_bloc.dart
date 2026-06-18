@@ -3,17 +3,17 @@ import 'package:equatable/equatable.dart';
 import 'package:monkimusic/core/usecases/usecase.dart';
 import 'package:monkimusic/features/player/domain/usecases/init_songs_usecase.dart';
 import 'package:monkimusic/features/songs/domain/entities/song_entity.dart';
-import 'package:monkimusic/features/songs/domain/usecases/fetch_device_songs.dart';
+import 'package:monkimusic/features/songs/domain/usecases/fetch_device_songs_usecase.dart';
 
 part 'songs_state.dart';
 part 'songs_event.dart';
 
 class SongsBloc extends Bloc<SongsEvent, SongsState> {
-  final FetchDeviceSongs _fetchDeviceSongs;
+  final FetchDeviceSongsUseCase _fetchDeviceSongs;
   final InitSongsUsecase _initSongsUsecase;
 
   SongsBloc({
-    required FetchDeviceSongs fetchDeviceSongs,
+    required FetchDeviceSongsUseCase fetchDeviceSongs,
     required InitSongsUsecase initSongsUsecase,
   }) : _fetchDeviceSongs = fetchDeviceSongs,
        _initSongsUsecase = initSongsUsecase,
