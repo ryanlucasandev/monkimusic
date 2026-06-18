@@ -46,9 +46,9 @@ class AudioPlayerHandler extends BaseAudioHandler
     );
   }
 
-  Future<void> initSongs({required List<MediaItem> songs}) async {
+  Future<void> initSongs({required List<MediaItem> mediaItems}) async {
     audioPlayer.playbackEventStream.listen(_broadcastState);
-    final audioSource = songs.map(_createAudioSource);
+    final audioSource = mediaItems.map(_createAudioSource);
 
     await audioPlayer.setAudioSources(
       audioSource.toList(),
@@ -57,7 +57,7 @@ class AudioPlayerHandler extends BaseAudioHandler
       shuffleOrder: DefaultShuffleOrder(),
     );
 
-    final newQueue = queue.value..addAll(songs);
+    final newQueue = queue.value..addAll(mediaItems);
     queue.add(newQueue);
 
     _listenForCurrentSongIndexChanges();

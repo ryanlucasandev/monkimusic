@@ -9,7 +9,7 @@ sealed class AudioPlayerEvent extends Equatable {
 
 final class LoadTrackEvent extends AudioPlayerEvent {
   final int index;
-  final MediaItem item;
+  final SongsEntity item;
   const LoadTrackEvent({required this.index, required this.item});
 
   @override

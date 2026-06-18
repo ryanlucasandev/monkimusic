@@ -4,6 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
+import 'package:monkimusic/features/songs/domain/entities/song_entity.dart';
 
 part 'player_event.dart';
 part 'player_state.dart';
