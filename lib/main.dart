@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => SongsBloc(
-            audioHandler: locator<AudioPlayerHandler>(),
             fetchDeviceSongs: locator<FetchDeviceSongs>(),
             initSongsUsecase: locator<InitSongsUsecase>(),
           )..add(LoadSongs()),
