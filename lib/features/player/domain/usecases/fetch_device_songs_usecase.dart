@@ -1,6 +1,6 @@
 import 'package:monkimusic/core/usecases/usecase.dart';
-import 'package:monkimusic/features/songs/domain/entities/songs_entity.dart';
-import 'package:monkimusic/features/songs/domain/repositories/songs_repository.dart';
+import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
+import 'package:monkimusic/features/player/domain/repositories/songs_repository.dart';
 
 class FetchDeviceSongsUseCase implements UseCase<List<SongsEntity>, NoParams> {
   final SongsRepository _repository;

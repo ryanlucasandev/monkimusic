@@ -1,4 +1,4 @@
-import 'package:monkimusic/features/songs/domain/entities/songs_entity.dart';
+import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 
 abstract class AudioPlayerRepository {
   Future<void> initSongs(List<SongsEntity> songs);

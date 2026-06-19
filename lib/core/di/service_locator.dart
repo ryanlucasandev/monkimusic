@@ -4,10 +4,10 @@ import 'package:monkimusic/features/player/data/datasources/audio_player_handler
 import 'package:monkimusic/features/player/data/repositories/audio_player_repository_impl.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
 import 'package:monkimusic/features/player/domain/usecases/init_songs_usecase.dart';
-import 'package:monkimusic/features/songs/data/datasources/songs_local_datasource.dart';
-import 'package:monkimusic/features/songs/data/repositories/songs_repository_impl.dart';
-import 'package:monkimusic/features/songs/domain/repositories/songs_repository.dart';
-import 'package:monkimusic/features/songs/domain/usecases/fetch_device_songs_usecase.dart';
+import 'package:monkimusic/features/player/data/datasources/songs_local_datasource.dart';
+import 'package:monkimusic/features/player/data/repositories/songs_repository_impl.dart';
+import 'package:monkimusic/features/player/domain/repositories/songs_repository.dart';
+import 'package:monkimusic/features/player/domain/usecases/fetch_device_songs_usecase.dart';
 import 'package:on_audio_query_forked/on_audio_query.dart';
 
 final locator = GetIt.instance;

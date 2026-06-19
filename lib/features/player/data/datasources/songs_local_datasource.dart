@@ -1,4 +1,4 @@
-import 'package:monkimusic/features/songs/data/models/songs_model.dart';
+import 'package:monkimusic/features/player/data/models/songs_model.dart';
 import 'package:on_audio_query_forked/on_audio_query.dart';
 
 abstract class SongsLocalDataSource {

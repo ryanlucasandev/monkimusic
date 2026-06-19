@@ -7,9 +7,9 @@ import 'package:monkimusic/features/player/data/datasources/audio_player_handler
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
 import 'package:monkimusic/features/player/domain/usecases/init_songs_usecase.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
-import 'package:monkimusic/features/songs/domain/usecases/fetch_device_songs_usecase.dart';
-import 'package:monkimusic/features/songs/presentation/bloc/songs_bloc.dart';
-import 'package:monkimusic/features/songs/presentation/pages/songs_page.dart';
+import 'package:monkimusic/features/player/domain/usecases/fetch_device_songs_usecase.dart';
+import 'package:monkimusic/features/player/presentation/bloc/songs_bloc.dart';
+import 'package:monkimusic/features/player/presentation/pages/songs_page.dart';
 import 'package:monkimusic/simple_bloc_observer.dart';
 
 Future<void> main() async {
