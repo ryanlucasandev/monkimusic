@@ -1,4 +1,4 @@
-import 'package:monkimusic/features/songs/domain/entities/song_entity.dart';
+import 'package:monkimusic/features/songs/domain/entities/songs_entity.dart';
 import 'package:on_audio_query_forked/on_audio_query.dart' as plugin;
 
 class SongsModel extends SongsEntity {

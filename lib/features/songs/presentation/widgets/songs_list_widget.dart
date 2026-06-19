@@ -4,7 +4,7 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/instance_manager.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
 import 'package:monkimusic/features/player/presentation/pages/player_page.dart';
-import 'package:monkimusic/features/songs/domain/entities/song_entity.dart';
+import 'package:monkimusic/features/songs/domain/entities/songs_entity.dart';
 
 class SongsListWidget extends StatelessWidget {
   // MyAudioHandler for managing audio playback
