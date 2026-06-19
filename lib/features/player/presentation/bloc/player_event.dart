@@ -9,15 +9,14 @@ sealed class AudioPlayerEvent extends Equatable {
 
 final class LoadTrackEvent extends AudioPlayerEvent {
   final int index;
-  final MediaItem item;
-  const LoadTrackEvent({required this.index, required this.item});
+  const LoadTrackEvent({required this.index});
 
   @override
-  List<Object?> get props => [index, item];
+  List<Object?> get props => [index];
 }
 
 final class UpdateCurrentItemEvent extends AudioPlayerEvent {
-  final MediaItem? newItem;
+  final SongsEntity? newItem;
   const UpdateCurrentItemEvent({required this.newItem});
   @override
   List<Object?> get props => [newItem];
@@ -32,11 +31,11 @@ final class SeekPositionEvent extends AudioPlayerEvent {
 }
 
 final class UpdatePlaybackStateEvent extends AudioPlayerEvent {
-  final PlaybackState state;
-  const UpdatePlaybackStateEvent({required this.state});
+  final bool isPlaying;
+  const UpdatePlaybackStateEvent({required this.isPlaying});
 
   @override
-  List<Object?> get props => [state];
+  List<Object?> get props => [isPlaying];
 }
 
 final class PlayPausePressedEvent extends AudioPlayerEvent {

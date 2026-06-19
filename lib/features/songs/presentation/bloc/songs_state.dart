@@ -16,8 +16,8 @@ final class SongsLoading extends SongsState {
 }
 
 final class SongsLoaded extends SongsState {
-  const SongsLoaded({this.allSongs = const <MediaItem>[]});
-  final List<MediaItem> allSongs;
+  const SongsLoaded({this.allSongs = const <SongsEntity>[]});
+  final List<SongsEntity> allSongs;
 
   @override
   List<Object?> get props => [allSongs];

@@ -15,7 +15,7 @@ final class AudioPlayerLoading extends AudioPlayerState {
 }
 
 final class AudioPlayerReady extends AudioPlayerState {
-  final MediaItem? currentItem;
+  final SongsEntity? currentItem;
   final bool isPlaying;
   final Duration position;
   const AudioPlayerReady({
@@ -25,7 +25,7 @@ final class AudioPlayerReady extends AudioPlayerState {
   });
 
   AudioPlayerReady copyWith({
-    MediaItem? currentItem,
+    SongsEntity? currentItem,
     bool? isPlaying,
     Duration? position,
   }) {
