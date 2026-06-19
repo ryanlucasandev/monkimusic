@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:monkimusic/features/songs/presentation/bloc/songs_bloc.dart';
-import 'package:monkimusic/features/songs/presentation/widgets/songs_list_widget.dart';
+import 'package:monkimusic/features/player/presentation/bloc/songs_bloc.dart';
+import 'package:monkimusic/features/player/presentation/widgets/songs_list_widget.dart';
 
 class SongsPage extends StatelessWidget {
   const SongsPage({super.key});

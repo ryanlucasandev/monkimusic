@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
-import 'package:monkimusic/features/songs/domain/entities/songs_entity.dart';
+import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 part 'player_event.dart';
 part 'player_state.dart';
 

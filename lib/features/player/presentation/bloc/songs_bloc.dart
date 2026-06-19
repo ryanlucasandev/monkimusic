@@ -2,8 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:monkimusic/core/usecases/usecase.dart';
 import 'package:monkimusic/features/player/domain/usecases/init_songs_usecase.dart';
-import 'package:monkimusic/features/songs/domain/entities/songs_entity.dart';
-import 'package:monkimusic/features/songs/domain/usecases/fetch_device_songs_usecase.dart';
+import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
+import 'package:monkimusic/features/player/domain/usecases/fetch_device_songs_usecase.dart';
 
 part 'songs_state.dart';
 part 'songs_event.dart';
