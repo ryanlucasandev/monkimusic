@@ -10,7 +10,6 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   final AudioPlayerRepository _audioPlayerRepository;
   StreamSubscription? _mediaItemSubscription;
   StreamSubscription? _playbackStateSubscription;
-  StreamSubscription? _currentIndexSubscription;
 
   SongsEntity? _currentSong;
   bool _isPlaying = false;
@@ -134,7 +133,6 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   Future<void> close() {
     _mediaItemSubscription?.cancel();
     _playbackStateSubscription?.cancel();
-    _currentIndexSubscription?.cancel();
     return super.close();
   }
 }
