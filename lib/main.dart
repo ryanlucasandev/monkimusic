@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
-import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
 import 'package:monkimusic/features/player/domain/usecases/init_songs_usecase.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
