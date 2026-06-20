@@ -20,12 +20,12 @@ class SongsPage extends StatelessWidget {
             return const Center(child: Text('Failed to load songs.'));
           }
 
+          if (state is SongsEmpty) {
+            return const Center(child: Text('No songs found on your device'));
+          }
+
           if (state is SongsLoaded) {
             final songs = state.allSongs;
-
-            if (songs.isEmpty) {
-              return const Center(child: Text('No songs found on your device'));
-            }
 
             return ListView.builder(
               physics: const BouncingScrollPhysics(),

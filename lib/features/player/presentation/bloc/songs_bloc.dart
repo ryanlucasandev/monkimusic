@@ -30,10 +30,12 @@ class SongsBloc extends Bloc<SongsEvent, SongsState> {
     try {
       final songs = await _fetchDeviceSongs(NoParams());
 
-      if (songs.isNotEmpty) {
-        await _initSongsUsecase.call(songs);
-        emit(SongsLoaded(allSongs: songs));
+      if (songs.isEmpty) {
+        emit(SongsEmpty());
+        return;
       }
+      await _initSongsUsecase.call(songs);
+      emit(SongsLoaded(allSongs: songs));
     } catch (_) {
       emit(SongsFailure());
     }

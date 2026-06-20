@@ -23,6 +23,10 @@ final class SongsLoaded extends SongsState {
   List<Object?> get props => [allSongs];
 }
 
+final class SongsEmpty extends SongsState {
+  const SongsEmpty();
+}
+
 final class SongsFailure extends SongsState {
   final String? errorMessage;
   const SongsFailure({this.errorMessage});
