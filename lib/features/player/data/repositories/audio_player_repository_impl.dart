@@ -4,6 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
+import 'package:rxdart/rxdart.dart';
 
 class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
   final AudioPlayerHandler _audioHandler;
@@ -47,11 +48,6 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
   }
 
   @override
-  Stream<SongsEntity?> get currentSongStream => _audioHandler.mediaItem
-      .map((item) => item == null ? null : _mapMediaItemToSongEntity(item))
-      .distinct((prev, next) => prev?.id == next?.id);
-
-  @override
   Stream<bool> get isPlayingStream =>
       _audioHandler.playbackState.map((state) => state.playing).distinct();
 
@@ -62,5 +58,27 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
       artist: item.artist ?? 'Unknown Artist',
       duration: item.duration ?? Duration.zero,
     );
+  }
+
+  @override
+  Stream<({int index, SongsEntity? song})> get currentSongStream {
+    return Rx.combineLatest2<
+          MediaItem?,
+          int?,
+          ({SongsEntity? song, int index})
+        >(
+          _audioHandler.mediaItem,
+          _audioHandler.audioPlayer.currentIndexStream,
+          (mediaItem, currentIndex) {
+            if (mediaItem == null || currentIndex == null) {
+              return (song: null, index: -1);
+            }
+            return (
+              song: _mapMediaItemToSongEntity(mediaItem),
+              index: currentIndex,
+            );
+          },
+        )
+        .distinct((prev, next) => prev.song?.id == next.song?.id);
   }
 }

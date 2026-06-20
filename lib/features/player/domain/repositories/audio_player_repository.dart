@@ -8,5 +8,5 @@ abstract class AudioPlayerRepository {
   Future<void> skipToPrevious();
   Future<void> playPause(bool isPlaying);
   Stream<bool> get isPlayingStream;
-  Stream<SongsEntity?> get currentSongStream;
+  Stream<({SongsEntity? song, int index})> get currentSongStream;
 }

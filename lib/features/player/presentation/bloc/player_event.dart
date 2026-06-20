@@ -17,7 +17,8 @@ final class LoadTrackEvent extends AudioPlayerEvent {
 
 final class UpdateCurrentItemEvent extends AudioPlayerEvent {
   final SongsEntity? newItem;
-  const UpdateCurrentItemEvent({required this.newItem});
+  final int newIndex;
+  const UpdateCurrentItemEvent({required this.newItem, required this.newIndex});
   @override
   List<Object?> get props => [newItem];
 }

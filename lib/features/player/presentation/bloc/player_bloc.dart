@@ -10,9 +10,11 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   final AudioPlayerRepository _audioPlayerRepository;
   StreamSubscription? _mediaItemSubscription;
   StreamSubscription? _playbackStateSubscription;
+  StreamSubscription? _currentIndexSubscription;
 
   SongsEntity? _currentSong;
   bool _isPlaying = false;
+  int? songIndex = -1;
 
   AudioPlayerBloc({required AudioPlayerRepository audioPlayerRepository})
     : _audioPlayerRepository = audioPlayerRepository,
@@ -29,9 +31,9 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
 
   void initStreamSubscriptions() {
     _mediaItemSubscription = _audioPlayerRepository.currentSongStream.listen((
-      item,
+      data,
     ) {
-      add(UpdateCurrentItemEvent(newItem: item));
+      add(UpdateCurrentItemEvent(newItem: data.song, newIndex: data.index));
     });
 
     _playbackStateSubscription = _audioPlayerRepository.isPlayingStream.listen((
@@ -52,8 +54,15 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     LoadTrackEvent event,
     Emitter<AudioPlayerState> emit,
   ) async {
-    emit(AudioPlayerLoading());
-    await _audioPlayerRepository.loadTrack(event.index);
+    if (songIndex != event.index) {
+      songIndex = event.index;
+      emit(AudioPlayerLoading());
+      await _audioPlayerRepository.loadTrack(event.index);
+    }
+
+    if (!_isPlaying) {
+      await _audioPlayerRepository.playPause(_isPlaying);
+    }
   }
 
   void _onUpdateCurrentItem(
@@ -61,6 +70,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     Emitter<AudioPlayerState> emit,
   ) {
     _currentSong = event.newItem;
+    songIndex = event.newIndex;
 
     if (_currentSong == null) {
       emit(AudioPlayerIdle());
@@ -70,7 +80,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     emit(
       AudioPlayerReady(
         isPlaying: _isPlaying,
-        currentItem: event.newItem!,
+        currentItem: _currentSong,
         position: Duration.zero,
       ),
     );
@@ -124,6 +134,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   Future<void> close() {
     _mediaItemSubscription?.cancel();
     _playbackStateSubscription?.cancel();
+    _currentIndexSubscription?.cancel();
     return super.close();
   }
 }
