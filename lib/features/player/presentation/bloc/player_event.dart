@@ -7,20 +7,20 @@ sealed class AudioPlayerEvent extends Equatable {
   List<Object?> get props => [];
 }
 
+final class SkipToNextEvent extends AudioPlayerEvent {
+  const SkipToNextEvent();
+}
+
+final class SkipToPreviousEvent extends AudioPlayerEvent {
+  const SkipToPreviousEvent();
+}
+
 final class LoadTrackEvent extends AudioPlayerEvent {
   final int index;
   const LoadTrackEvent({required this.index});
 
   @override
   List<Object?> get props => [index];
-}
-
-final class UpdateCurrentItemEvent extends AudioPlayerEvent {
-  final SongsEntity? newItem;
-  final int newIndex;
-  const UpdateCurrentItemEvent({required this.newItem, required this.newIndex});
-  @override
-  List<Object?> get props => [newItem];
 }
 
 final class SeekPositionEvent extends AudioPlayerEvent {
@@ -47,10 +47,10 @@ final class PlayPausePressedEvent extends AudioPlayerEvent {
   List<Object?> get props => [isPlaying];
 }
 
-final class SkipToNextEvent extends AudioPlayerEvent {
-  const SkipToNextEvent();
-}
-
-final class SkipToPreviousEvent extends AudioPlayerEvent {
-  const SkipToPreviousEvent();
+final class UpdateCurrentItemEvent extends AudioPlayerEvent {
+  final SongsEntity? newItem;
+  final int newIndex;
+  const UpdateCurrentItemEvent({required this.newItem, required this.newIndex});
+  @override
+  List<Object?> get props => [newItem, newIndex];
 }

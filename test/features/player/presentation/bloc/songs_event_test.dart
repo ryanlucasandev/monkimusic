@@ -4,11 +4,8 @@ import 'package:test/scaffolding.dart';
 
 void main() {
   group('SongsEvent Equality', () {
-    test(
-      'LoadSongs instances should be equal when they have the properties',
-      () {
-        expect(const LoadSongs(), equals(const LoadSongs()));
-      },
-    );
+    test('LoadSongs instances should be equal', () {
+      expect(const LoadSongs(), equals(const LoadSongs()));
+    });
   });
 }

@@ -13,7 +13,7 @@ void main() {
       },
     );
 
-    // test SongsLoaded. State with Data
+    // test SongsLoaded State with Data
     group('SongsLoaded', () {
       final songA = const SongsEntity(
         id: '1',
