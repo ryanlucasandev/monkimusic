@@ -23,7 +23,7 @@ class ControlButtonsWidget extends StatelessWidget {
               IconButton.filledTonal(
                 onPressed: () {
                   context.read<AudioPlayerBloc>().add(
-                    PlayPausePressedEvent(isPlaying: playing),
+                    PlayPausePressedEvent(playPause: playing),
                   );
                 },
                 icon: playing

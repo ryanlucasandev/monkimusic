@@ -39,11 +39,11 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
   Future<void> skipToPrevious() => _audioHandler.skipToPrevious();
 
   @override
-  Future<void> playPause(bool currentPlaybackState) async {
-    if (currentPlaybackState) {
-      _audioHandler.pause();
-    } else {
+  Future<void> playPause(bool play) async {
+    if (play) {
       _audioHandler.play();
+    } else {
+      _audioHandler.pause();
     }
   }
 

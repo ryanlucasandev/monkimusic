@@ -38,15 +38,8 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     _playbackStateSubscription = _audioPlayerRepository.isPlayingStream.listen((
       isPlaying,
     ) {
-      add(UpdatePlaybackStateEvent(isPlaying: isPlaying));
+      add(UpdatePlaybackStateEvent(playPause: isPlaying));
     });
-  }
-
-  Future<void> _onSeekPosition(
-    SeekPositionEvent event,
-    Emitter<AudioPlayerState> emit,
-  ) async {
-    await _audioPlayerRepository.seek(event.position);
   }
 
   Future<void> _onLoadTrack(
@@ -62,6 +55,13 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     if (!_isPlaying) {
       await _audioPlayerRepository.playPause(_isPlaying);
     }
+  }
+
+  Future<void> _onSeekPosition(
+    SeekPositionEvent event,
+    Emitter<AudioPlayerState> emit,
+  ) async {
+    await _audioPlayerRepository.seek(event.position);
   }
 
   void _onUpdateCurrentItem(
@@ -103,14 +103,14 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     PlayPausePressedEvent event,
     Emitter<AudioPlayerState> emit,
   ) async {
-    await _audioPlayerRepository.playPause(event.isPlaying);
+    await _audioPlayerRepository.playPause(!event.playPause);
   }
 
   void _onUpdatePlaybackState(
     UpdatePlaybackStateEvent event,
     Emitter<AudioPlayerState> emit,
   ) {
-    _isPlaying = event.isPlaying;
+    _isPlaying = event.playPause;
 
     if (state is AudioPlayerLoading) return;
 
