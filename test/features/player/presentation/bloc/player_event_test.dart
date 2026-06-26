@@ -54,15 +54,15 @@ void main() {
     group('UpdatePlaybackStateEvent Equality', () {
       test('should be equal when isPlaying state matches', () {
         expect(
-          const UpdatePlaybackStateEvent(isPlaying: true),
-          equals(const UpdatePlaybackStateEvent(isPlaying: true)),
+          const UpdatePlaybackStateEvent(playing: true),
+          equals(const UpdatePlaybackStateEvent(playing: true)),
         );
       });
 
       test('should NOT be equal when isPlaying state differs', () {
         expect(
-          const UpdatePlaybackStateEvent(isPlaying: true),
-          isNot(equals(const UpdatePlaybackStateEvent(isPlaying: false))),
+          const UpdatePlaybackStateEvent(playing: true),
+          isNot(equals(const UpdatePlaybackStateEvent(playing: false))),
         );
       });
     });
@@ -70,15 +70,15 @@ void main() {
     group('PlayPausePressedEvent Equality', () {
       test('should be equal when isPlaying state matches', () {
         expect(
-          const PlayPausePressedEvent(isPlaying: true),
-          equals(const PlayPausePressedEvent(isPlaying: true)),
+          const PlayPausePressedEvent(playing: true),
+          equals(const PlayPausePressedEvent(playing: true)),
         );
       });
 
       test('should NOT be equal when isPlaying state differs', () {
         expect(
-          const PlayPausePressedEvent(isPlaying: true),
-          isNot(equals(const PlayPausePressedEvent(isPlaying: false))),
+          const PlayPausePressedEvent(playing: true),
+          isNot(equals(const PlayPausePressedEvent(playing: false))),
         );
       });
     });
