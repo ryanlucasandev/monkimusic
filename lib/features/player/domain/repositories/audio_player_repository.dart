@@ -6,7 +6,7 @@ abstract class AudioPlayerRepository {
   Future<void> seek(Duration position);
   Future<void> skipToNext();
   Future<void> skipToPrevious();
-  Future<void> playPause(bool play);
+  Future<void> playPause(bool playing);
   Stream<bool> get isPlayingStream;
   Stream<({SongsEntity? song, int index})> get currentSongStream;
 }

@@ -32,19 +32,19 @@ final class SeekPositionEvent extends AudioPlayerEvent {
 }
 
 final class UpdatePlaybackStateEvent extends AudioPlayerEvent {
-  final bool playPause;
-  const UpdatePlaybackStateEvent({required this.playPause});
+  final bool playing;
+  const UpdatePlaybackStateEvent({required this.playing});
 
   @override
-  List<Object?> get props => [playPause];
+  List<Object?> get props => [playing];
 }
 
 final class PlayPausePressedEvent extends AudioPlayerEvent {
-  final bool playPause;
-  const PlayPausePressedEvent({required this.playPause});
+  final bool playing;
+  const PlayPausePressedEvent({required this.playing});
 
   @override
-  List<Object?> get props => [playPause];
+  List<Object?> get props => [playing];
 }
 
 final class UpdateCurrentItemEvent extends AudioPlayerEvent {

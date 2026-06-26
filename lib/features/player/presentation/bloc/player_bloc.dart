@@ -38,7 +38,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     _playbackStateSubscription = _audioPlayerRepository.isPlayingStream.listen((
       isPlaying,
     ) {
-      add(UpdatePlaybackStateEvent(playPause: isPlaying));
+      add(UpdatePlaybackStateEvent(playing: isPlaying));
     });
   }
 
@@ -103,14 +103,14 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     PlayPausePressedEvent event,
     Emitter<AudioPlayerState> emit,
   ) async {
-    await _audioPlayerRepository.playPause(!event.playPause);
+    await _audioPlayerRepository.playPause(!event.playing);
   }
 
   void _onUpdatePlaybackState(
     UpdatePlaybackStateEvent event,
     Emitter<AudioPlayerState> emit,
   ) {
-    _isPlaying = event.playPause;
+    _isPlaying = event.playing;
 
     if (state is AudioPlayerLoading) return;
 
