@@ -1,6 +1,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:get_it/get_it.dart';
-import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
+import 'package:monkimusic/features/player/data/services/audio_player_handler.dart';
 import 'package:monkimusic/features/player/data/repositories/audio_player_repository_impl.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
 import 'package:monkimusic/features/player/domain/usecases/init_songs_usecase.dart';
