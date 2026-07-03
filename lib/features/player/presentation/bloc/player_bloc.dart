@@ -53,7 +53,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     }
 
     if (!_isPlaying) {
-      await _audioPlayerRepository.playPause(_isPlaying);
+      await _audioPlayerRepository.playPause(!_isPlaying);
     }
   }
 
