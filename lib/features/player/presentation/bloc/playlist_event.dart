@@ -29,7 +29,7 @@ final class RenamePlaylist extends PlaylistEvent {
 
 final class DeletePlaylist extends PlaylistEvent {
   final int id;
-  const DeletePlaylist(this.id);
+  const DeletePlaylist({required this.id});
 
   @override
   List<Object?> get props => [id];

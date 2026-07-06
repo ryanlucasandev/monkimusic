@@ -45,25 +45,43 @@ class PlaylistWidget extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: GestureDetector(
-          onTap: () {
-            context.read<PlaylistBloc>().add(
-              RenamePlaylist(
-                name: 'My First Rename Playlist',
-                id: playlist.id!,
-              ),
-            );
+        trailing: PopupMenuButton(
+          icon: const Icon(Icons.more_vert),
+          onSelected: (value) {
+            switch (value) {
+              case 'rename':
+                context.read<PlaylistBloc>().add(
+                  RenamePlaylist(name: 'Rename Playlist', id: playlist.id!),
+                );
+                break;
+              case 'delete':
+                context.read<PlaylistBloc>().add(
+                  DeletePlaylist(id: playlist.id!),
+                );
+            }
           },
-          child: Container(
-            padding: const EdgeInsets.only(left: 20),
-            height: 50,
-            width: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Theme.of(context).colorScheme.primaryContainer,
+          itemBuilder: (context) => const [
+            PopupMenuItem(
+              value: 'rename',
+              child: Row(
+                children: [
+                  Icon(Icons.edit),
+                  SizedBox(width: 12),
+                  Text('Rename'),
+                ],
+              ),
             ),
-            child: const Icon(Icons.more_vert),
-          ),
+            PopupMenuItem(
+              value: 'delete',
+              child: Row(
+                children: [
+                  Icon(Icons.delete),
+                  SizedBox(width: 12),
+                  Text('Delete'),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
