@@ -19,44 +19,36 @@ class SongsListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
-      builder: (context, state) {
-        return DecoratedBox(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+      ),
+      child: ListTile(
+        onTap: () {
+          context.read<AudioPlayerBloc>().add(LoadTrackEvent(index: index));
+
+          Get.to(
+            () => PlayerPage(),
+            transition: Transition.rightToLeft,
+            duration: const Duration(milliseconds: 700),
+          );
+        },
+        leading: Container(
+          height: 45,
+          width: 45,
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
             color: Theme.of(context).colorScheme.primaryContainer,
           ),
-          child: ListTile(
-            onTap: () {
-              context.read<AudioPlayerBloc>().add(LoadTrackEvent(index: index));
-
-              Get.to(
-                () => PlayerPage(),
-                transition: Transition.rightToLeft,
-                duration: const Duration(milliseconds: 700),
-              );
-            },
-            leading: Container(
-              height: 45,
-              width: 45,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Theme.of(context).colorScheme.primaryContainer,
-              ),
-              child: const Icon(Icons.music_note),
-            ),
-            title: Text(
-              song.title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: Text(
-              song.artist.toString(),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        );
-      },
+          child: const Icon(Icons.music_note),
+        ),
+        title: Text(song.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: Text(
+          song.artist.toString(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
     );
   }
 }
