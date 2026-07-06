@@ -43,9 +43,9 @@ final class PlaylistOpened extends PlaylistEvent {
   List<Object?> get props => [id];
 }
 
-final class SongAddedToPlaylist extends PlaylistEvent {
+final class AddSongsToPlaylist extends PlaylistEvent {
   final int playlistId;
-  const SongAddedToPlaylist(this.playlistId);
+  const AddSongsToPlaylist(this.playlistId);
 
   @override
   List<Object?> get props => [playlistId];

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/dialogs/delete_playlist_dialog.dart';
 
 class PlaylistWidget extends StatelessWidget {
   // MyAudioHandler for managing audio playback
@@ -47,17 +48,25 @@ class PlaylistWidget extends StatelessWidget {
         ),
         trailing: PopupMenuButton(
           icon: const Icon(Icons.more_vert),
-          onSelected: (value) {
+          onSelected: (value) async {
+            final playlistBloc = context.read<PlaylistBloc>();
             switch (value) {
               case 'rename':
-                context.read<PlaylistBloc>().add(
+                playlistBloc.add(
                   RenamePlaylist(name: 'Rename Playlist', id: playlist.id!),
                 );
                 break;
               case 'delete':
-                context.read<PlaylistBloc>().add(
-                  DeletePlaylist(id: playlist.id!),
+                final confirmed = await showDialog<bool>(
+                  context: context,
+                  builder: (_) =>
+                      DeletePlaylistDialog(playlistName: playlist.name),
                 );
+
+                if (confirmed == true) {
+                  playlistBloc.add(DeletePlaylist(id: playlist.id!));
+                }
+                break;
             }
           },
           itemBuilder: (context) => const [
