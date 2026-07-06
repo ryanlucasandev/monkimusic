@@ -16,9 +16,8 @@ class PlaylistsRepositoryImpl implements PlaylistsRepository {
   }
 
   @override
-  Future<int> createPlaylist(PlaylistsEntity playlist) {
-    final model = PlaylistsModel.fromEntity(playlist);
-    return _playlistsLocalDataSource.createPlaylist(model);
+  Future<int> createPlaylist(String name) {
+    return _playlistsLocalDataSource.createPlaylist(name);
   }
 
   @override

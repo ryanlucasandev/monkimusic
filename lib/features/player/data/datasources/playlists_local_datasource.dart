@@ -4,7 +4,7 @@ import 'package:monkimusic/features/player/data/models/playlists_model.dart';
 
 abstract class PlaylistsLocalDataSource {
   Future<List<PlaylistsModel>> getPlaylists();
-  Future<int> createPlaylist(PlaylistsModel playlist);
+  Future<int> createPlaylist(String name);
   Future<bool> updatePlaylist(PlaylistsModel playlist);
   Future<int> deletePlaylist(int id);
   Future<int> addSongToPlaylist(PlaylistSongsModel playlistSongs);
@@ -22,8 +22,7 @@ class PlaylistsLocalDataSourceImpl extends PlaylistsLocalDataSource {
       _playlistsDao.addSongToPlaylist(playlistSongs.toCompanion());
 
   @override
-  Future<int> createPlaylist(PlaylistsModel playlist) =>
-      _playlistsDao.createPlaylist(playlist.toInsertCompanion());
+  Future<int> createPlaylist(String name) => _playlistsDao.createPlaylist(name);
 
   @override
   Future<int> deletePlaylist(int id) => _playlistsDao.deletePlaylist(id);

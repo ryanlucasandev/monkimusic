@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/features/player/presentation/bloc/songs_bloc.dart';
+import 'package:monkimusic/features/player/presentation/pages/playlists_page.dart';
 import 'package:monkimusic/features/player/presentation/widgets/songs_list_widget.dart';
 
 class SongsPage extends StatelessWidget {
@@ -9,7 +10,20 @@ class SongsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Monki Music')),
+      appBar: AppBar(
+        title: const Text('Monki Music'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(
+                context,
+              ).push(MaterialPageRoute(builder: (_) => const PlaylistsPage()));
+            },
+            icon: const Icon(Icons.queue_music),
+            tooltip: 'Playlists',
+          ),
+        ],
+      ),
       body: BlocBuilder<SongsBloc, SongsState>(
         builder: (context, state) {
           if (state is SongsLoading) {

@@ -1,8 +1,14 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:get_it/get_it.dart';
+import 'package:monkimusic/core/database/app_db.dart';
+import 'package:monkimusic/core/database/daos/playlists_dao.dart';
+import 'package:monkimusic/core/database/daos/songs_dao.dart';
+import 'package:monkimusic/features/player/data/datasources/playlists_local_datasource.dart';
+import 'package:monkimusic/features/player/data/repositories/playlists_repository_impl.dart';
 import 'package:monkimusic/features/player/data/services/audio_player_handler.dart';
 import 'package:monkimusic/features/player/data/repositories/audio_player_repository_impl.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
+import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 import 'package:monkimusic/features/player/domain/usecases/init_songs_usecase.dart';
 import 'package:monkimusic/features/player/data/datasources/songs_local_datasource.dart';
 import 'package:monkimusic/features/player/data/repositories/songs_repository_impl.dart';
@@ -13,6 +19,7 @@ import 'package:on_audio_query_forked/on_audio_query.dart';
 final locator = GetIt.instance;
 
 Future<void> initializeLocator() async {
+  //
   final audioHandler = await AudioService.init(
     builder: () => AudioPlayerHandler(),
     config: const AudioServiceConfig(
@@ -41,5 +48,24 @@ Future<void> initializeLocator() async {
 
   locator.registerLazySingleton<InitSongsUsecase>(
     () => InitSongsUsecase(locator<AudioPlayerRepository>()),
+  );
+
+  // Register Database and DAOs
+  locator.registerLazySingleton<AppDb>(() => AppDb());
+
+  locator.registerLazySingleton<PlaylistsDao>(
+    () => PlaylistsDao(locator<AppDb>()),
+  );
+
+  locator.registerLazySingleton<SongsDao>(() => SongsDao(locator<AppDb>()));
+
+  // Playlist Data Sources
+  locator.registerLazySingleton<PlaylistsLocalDataSource>(
+    () => PlaylistsLocalDataSourceImpl(locator<PlaylistsDao>()),
+  );
+
+  // Playlist Repositories
+  locator.registerLazySingleton<PlaylistsRepository>(
+    () => PlaylistsRepositoryImpl(locator<PlaylistsLocalDataSource>()),
   );
 }
