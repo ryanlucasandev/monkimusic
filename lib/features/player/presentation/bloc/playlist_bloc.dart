@@ -14,6 +14,7 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
       super(PlaylistInitial()) {
     on<LoadPlaylists>(_onLoadPlaylists);
     on<CreatePlaylist>(_onCreatePlaylist);
+    on<RenamePlaylist>(_onRenamePlaylist);
   }
 
   Future<void> _onLoadPlaylists(
@@ -42,8 +43,18 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
       await _playlistsRepository.createPlaylist(event.name);
       add(const LoadPlaylists());
     } catch (e) {
-      print('wahahaha');
-      print(e.toString());
+      emit(PlaylistFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onRenamePlaylist(
+    RenamePlaylist event,
+    Emitter<PlaylistState> emit,
+  ) async {
+    try {
+      await _playlistsRepository.renamePlaylist(event.id, event.name);
+      add(const LoadPlaylists());
+    } catch (e) {
       emit(PlaylistFailure(e.toString()));
     }
   }

@@ -37,9 +37,8 @@ class PlaylistsRepositoryImpl implements PlaylistsRepository {
   }
 
   @override
-  Future<bool> updatePlaylist(PlaylistsEntity playlist) {
-    final model = PlaylistsModel.fromEntity(playlist);
-    return _playlistsLocalDataSource.updatePlaylist(model);
+  Future<int> renamePlaylist(int id, String name) {
+    return _playlistsLocalDataSource.renamePlaylist(id, name);
   }
 
   @override

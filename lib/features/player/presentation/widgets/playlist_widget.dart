@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:get/instance_manager.dart';
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
-import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
-import 'package:monkimusic/features/player/presentation/pages/player_page.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
 
 class PlaylistWidget extends StatelessWidget {
   // MyAudioHandler for managing audio playback
@@ -23,44 +20,52 @@ class PlaylistWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AudioPlayerBloc, AudioPlayerState>(
-      builder: (context, state) {
-        return DecoratedBox(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+      ),
+      child: ListTile(
+        onTap: () {},
+        leading: Container(
+          height: 45,
+          width: 45,
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
             color: Theme.of(context).colorScheme.primaryContainer,
           ),
-          child: ListTile(
-            onTap: () {
-              context.read<AudioPlayerBloc>().add(LoadTrackEvent(index: index));
-
-              Get.to(
-                () => PlayerPage(),
-                transition: Transition.rightToLeft,
-                duration: const Duration(milliseconds: 700),
-              );
-            },
-            leading: Container(
-              height: 45,
-              width: 45,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Theme.of(context).colorScheme.primaryContainer,
+          child: const Icon(Icons.music_note),
+        ),
+        title: Text(
+          playlist.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Text(
+          playlist.createdAt.toIso8601String(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: GestureDetector(
+          onTap: () {
+            context.read<PlaylistBloc>().add(
+              RenamePlaylist(
+                name: 'My First Rename Playlist',
+                id: playlist.id!,
               ),
-              child: const Icon(Icons.music_note),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.only(left: 20),
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Theme.of(context).colorScheme.primaryContainer,
             ),
-            title: Text(
-              playlist.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: Text(
-              playlist.createdAt.toIso8601String(),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+            child: const Icon(Icons.more_vert),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

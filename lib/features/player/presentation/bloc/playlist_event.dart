@@ -12,10 +12,19 @@ final class LoadPlaylists extends PlaylistEvent {
 
 final class CreatePlaylist extends PlaylistEvent {
   final String name;
-  const CreatePlaylist(this.name);
+  const CreatePlaylist({required this.name});
 
   @override
   List<Object?> get props => [name];
+}
+
+final class RenamePlaylist extends PlaylistEvent {
+  final String name;
+  final int id;
+  const RenamePlaylist({required this.name, required this.id});
+
+  @override
+  List<Object?> get props => [name, id];
 }
 
 final class DeletePlaylist extends PlaylistEvent {

@@ -16,8 +16,10 @@ class PlaylistsDao extends DatabaseAccessor<AppDb> with _$PlaylistsDaoMixin {
   Future<int> createPlaylist(String name) =>
       into(playlistsTable).insert(PlaylistsTableCompanion.insert(name: name));
 
-  Future<bool> updatePlaylist(PlaylistsTableCompanion playlist) =>
-      update(playlistsTable).replace(playlist);
+  Future<int> renamePlaylist(int id, String name) =>
+      (update(playlistsTable)..where((tbl) => tbl.id.equals(id))).write(
+        PlaylistsTableCompanion(name: Value(name)),
+      );
 
   Future<int> deletePlaylist(int id) =>
       (delete(playlistsTable)..where((tbl) => tbl.id.equals(id))).go();

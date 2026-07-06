@@ -45,7 +45,7 @@ class PlaylistsPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.read<PlaylistBloc>().add(
-            const CreatePlaylist('My First Playlist'),
+            const CreatePlaylist(name: 'My First Playlist'),
           );
         },
         child: const Icon(Icons.add),
