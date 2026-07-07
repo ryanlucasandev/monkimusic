@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/dialogs/create_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/delete_playlist_dialog.dart';
 
 class PlaylistWidget extends StatelessWidget {
@@ -52,9 +53,19 @@ class PlaylistWidget extends StatelessWidget {
             final playlistBloc = context.read<PlaylistBloc>();
             switch (value) {
               case 'rename':
-                playlistBloc.add(
-                  RenamePlaylist(name: 'Rename Playlist', id: playlist.id!),
+                final name = await showDialog<String>(
+                  context: context,
+                  builder: (_) => CreatePlaylistDialog(
+                    title: 'Rename Playlist',
+                    confirmText: 'Save',
+                    initialName: playlist.name,
+                  ),
                 );
+                if (name != null) {
+                  playlistBloc.add(
+                    RenamePlaylist(name: name, id: playlist.id!),
+                  );
+                }
                 break;
               case 'delete':
                 final confirmed = await showDialog<bool>(

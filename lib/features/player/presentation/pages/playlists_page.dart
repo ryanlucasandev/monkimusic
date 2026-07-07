@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/dialogs/create_playlist_dialog.dart';
 
 import 'package:monkimusic/features/player/presentation/widgets/playlist_widget.dart';
 
@@ -43,10 +44,18 @@ class PlaylistsPage extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.read<PlaylistBloc>().add(
-            const CreatePlaylist(name: 'My First Playlist'),
+        onPressed: () async {
+          final playlistBloc = context.read<PlaylistBloc>();
+          final name = await showDialog<String>(
+            context: context,
+            builder: (_) => CreatePlaylistDialog(
+              title: 'Create Playlist',
+              confirmText: 'Create',
+            ),
           );
+          if (name != null) {
+            playlistBloc.add(CreatePlaylist(name: name));
+          }
         },
         child: const Icon(Icons.add),
       ),
