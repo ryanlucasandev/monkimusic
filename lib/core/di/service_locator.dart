@@ -1,6 +1,7 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:get_it/get_it.dart';
 import 'package:monkimusic/core/database/app_db.dart';
+import 'package:monkimusic/core/database/daos/playlist_songs_dao.dart';
 import 'package:monkimusic/core/database/daos/playlists_dao.dart';
 import 'package:monkimusic/core/database/daos/songs_dao.dart';
 import 'package:monkimusic/features/player/data/datasources/playlists_local_datasource.dart';
@@ -50,18 +51,29 @@ Future<void> initializeLocator() async {
     () => InitSongsUsecase(locator<AudioPlayerRepository>()),
   );
 
-  // Register Database and DAOs
+  // AppDb
   locator.registerLazySingleton<AppDb>(() => AppDb());
 
+  // Playlists Dao
   locator.registerLazySingleton<PlaylistsDao>(
     () => PlaylistsDao(locator<AppDb>()),
   );
 
+  // PlaylistSongsDao
+  locator.registerLazySingleton<PlaylistSongsDao>(
+    () => PlaylistSongsDao(locator<AppDb>()),
+  );
+
+  // SongsDao
   locator.registerLazySingleton<SongsDao>(() => SongsDao(locator<AppDb>()));
 
   // Playlist Data Sources
   locator.registerLazySingleton<PlaylistsLocalDataSource>(
-    () => PlaylistsLocalDataSourceImpl(locator<PlaylistsDao>()),
+    () => PlaylistsLocalDataSourceImpl(
+      locator<PlaylistsDao>(),
+      locator<PlaylistSongsDao>(),
+      locator<SongsDao>(),
+    ),
   );
 
   // Playlist Repositories
