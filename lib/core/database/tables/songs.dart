@@ -2,11 +2,28 @@ import 'package:drift/drift.dart';
 
 class SongsTable extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get mediaId => text().unique()();
-  TextColumn get title => text()();
+
+  // Android MediaStore ID
+  IntColumn get mediaId => integer().unique()();
+
+  // Playback source
+  TextColumn get uri => text().nullable()();
+
+  // Metadata
+  TextColumn get title => text().nullable()();
   TextColumn get artist => text().nullable()();
   TextColumn get album => text().nullable()();
-  IntColumn get duration => integer()();
-  TextColumn get filePath => text()();
-  TextColumn get albumArt => text().nullable()();
+
+  IntColumn get albumId => integer().nullable()();
+  IntColumn get artistId => integer().nullable()();
+
+  // Playback info
+  IntColumn get duration => integer().nullable()();
+
+  // Album ordering
+  IntColumn get track => integer().nullable()();
+
+  // Extra metadata
+  TextColumn get genre => text().nullable()();
+  IntColumn get dateAdded => integer().nullable()();
 }
