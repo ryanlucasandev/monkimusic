@@ -23,13 +23,13 @@ void main() {
 
   final tSongsList = [
     const SongsEntity(
-      id: '1',
+      id: 1,
       title: 'Song One',
       artist: 'Artist A',
       duration: Duration(milliseconds: 100),
     ),
     const SongsEntity(
-      id: '2',
+      id: 2,
       title: 'Song Two',
       artist: 'Artist B',
       duration: Duration(milliseconds: 150),

@@ -16,13 +16,13 @@ void main() {
     // test SongsLoaded State with Data
     group('SongsLoaded', () {
       final songA = const SongsEntity(
-        id: '1',
+        id: 1,
         title: 'Song A',
         artist: 'Artist',
         duration: Duration(milliseconds: 1000),
       );
       final songB = const SongsEntity(
-        id: '2',
+        id: 2,
         title: 'Song B',
         artist: 'Artist',
         duration: Duration(milliseconds: 1500),

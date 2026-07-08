@@ -28,7 +28,7 @@ void main() {
   });
 
   final mockSong = const SongsEntity(
-    id: '1',
+    id: 1,
     title: 'Song One',
     artist: 'Artist A',
     duration: Duration(milliseconds: 100),
