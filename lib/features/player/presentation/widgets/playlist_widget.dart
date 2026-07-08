@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
+import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
+import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist_details_bloc.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/create_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/delete_playlist_dialog.dart';
+import 'package:monkimusic/features/player/presentation/pages/playlist_details_page.dart';
 
 class PlaylistWidget extends StatelessWidget {
   // MyAudioHandler for managing audio playback
@@ -27,7 +31,19 @@ class PlaylistWidget extends StatelessWidget {
         color: Theme.of(context).colorScheme.primaryContainer,
       ),
       child: ListTile(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => BlocProvider(
+                create: (_) => PlaylistDetailsBloc(
+                  playlistRepository: locator<PlaylistsRepository>(),
+                )..add(LoadPlaylistSongs(playlistId: playlist.id!)),
+                child: PlaylistDetailsPage(playlist: playlist),
+              ),
+            ),
+          );
+        },
         leading: Container(
           height: 45,
           width: 45,

@@ -1,19 +1,15 @@
 import 'package:monkimusic/features/player/data/datasources/playlists_local_datasource.dart';
 import 'package:monkimusic/features/player/data/models/playlist_songs_model.dart';
 import 'package:monkimusic/features/player/data/models/playlists_model.dart';
+import 'package:monkimusic/features/player/data/models/songs_model.dart';
 import 'package:monkimusic/features/player/domain/entities/playlist_songs_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
+import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 
 class PlaylistsRepositoryImpl implements PlaylistsRepository {
   final PlaylistsLocalDataSource _playlistsLocalDataSource;
   PlaylistsRepositoryImpl(this._playlistsLocalDataSource);
-
-  @override
-  Future<int> addSongToPlaylist(PlaylistSongsEntity playlistSong) {
-    final model = PlaylistSongsModel.fromEntity(playlistSong);
-    return _playlistsLocalDataSource.addSongToPlaylist(model);
-  }
 
   @override
   Future<int> createPlaylist(String name) {
@@ -29,6 +25,20 @@ class PlaylistsRepositoryImpl implements PlaylistsRepository {
   Future<List<PlaylistsEntity>> getPlaylists() async {
     final models = await _playlistsLocalDataSource.getPlaylists();
     return models.toEntityList();
+  }
+
+  @override
+  Future<List<SongsEntity>> getPlaylistSongs(int playlistId) async {
+    final models = await _playlistsLocalDataSource.getPlaylistSongs(playlistId);
+    return models.map((model) => model.toEntity()).toList();
+  }
+
+  @override
+  Future<int> addSongToPlaylist(int playlistId, SongsEntity song) {
+    return _playlistsLocalDataSource.addSongToPlaylist(
+      playlistId,
+      SongsModel.fromEntity(song),
+    );
   }
 
   @override

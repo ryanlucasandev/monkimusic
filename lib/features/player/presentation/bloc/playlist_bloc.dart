@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
+import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 
 part 'playlist_event.dart';
@@ -11,11 +12,12 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
 
   PlaylistBloc({required PlaylistsRepository playlistRepository})
     : _playlistsRepository = playlistRepository,
-      super(PlaylistInitial()) {
+      super(const PlaylistInitial()) {
     on<LoadPlaylists>(_onLoadPlaylists);
     on<CreatePlaylist>(_onCreatePlaylist);
     on<RenamePlaylist>(_onRenamePlaylist);
     on<DeletePlaylist>(_onDeletePlaylist);
+    on<AddSongToPlaylist>(_onAddSongToPlaylist);
   }
 
   Future<void> _onLoadPlaylists(
@@ -70,5 +72,17 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
     } catch (e) {
       emit(PlaylistFailure(e.toString()));
     }
+  }
+
+  Future<void> _onAddSongToPlaylist(
+    AddSongToPlaylist event,
+    Emitter<PlaylistState> emit,
+  ) async {
+    try {
+      await _playlistsRepository.addSongToPlaylist(
+        event.playlistId,
+        event.song,
+      );
+    } catch (_) {}
   }
 }
