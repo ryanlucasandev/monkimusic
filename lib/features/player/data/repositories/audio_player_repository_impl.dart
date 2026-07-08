@@ -11,22 +11,6 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
   AudioPlayerRepositoryImpl(this._audioHandler);
 
   @override
-  Future<void> initSongs(List<SongsEntity> songs) async {
-    final mediaItems = songs
-        .map(
-          (song) => MediaItem(
-            id: song.id,
-            title: song.title,
-            artist: song.artist,
-            duration: song.duration,
-          ),
-        )
-        .toList();
-
-    await _audioHandler.initSongs(mediaItems: mediaItems);
-  }
-
-  @override
   Future<void> loadTrack(int index) => _audioHandler.skiptoQueueItem(index);
 
   @override
@@ -51,12 +35,32 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
   Stream<bool> get isPlayingStream =>
       _audioHandler.playbackState.map((state) => state.playing).distinct();
 
+  @override
+  Future<void> initSongs(List<SongsEntity> songs) async {
+    final mediaItems = songs
+        .map(
+          (song) => MediaItem(
+            id: song.uri!,
+            title: song.title ?? 'No Title',
+            album: song.album ?? 'No Album',
+            artist: song.artist ?? 'Unknown Artist',
+            genre: song.genre ?? 'No Genre',
+            duration: song.duration ?? Duration.zero,
+          ),
+        )
+        .toList();
+
+    await _audioHandler.initSongs(mediaItems: mediaItems);
+  }
+
   SongsEntity _mapMediaItemToSongEntity(MediaItem item) {
     return SongsEntity(
-      id: item.id,
+      uri: item.id,
       title: item.title,
-      artist: item.artist ?? 'Unknown Artist',
-      duration: item.duration ?? Duration.zero,
+      album: item.album,
+      artist: item.artist,
+      genre: item.genre,
+      duration: item.duration,
     );
   }
 
@@ -79,6 +83,6 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
             );
           },
         )
-        .distinct((prev, next) => prev.song?.id == next.song?.id);
+        .distinct((prev, next) => prev.song?.uri == next.song?.uri);
   }
 }
