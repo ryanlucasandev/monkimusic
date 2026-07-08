@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:monkimusic/core/database/daos/playlist_songs_dao.dart';
 import 'package:monkimusic/core/database/daos/playlists_dao.dart';
 import 'package:monkimusic/core/database/daos/songs_dao.dart';
 import 'package:monkimusic/core/database/tables/playlist_songs.dart';
@@ -22,7 +23,7 @@ LazyDatabase _openConnection() {
 
 @DriftDatabase(
   tables: [SongsTable, PlaylistsTable, PlaylistSongsTable],
-  daos: [SongsDao, PlaylistsDao],
+  daos: [SongsDao, PlaylistsDao, PlaylistSongsDao],
 )
 class AppDb extends _$AppDb {
   AppDb() : super(_openConnection());

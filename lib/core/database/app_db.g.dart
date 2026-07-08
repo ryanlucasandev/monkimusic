@@ -26,22 +26,31 @@ class $SongsTableTable extends SongsTable
     'mediaId',
   );
   @override
-  late final GeneratedColumn<String> mediaId = GeneratedColumn<String>(
+  late final GeneratedColumn<int> mediaId = GeneratedColumn<int>(
     'media_id',
     aliasedName,
     false,
-    type: DriftSqlType.string,
+    type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _uriMeta = const VerificationMeta('uri');
+  @override
+  late final GeneratedColumn<String> uri = GeneratedColumn<String>(
+    'uri',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
     'title',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _artistMeta = const VerificationMeta('artist');
   @override
@@ -61,6 +70,28 @@ class $SongsTableTable extends SongsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _albumIdMeta = const VerificationMeta(
+    'albumId',
+  );
+  @override
+  late final GeneratedColumn<int> albumId = GeneratedColumn<int>(
+    'album_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _artistIdMeta = const VerificationMeta(
+    'artistId',
+  );
+  @override
+  late final GeneratedColumn<int> artistId = GeneratedColumn<int>(
+    'artist_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _durationMeta = const VerificationMeta(
     'duration',
   );
@@ -68,42 +99,53 @@ class $SongsTableTable extends SongsTable
   late final GeneratedColumn<int> duration = GeneratedColumn<int>(
     'duration',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
-  static const VerificationMeta _filePathMeta = const VerificationMeta(
-    'filePath',
-  );
+  static const VerificationMeta _trackMeta = const VerificationMeta('track');
   @override
-  late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
-    'file_path',
+  late final GeneratedColumn<int> track = GeneratedColumn<int>(
+    'track',
     aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
   );
-  static const VerificationMeta _albumArtMeta = const VerificationMeta(
-    'albumArt',
-  );
+  static const VerificationMeta _genreMeta = const VerificationMeta('genre');
   @override
-  late final GeneratedColumn<String> albumArt = GeneratedColumn<String>(
-    'album_art',
+  late final GeneratedColumn<String> genre = GeneratedColumn<String>(
+    'genre',
     aliasedName,
     true,
     type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dateAddedMeta = const VerificationMeta(
+    'dateAdded',
+  );
+  @override
+  late final GeneratedColumn<int> dateAdded = GeneratedColumn<int>(
+    'date_added',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
   @override
   List<GeneratedColumn> get $columns => [
     id,
     mediaId,
+    uri,
     title,
     artist,
     album,
+    albumId,
+    artistId,
     duration,
-    filePath,
-    albumArt,
+    track,
+    genre,
+    dateAdded,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -128,13 +170,17 @@ class $SongsTableTable extends SongsTable
     } else if (isInserting) {
       context.missing(_mediaIdMeta);
     }
+    if (data.containsKey('uri')) {
+      context.handle(
+        _uriMeta,
+        uri.isAcceptableOrUnknown(data['uri']!, _uriMeta),
+      );
+    }
     if (data.containsKey('title')) {
       context.handle(
         _titleMeta,
         title.isAcceptableOrUnknown(data['title']!, _titleMeta),
       );
-    } else if (isInserting) {
-      context.missing(_titleMeta);
     }
     if (data.containsKey('artist')) {
       context.handle(
@@ -148,26 +194,40 @@ class $SongsTableTable extends SongsTable
         album.isAcceptableOrUnknown(data['album']!, _albumMeta),
       );
     }
+    if (data.containsKey('album_id')) {
+      context.handle(
+        _albumIdMeta,
+        albumId.isAcceptableOrUnknown(data['album_id']!, _albumIdMeta),
+      );
+    }
+    if (data.containsKey('artist_id')) {
+      context.handle(
+        _artistIdMeta,
+        artistId.isAcceptableOrUnknown(data['artist_id']!, _artistIdMeta),
+      );
+    }
     if (data.containsKey('duration')) {
       context.handle(
         _durationMeta,
         duration.isAcceptableOrUnknown(data['duration']!, _durationMeta),
       );
-    } else if (isInserting) {
-      context.missing(_durationMeta);
     }
-    if (data.containsKey('file_path')) {
+    if (data.containsKey('track')) {
       context.handle(
-        _filePathMeta,
-        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+        _trackMeta,
+        track.isAcceptableOrUnknown(data['track']!, _trackMeta),
       );
-    } else if (isInserting) {
-      context.missing(_filePathMeta);
     }
-    if (data.containsKey('album_art')) {
+    if (data.containsKey('genre')) {
       context.handle(
-        _albumArtMeta,
-        albumArt.isAcceptableOrUnknown(data['album_art']!, _albumArtMeta),
+        _genreMeta,
+        genre.isAcceptableOrUnknown(data['genre']!, _genreMeta),
+      );
+    }
+    if (data.containsKey('date_added')) {
+      context.handle(
+        _dateAddedMeta,
+        dateAdded.isAcceptableOrUnknown(data['date_added']!, _dateAddedMeta),
       );
     }
     return context;
@@ -184,13 +244,17 @@ class $SongsTableTable extends SongsTable
         data['${effectivePrefix}id'],
       )!,
       mediaId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
+        DriftSqlType.int,
         data['${effectivePrefix}media_id'],
       )!,
+      uri: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uri'],
+      ),
       title: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}title'],
-      )!,
+      ),
       artist: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}artist'],
@@ -199,17 +263,29 @@ class $SongsTableTable extends SongsTable
         DriftSqlType.string,
         data['${effectivePrefix}album'],
       ),
+      albumId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}album_id'],
+      ),
+      artistId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}artist_id'],
+      ),
       duration: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}duration'],
-      )!,
-      filePath: attachedDatabase.typeMapping.read(
+      ),
+      track: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}track'],
+      ),
+      genre: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}file_path'],
-      )!,
-      albumArt: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}album_art'],
+        data['${effectivePrefix}genre'],
+      ),
+      dateAdded: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}date_added'],
       ),
     );
   }
@@ -222,39 +298,65 @@ class $SongsTableTable extends SongsTable
 
 class SongsTableData extends DataClass implements Insertable<SongsTableData> {
   final int id;
-  final String mediaId;
-  final String title;
+  final int mediaId;
+  final String? uri;
+  final String? title;
   final String? artist;
   final String? album;
-  final int duration;
-  final String filePath;
-  final String? albumArt;
+  final int? albumId;
+  final int? artistId;
+  final int? duration;
+  final int? track;
+  final String? genre;
+  final int? dateAdded;
   const SongsTableData({
     required this.id,
     required this.mediaId,
-    required this.title,
+    this.uri,
+    this.title,
     this.artist,
     this.album,
-    required this.duration,
-    required this.filePath,
-    this.albumArt,
+    this.albumId,
+    this.artistId,
+    this.duration,
+    this.track,
+    this.genre,
+    this.dateAdded,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['media_id'] = Variable<String>(mediaId);
-    map['title'] = Variable<String>(title);
+    map['media_id'] = Variable<int>(mediaId);
+    if (!nullToAbsent || uri != null) {
+      map['uri'] = Variable<String>(uri);
+    }
+    if (!nullToAbsent || title != null) {
+      map['title'] = Variable<String>(title);
+    }
     if (!nullToAbsent || artist != null) {
       map['artist'] = Variable<String>(artist);
     }
     if (!nullToAbsent || album != null) {
       map['album'] = Variable<String>(album);
     }
-    map['duration'] = Variable<int>(duration);
-    map['file_path'] = Variable<String>(filePath);
-    if (!nullToAbsent || albumArt != null) {
-      map['album_art'] = Variable<String>(albumArt);
+    if (!nullToAbsent || albumId != null) {
+      map['album_id'] = Variable<int>(albumId);
+    }
+    if (!nullToAbsent || artistId != null) {
+      map['artist_id'] = Variable<int>(artistId);
+    }
+    if (!nullToAbsent || duration != null) {
+      map['duration'] = Variable<int>(duration);
+    }
+    if (!nullToAbsent || track != null) {
+      map['track'] = Variable<int>(track);
+    }
+    if (!nullToAbsent || genre != null) {
+      map['genre'] = Variable<String>(genre);
+    }
+    if (!nullToAbsent || dateAdded != null) {
+      map['date_added'] = Variable<int>(dateAdded);
     }
     return map;
   }
@@ -263,18 +365,34 @@ class SongsTableData extends DataClass implements Insertable<SongsTableData> {
     return SongsTableCompanion(
       id: Value(id),
       mediaId: Value(mediaId),
-      title: Value(title),
+      uri: uri == null && nullToAbsent ? const Value.absent() : Value(uri),
+      title: title == null && nullToAbsent
+          ? const Value.absent()
+          : Value(title),
       artist: artist == null && nullToAbsent
           ? const Value.absent()
           : Value(artist),
       album: album == null && nullToAbsent
           ? const Value.absent()
           : Value(album),
-      duration: Value(duration),
-      filePath: Value(filePath),
-      albumArt: albumArt == null && nullToAbsent
+      albumId: albumId == null && nullToAbsent
           ? const Value.absent()
-          : Value(albumArt),
+          : Value(albumId),
+      artistId: artistId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(artistId),
+      duration: duration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(duration),
+      track: track == null && nullToAbsent
+          ? const Value.absent()
+          : Value(track),
+      genre: genre == null && nullToAbsent
+          ? const Value.absent()
+          : Value(genre),
+      dateAdded: dateAdded == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dateAdded),
     );
   }
 
@@ -285,13 +403,17 @@ class SongsTableData extends DataClass implements Insertable<SongsTableData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SongsTableData(
       id: serializer.fromJson<int>(json['id']),
-      mediaId: serializer.fromJson<String>(json['mediaId']),
-      title: serializer.fromJson<String>(json['title']),
+      mediaId: serializer.fromJson<int>(json['mediaId']),
+      uri: serializer.fromJson<String?>(json['uri']),
+      title: serializer.fromJson<String?>(json['title']),
       artist: serializer.fromJson<String?>(json['artist']),
       album: serializer.fromJson<String?>(json['album']),
-      duration: serializer.fromJson<int>(json['duration']),
-      filePath: serializer.fromJson<String>(json['filePath']),
-      albumArt: serializer.fromJson<String?>(json['albumArt']),
+      albumId: serializer.fromJson<int?>(json['albumId']),
+      artistId: serializer.fromJson<int?>(json['artistId']),
+      duration: serializer.fromJson<int?>(json['duration']),
+      track: serializer.fromJson<int?>(json['track']),
+      genre: serializer.fromJson<String?>(json['genre']),
+      dateAdded: serializer.fromJson<int?>(json['dateAdded']),
     );
   }
   @override
@@ -299,45 +421,61 @@ class SongsTableData extends DataClass implements Insertable<SongsTableData> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'mediaId': serializer.toJson<String>(mediaId),
-      'title': serializer.toJson<String>(title),
+      'mediaId': serializer.toJson<int>(mediaId),
+      'uri': serializer.toJson<String?>(uri),
+      'title': serializer.toJson<String?>(title),
       'artist': serializer.toJson<String?>(artist),
       'album': serializer.toJson<String?>(album),
-      'duration': serializer.toJson<int>(duration),
-      'filePath': serializer.toJson<String>(filePath),
-      'albumArt': serializer.toJson<String?>(albumArt),
+      'albumId': serializer.toJson<int?>(albumId),
+      'artistId': serializer.toJson<int?>(artistId),
+      'duration': serializer.toJson<int?>(duration),
+      'track': serializer.toJson<int?>(track),
+      'genre': serializer.toJson<String?>(genre),
+      'dateAdded': serializer.toJson<int?>(dateAdded),
     };
   }
 
   SongsTableData copyWith({
     int? id,
-    String? mediaId,
-    String? title,
+    int? mediaId,
+    Value<String?> uri = const Value.absent(),
+    Value<String?> title = const Value.absent(),
     Value<String?> artist = const Value.absent(),
     Value<String?> album = const Value.absent(),
-    int? duration,
-    String? filePath,
-    Value<String?> albumArt = const Value.absent(),
+    Value<int?> albumId = const Value.absent(),
+    Value<int?> artistId = const Value.absent(),
+    Value<int?> duration = const Value.absent(),
+    Value<int?> track = const Value.absent(),
+    Value<String?> genre = const Value.absent(),
+    Value<int?> dateAdded = const Value.absent(),
   }) => SongsTableData(
     id: id ?? this.id,
     mediaId: mediaId ?? this.mediaId,
-    title: title ?? this.title,
+    uri: uri.present ? uri.value : this.uri,
+    title: title.present ? title.value : this.title,
     artist: artist.present ? artist.value : this.artist,
     album: album.present ? album.value : this.album,
-    duration: duration ?? this.duration,
-    filePath: filePath ?? this.filePath,
-    albumArt: albumArt.present ? albumArt.value : this.albumArt,
+    albumId: albumId.present ? albumId.value : this.albumId,
+    artistId: artistId.present ? artistId.value : this.artistId,
+    duration: duration.present ? duration.value : this.duration,
+    track: track.present ? track.value : this.track,
+    genre: genre.present ? genre.value : this.genre,
+    dateAdded: dateAdded.present ? dateAdded.value : this.dateAdded,
   );
   SongsTableData copyWithCompanion(SongsTableCompanion data) {
     return SongsTableData(
       id: data.id.present ? data.id.value : this.id,
       mediaId: data.mediaId.present ? data.mediaId.value : this.mediaId,
+      uri: data.uri.present ? data.uri.value : this.uri,
       title: data.title.present ? data.title.value : this.title,
       artist: data.artist.present ? data.artist.value : this.artist,
       album: data.album.present ? data.album.value : this.album,
+      albumId: data.albumId.present ? data.albumId.value : this.albumId,
+      artistId: data.artistId.present ? data.artistId.value : this.artistId,
       duration: data.duration.present ? data.duration.value : this.duration,
-      filePath: data.filePath.present ? data.filePath.value : this.filePath,
-      albumArt: data.albumArt.present ? data.albumArt.value : this.albumArt,
+      track: data.track.present ? data.track.value : this.track,
+      genre: data.genre.present ? data.genre.value : this.genre,
+      dateAdded: data.dateAdded.present ? data.dateAdded.value : this.dateAdded,
     );
   }
 
@@ -346,12 +484,16 @@ class SongsTableData extends DataClass implements Insertable<SongsTableData> {
     return (StringBuffer('SongsTableData(')
           ..write('id: $id, ')
           ..write('mediaId: $mediaId, ')
+          ..write('uri: $uri, ')
           ..write('title: $title, ')
           ..write('artist: $artist, ')
           ..write('album: $album, ')
+          ..write('albumId: $albumId, ')
+          ..write('artistId: $artistId, ')
           ..write('duration: $duration, ')
-          ..write('filePath: $filePath, ')
-          ..write('albumArt: $albumArt')
+          ..write('track: $track, ')
+          ..write('genre: $genre, ')
+          ..write('dateAdded: $dateAdded')
           ..write(')'))
         .toString();
   }
@@ -360,12 +502,16 @@ class SongsTableData extends DataClass implements Insertable<SongsTableData> {
   int get hashCode => Object.hash(
     id,
     mediaId,
+    uri,
     title,
     artist,
     album,
+    albumId,
+    artistId,
     duration,
-    filePath,
-    albumArt,
+    track,
+    genre,
+    dateAdded,
   );
   @override
   bool operator ==(Object other) =>
@@ -373,87 +519,116 @@ class SongsTableData extends DataClass implements Insertable<SongsTableData> {
       (other is SongsTableData &&
           other.id == this.id &&
           other.mediaId == this.mediaId &&
+          other.uri == this.uri &&
           other.title == this.title &&
           other.artist == this.artist &&
           other.album == this.album &&
+          other.albumId == this.albumId &&
+          other.artistId == this.artistId &&
           other.duration == this.duration &&
-          other.filePath == this.filePath &&
-          other.albumArt == this.albumArt);
+          other.track == this.track &&
+          other.genre == this.genre &&
+          other.dateAdded == this.dateAdded);
 }
 
 class SongsTableCompanion extends UpdateCompanion<SongsTableData> {
   final Value<int> id;
-  final Value<String> mediaId;
-  final Value<String> title;
+  final Value<int> mediaId;
+  final Value<String?> uri;
+  final Value<String?> title;
   final Value<String?> artist;
   final Value<String?> album;
-  final Value<int> duration;
-  final Value<String> filePath;
-  final Value<String?> albumArt;
+  final Value<int?> albumId;
+  final Value<int?> artistId;
+  final Value<int?> duration;
+  final Value<int?> track;
+  final Value<String?> genre;
+  final Value<int?> dateAdded;
   const SongsTableCompanion({
     this.id = const Value.absent(),
     this.mediaId = const Value.absent(),
+    this.uri = const Value.absent(),
     this.title = const Value.absent(),
     this.artist = const Value.absent(),
     this.album = const Value.absent(),
+    this.albumId = const Value.absent(),
+    this.artistId = const Value.absent(),
     this.duration = const Value.absent(),
-    this.filePath = const Value.absent(),
-    this.albumArt = const Value.absent(),
+    this.track = const Value.absent(),
+    this.genre = const Value.absent(),
+    this.dateAdded = const Value.absent(),
   });
   SongsTableCompanion.insert({
     this.id = const Value.absent(),
-    required String mediaId,
-    required String title,
+    required int mediaId,
+    this.uri = const Value.absent(),
+    this.title = const Value.absent(),
     this.artist = const Value.absent(),
     this.album = const Value.absent(),
-    required int duration,
-    required String filePath,
-    this.albumArt = const Value.absent(),
-  }) : mediaId = Value(mediaId),
-       title = Value(title),
-       duration = Value(duration),
-       filePath = Value(filePath);
+    this.albumId = const Value.absent(),
+    this.artistId = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.track = const Value.absent(),
+    this.genre = const Value.absent(),
+    this.dateAdded = const Value.absent(),
+  }) : mediaId = Value(mediaId);
   static Insertable<SongsTableData> custom({
     Expression<int>? id,
-    Expression<String>? mediaId,
+    Expression<int>? mediaId,
+    Expression<String>? uri,
     Expression<String>? title,
     Expression<String>? artist,
     Expression<String>? album,
+    Expression<int>? albumId,
+    Expression<int>? artistId,
     Expression<int>? duration,
-    Expression<String>? filePath,
-    Expression<String>? albumArt,
+    Expression<int>? track,
+    Expression<String>? genre,
+    Expression<int>? dateAdded,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (mediaId != null) 'media_id': mediaId,
+      if (uri != null) 'uri': uri,
       if (title != null) 'title': title,
       if (artist != null) 'artist': artist,
       if (album != null) 'album': album,
+      if (albumId != null) 'album_id': albumId,
+      if (artistId != null) 'artist_id': artistId,
       if (duration != null) 'duration': duration,
-      if (filePath != null) 'file_path': filePath,
-      if (albumArt != null) 'album_art': albumArt,
+      if (track != null) 'track': track,
+      if (genre != null) 'genre': genre,
+      if (dateAdded != null) 'date_added': dateAdded,
     });
   }
 
   SongsTableCompanion copyWith({
     Value<int>? id,
-    Value<String>? mediaId,
-    Value<String>? title,
+    Value<int>? mediaId,
+    Value<String?>? uri,
+    Value<String?>? title,
     Value<String?>? artist,
     Value<String?>? album,
-    Value<int>? duration,
-    Value<String>? filePath,
-    Value<String?>? albumArt,
+    Value<int?>? albumId,
+    Value<int?>? artistId,
+    Value<int?>? duration,
+    Value<int?>? track,
+    Value<String?>? genre,
+    Value<int?>? dateAdded,
   }) {
     return SongsTableCompanion(
       id: id ?? this.id,
       mediaId: mediaId ?? this.mediaId,
+      uri: uri ?? this.uri,
       title: title ?? this.title,
       artist: artist ?? this.artist,
       album: album ?? this.album,
+      albumId: albumId ?? this.albumId,
+      artistId: artistId ?? this.artistId,
       duration: duration ?? this.duration,
-      filePath: filePath ?? this.filePath,
-      albumArt: albumArt ?? this.albumArt,
+      track: track ?? this.track,
+      genre: genre ?? this.genre,
+      dateAdded: dateAdded ?? this.dateAdded,
     );
   }
 
@@ -464,7 +639,10 @@ class SongsTableCompanion extends UpdateCompanion<SongsTableData> {
       map['id'] = Variable<int>(id.value);
     }
     if (mediaId.present) {
-      map['media_id'] = Variable<String>(mediaId.value);
+      map['media_id'] = Variable<int>(mediaId.value);
+    }
+    if (uri.present) {
+      map['uri'] = Variable<String>(uri.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -475,14 +653,23 @@ class SongsTableCompanion extends UpdateCompanion<SongsTableData> {
     if (album.present) {
       map['album'] = Variable<String>(album.value);
     }
+    if (albumId.present) {
+      map['album_id'] = Variable<int>(albumId.value);
+    }
+    if (artistId.present) {
+      map['artist_id'] = Variable<int>(artistId.value);
+    }
     if (duration.present) {
       map['duration'] = Variable<int>(duration.value);
     }
-    if (filePath.present) {
-      map['file_path'] = Variable<String>(filePath.value);
+    if (track.present) {
+      map['track'] = Variable<int>(track.value);
     }
-    if (albumArt.present) {
-      map['album_art'] = Variable<String>(albumArt.value);
+    if (genre.present) {
+      map['genre'] = Variable<String>(genre.value);
+    }
+    if (dateAdded.present) {
+      map['date_added'] = Variable<int>(dateAdded.value);
     }
     return map;
   }
@@ -492,12 +679,16 @@ class SongsTableCompanion extends UpdateCompanion<SongsTableData> {
     return (StringBuffer('SongsTableCompanion(')
           ..write('id: $id, ')
           ..write('mediaId: $mediaId, ')
+          ..write('uri: $uri, ')
           ..write('title: $title, ')
           ..write('artist: $artist, ')
           ..write('album: $album, ')
+          ..write('albumId: $albumId, ')
+          ..write('artistId: $artistId, ')
           ..write('duration: $duration, ')
-          ..write('filePath: $filePath, ')
-          ..write('albumArt: $albumArt')
+          ..write('track: $track, ')
+          ..write('genre: $genre, ')
+          ..write('dateAdded: $dateAdded')
           ..write(')'))
         .toString();
   }
@@ -1086,6 +1277,9 @@ abstract class _$AppDb extends GeneratedDatabase {
       $PlaylistSongsTableTable(this);
   late final SongsDao songsDao = SongsDao(this as AppDb);
   late final PlaylistsDao playlistsDao = PlaylistsDao(this as AppDb);
+  late final PlaylistSongsDao playlistSongsDao = PlaylistSongsDao(
+    this as AppDb,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1100,24 +1294,32 @@ abstract class _$AppDb extends GeneratedDatabase {
 typedef $$SongsTableTableCreateCompanionBuilder =
     SongsTableCompanion Function({
       Value<int> id,
-      required String mediaId,
-      required String title,
+      required int mediaId,
+      Value<String?> uri,
+      Value<String?> title,
       Value<String?> artist,
       Value<String?> album,
-      required int duration,
-      required String filePath,
-      Value<String?> albumArt,
+      Value<int?> albumId,
+      Value<int?> artistId,
+      Value<int?> duration,
+      Value<int?> track,
+      Value<String?> genre,
+      Value<int?> dateAdded,
     });
 typedef $$SongsTableTableUpdateCompanionBuilder =
     SongsTableCompanion Function({
       Value<int> id,
-      Value<String> mediaId,
-      Value<String> title,
+      Value<int> mediaId,
+      Value<String?> uri,
+      Value<String?> title,
       Value<String?> artist,
       Value<String?> album,
-      Value<int> duration,
-      Value<String> filePath,
-      Value<String?> albumArt,
+      Value<int?> albumId,
+      Value<int?> artistId,
+      Value<int?> duration,
+      Value<int?> track,
+      Value<String?> genre,
+      Value<int?> dateAdded,
     });
 
 class $$SongsTableTableFilterComposer
@@ -1134,8 +1336,13 @@ class $$SongsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get mediaId => $composableBuilder(
+  ColumnFilters<int> get mediaId => $composableBuilder(
     column: $table.mediaId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uri => $composableBuilder(
+    column: $table.uri,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1154,18 +1361,33 @@ class $$SongsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get albumId => $composableBuilder(
+    column: $table.albumId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get artistId => $composableBuilder(
+    column: $table.artistId,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<int> get duration => $composableBuilder(
     column: $table.duration,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get filePath => $composableBuilder(
-    column: $table.filePath,
+  ColumnFilters<int> get track => $composableBuilder(
+    column: $table.track,
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get albumArt => $composableBuilder(
-    column: $table.albumArt,
+  ColumnFilters<String> get genre => $composableBuilder(
+    column: $table.genre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dateAdded => $composableBuilder(
+    column: $table.dateAdded,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -1184,8 +1406,13 @@ class $$SongsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get mediaId => $composableBuilder(
+  ColumnOrderings<int> get mediaId => $composableBuilder(
     column: $table.mediaId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uri => $composableBuilder(
+    column: $table.uri,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1204,18 +1431,33 @@ class $$SongsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get albumId => $composableBuilder(
+    column: $table.albumId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get artistId => $composableBuilder(
+    column: $table.artistId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get duration => $composableBuilder(
     column: $table.duration,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get filePath => $composableBuilder(
-    column: $table.filePath,
+  ColumnOrderings<int> get track => $composableBuilder(
+    column: $table.track,
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get albumArt => $composableBuilder(
-    column: $table.albumArt,
+  ColumnOrderings<String> get genre => $composableBuilder(
+    column: $table.genre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dateAdded => $composableBuilder(
+    column: $table.dateAdded,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -1232,8 +1474,11 @@ class $$SongsTableTableAnnotationComposer
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get mediaId =>
+  GeneratedColumn<int> get mediaId =>
       $composableBuilder(column: $table.mediaId, builder: (column) => column);
+
+  GeneratedColumn<String> get uri =>
+      $composableBuilder(column: $table.uri, builder: (column) => column);
 
   GeneratedColumn<String> get title =>
       $composableBuilder(column: $table.title, builder: (column) => column);
@@ -1244,14 +1489,23 @@ class $$SongsTableTableAnnotationComposer
   GeneratedColumn<String> get album =>
       $composableBuilder(column: $table.album, builder: (column) => column);
 
+  GeneratedColumn<int> get albumId =>
+      $composableBuilder(column: $table.albumId, builder: (column) => column);
+
+  GeneratedColumn<int> get artistId =>
+      $composableBuilder(column: $table.artistId, builder: (column) => column);
+
   GeneratedColumn<int> get duration =>
       $composableBuilder(column: $table.duration, builder: (column) => column);
 
-  GeneratedColumn<String> get filePath =>
-      $composableBuilder(column: $table.filePath, builder: (column) => column);
+  GeneratedColumn<int> get track =>
+      $composableBuilder(column: $table.track, builder: (column) => column);
 
-  GeneratedColumn<String> get albumArt =>
-      $composableBuilder(column: $table.albumArt, builder: (column) => column);
+  GeneratedColumn<String> get genre =>
+      $composableBuilder(column: $table.genre, builder: (column) => column);
+
+  GeneratedColumn<int> get dateAdded =>
+      $composableBuilder(column: $table.dateAdded, builder: (column) => column);
 }
 
 class $$SongsTableTableTableManager
@@ -1286,42 +1540,58 @@ class $$SongsTableTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<String> mediaId = const Value.absent(),
-                Value<String> title = const Value.absent(),
+                Value<int> mediaId = const Value.absent(),
+                Value<String?> uri = const Value.absent(),
+                Value<String?> title = const Value.absent(),
                 Value<String?> artist = const Value.absent(),
                 Value<String?> album = const Value.absent(),
-                Value<int> duration = const Value.absent(),
-                Value<String> filePath = const Value.absent(),
-                Value<String?> albumArt = const Value.absent(),
+                Value<int?> albumId = const Value.absent(),
+                Value<int?> artistId = const Value.absent(),
+                Value<int?> duration = const Value.absent(),
+                Value<int?> track = const Value.absent(),
+                Value<String?> genre = const Value.absent(),
+                Value<int?> dateAdded = const Value.absent(),
               }) => SongsTableCompanion(
                 id: id,
                 mediaId: mediaId,
+                uri: uri,
                 title: title,
                 artist: artist,
                 album: album,
+                albumId: albumId,
+                artistId: artistId,
                 duration: duration,
-                filePath: filePath,
-                albumArt: albumArt,
+                track: track,
+                genre: genre,
+                dateAdded: dateAdded,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                required String mediaId,
-                required String title,
+                required int mediaId,
+                Value<String?> uri = const Value.absent(),
+                Value<String?> title = const Value.absent(),
                 Value<String?> artist = const Value.absent(),
                 Value<String?> album = const Value.absent(),
-                required int duration,
-                required String filePath,
-                Value<String?> albumArt = const Value.absent(),
+                Value<int?> albumId = const Value.absent(),
+                Value<int?> artistId = const Value.absent(),
+                Value<int?> duration = const Value.absent(),
+                Value<int?> track = const Value.absent(),
+                Value<String?> genre = const Value.absent(),
+                Value<int?> dateAdded = const Value.absent(),
               }) => SongsTableCompanion.insert(
                 id: id,
                 mediaId: mediaId,
+                uri: uri,
                 title: title,
                 artist: artist,
                 album: album,
+                albumId: albumId,
+                artistId: artistId,
                 duration: duration,
-                filePath: filePath,
-                albumArt: albumArt,
+                track: track,
+                genre: genre,
+                dateAdded: dateAdded,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

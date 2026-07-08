@@ -27,9 +27,6 @@ class PlaylistsDao extends DatabaseAccessor<AppDb> with _$PlaylistsDaoMixin {
   Stream<List<PlaylistsTableData>> watchPlaylists() =>
       select(playlistsTable).watch();
 
-  Future<int> addSongToPlaylist(PlaylistSongsTableCompanion playlistSong) =>
-      into(playlistSongsTable).insert(playlistSong);
-
   Future<int> removeSongFromPlaylist(int playlistId, int songId) =>
       (delete(playlistSongsTable)..where(
             (tbl) =>
