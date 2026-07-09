@@ -4,18 +4,14 @@ import 'package:mocktail/mocktail.dart';
 import 'package:monkimusic/core/usecases/usecase.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 import 'package:monkimusic/features/player/domain/usecases/fetch_device_songs_usecase.dart';
-import 'package:monkimusic/features/player/domain/usecases/init_songs_usecase.dart';
 import 'package:monkimusic/features/player/presentation/bloc/songs_bloc.dart';
 
 class MockFetchDeviceSongsUseCase extends Mock
     implements FetchDeviceSongsUseCase {}
 
-class MockInitSongsUseCase extends Mock implements InitSongsUsecase {}
-
 void main() {
   late SongsBloc songsBloc;
   late MockFetchDeviceSongsUseCase mockFetchDeviceSongsUseCase;
-  late MockInitSongsUseCase mockInitSongsUseCase;
 
   setUpAll(() {
     registerFallbackValue(NoParams());
@@ -38,12 +34,8 @@ void main() {
 
   setUp(() {
     mockFetchDeviceSongsUseCase = MockFetchDeviceSongsUseCase();
-    mockInitSongsUseCase = MockInitSongsUseCase();
 
-    songsBloc = SongsBloc(
-      fetchDeviceSongs: mockFetchDeviceSongsUseCase,
-      initSongsUsecase: mockInitSongsUseCase,
-    );
+    songsBloc = SongsBloc(fetchDeviceSongs: mockFetchDeviceSongsUseCase);
   });
 
   tearDown(() {
@@ -62,7 +54,6 @@ void main() {
         when(
           () => mockFetchDeviceSongsUseCase(any()),
         ).thenAnswer((_) async => tSongsList);
-        when(() => mockInitSongsUseCase(any())).thenAnswer((_) async => {});
         return songsBloc;
       },
       act: (bloc) => bloc.add(LoadSongs()),
@@ -70,7 +61,6 @@ void main() {
       verify: (_) {
         // verify both use cases were triggered exactly once
         verify(() => mockFetchDeviceSongsUseCase(any())).called(1);
-        verify(() => mockInitSongsUseCase.call(tSongsList)).called(1);
       },
     );
 
@@ -87,8 +77,6 @@ void main() {
       expect: () => [SongsLoading(), SongsEmpty()],
       verify: (_) {
         verify(() => mockFetchDeviceSongsUseCase(any())).called(1);
-        // Verify: init was never called because songs list is empty and we returned early
-        verifyNever(() => mockInitSongsUseCase.call(any()));
       },
     );
 
@@ -105,7 +93,6 @@ void main() {
       expect: () => [SongsLoading(), SongsFailure()],
       verify: (_) {
         verify(() => mockFetchDeviceSongsUseCase(any())).called(1);
-        verifyNever(() => mockInitSongsUseCase.call(any()));
       },
     );
 
@@ -116,16 +103,12 @@ void main() {
         when(
           () => mockFetchDeviceSongsUseCase(any()),
         ).thenAnswer((_) async => tSongsList);
-        when(
-          () => mockInitSongsUseCase.call(any()),
-        ).thenThrow(Exception('Audio player init failed'));
         return songsBloc;
       },
       act: (bloc) => bloc.add(LoadSongs()),
       expect: () => [SongsLoading(), SongsFailure()],
       verify: (_) {
         verify(() => mockFetchDeviceSongsUseCase(any())).called(1);
-        verify(() => mockInitSongsUseCase.call(tSongsList)).called(1);
       },
     );
   });
