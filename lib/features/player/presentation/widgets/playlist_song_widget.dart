@@ -10,14 +10,14 @@ class PlaylistSongWidget extends StatelessWidget {
   // MyAudioHandler for managing audio playback
 
   // MediaItem representing the current song
-  final SongsEntity song;
+  final List<SongsEntity> songs;
 
   // index of the song in the list
   final int index;
 
   const PlaylistSongWidget({
     super.key,
-    required this.song,
+    required this.songs,
     required this.index,
   });
 
@@ -29,7 +29,9 @@ class PlaylistSongWidget extends StatelessWidget {
       ),
       child: ListTile(
         onTap: () {
-          context.read<AudioPlayerBloc>().add(LoadTrackEvent(index: index));
+          context.read<AudioPlayerBloc>().add(
+            LoadTrackEvent(index: index, songs: songs),
+          );
 
           Get.to(
             () => PlayerPage(),
@@ -46,9 +48,13 @@ class PlaylistSongWidget extends StatelessWidget {
           ),
           child: const Icon(Icons.music_note),
         ),
-        title: Text(song.title!, maxLines: 1, overflow: TextOverflow.ellipsis),
+        title: Text(
+          songs[index].title!,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         subtitle: Text(
-          song.artist.toString(),
+          songs[index].artist.toString(),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

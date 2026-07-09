@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
-import 'package:monkimusic/features/player/domain/usecases/init_songs_usecase.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
 import 'package:monkimusic/features/player/domain/usecases/fetch_device_songs_usecase.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
@@ -30,10 +29,9 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => SongsBloc(
-            fetchDeviceSongs: locator<FetchDeviceSongsUseCase>(),
-            initSongsUsecase: locator<InitSongsUsecase>(),
-          )..add(LoadSongs()),
+          create: (context) =>
+              SongsBloc(fetchDeviceSongs: locator<FetchDeviceSongsUseCase>())
+                ..add(LoadSongs()),
         ),
         BlocProvider(
           create: (context) => AudioPlayerBloc(
