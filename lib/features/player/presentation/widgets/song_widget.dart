@@ -63,23 +63,7 @@ class SongWidget extends StatelessWidget {
           onSelected: (value) async {
             switch (value) {
               case 'add':
-                final playlistId = await showDialog<int>(
-                  context: context,
-                  builder: (_) => BlocProvider(
-                    create: (_) => PlaylistBloc(
-                      playlistRepository: locator<PlaylistsRepository>(),
-                    )..add(const LoadPlaylists()),
-                    child: SelectPlaylistDialog(),
-                  ),
-                );
-                if (playlistId != null && context.mounted) {
-                  context.read<PlaylistBloc>().add(
-                    AddSongToPlaylist(
-                      playlistId: playlistId,
-                      song: songs[index],
-                    ),
-                  );
-                }
+                _addSongToPlaylist(context);
                 break;
             }
           },
@@ -98,5 +82,22 @@ class SongWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _addSongToPlaylist(BuildContext context) async {
+    final playlistId = await showDialog<int>(
+      context: context,
+      builder: (_) => BlocProvider(
+        create: (_) =>
+            PlaylistBloc(playlistRepository: locator<PlaylistsRepository>())
+              ..add(const LoadPlaylists()),
+        child: SelectPlaylistDialog(),
+      ),
+    );
+    if (playlistId != null && context.mounted) {
+      context.read<PlaylistBloc>().add(
+        AddSongToPlaylist(playlistId: playlistId, song: songs[index]),
+      );
+    }
   }
 }
