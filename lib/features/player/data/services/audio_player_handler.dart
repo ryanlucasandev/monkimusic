@@ -3,18 +3,37 @@ import 'package:just_audio/just_audio.dart';
 
 class AudioPlayerHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
-  AudioPlayer audioPlayer = AudioPlayer();
-
-  UriAudioSource _createAudioSource(MediaItem item) {
-    return ProgressiveAudioSource(Uri.parse(item.id));
+  final AudioPlayer audioPlayer;
+  AudioPlayerHandler(this.audioPlayer) {
+    _initListeners();
   }
 
-  void _listenForCurrentSongIndexChanges() {
+  void _initListeners() {
+    audioPlayer.playbackEventStream.listen(_broadcastState);
+
     audioPlayer.currentIndexStream.listen((index) {
       final playList = queue.value;
       if (index == null || playList.isEmpty) return;
       mediaItem.add(playList[index]);
     });
+
+    audioPlayer.processingStateStream.listen((state) {
+      if (state == ProcessingState.completed) skipToNext();
+    });
+  }
+
+  Future<void> initSongs({required List<MediaItem> mediaItems}) async {
+    await audioPlayer.setAudioSources(
+      mediaItems.map(_createAudioSource).toList(),
+      initialIndex: 0,
+      initialPosition: Duration.zero,
+      shuffleOrder: DefaultShuffleOrder(),
+    );
+    queue.add(mediaItems);
+  }
+
+  UriAudioSource _createAudioSource(MediaItem item) {
+    return ProgressiveAudioSource(Uri.parse(item.id));
   }
 
   void _broadcastState(PlaybackEvent event) {
@@ -46,26 +65,7 @@ class AudioPlayerHandler extends BaseAudioHandler
     );
   }
 
-  Future<void> initSongs({required List<MediaItem> mediaItems}) async {
-    audioPlayer.playbackEventStream.listen(_broadcastState);
-    final audioSource = mediaItems.map(_createAudioSource);
-
-    await audioPlayer.setAudioSources(
-      audioSource.toList(),
-      initialIndex: 0,
-      initialPosition: Duration.zero,
-      shuffleOrder: DefaultShuffleOrder(),
-    );
-
-    final newQueue = queue.value..addAll(mediaItems);
-    queue.add(newQueue);
-
-    _listenForCurrentSongIndexChanges();
-
-    audioPlayer.processingStateStream.listen((state) {
-      if (state == ProcessingState.completed) skipToNext();
-    });
-  }
+  Future<List<MediaItem>> getQueue() async => queue.value;
 
   @override
   Future<void> play() async => audioPlayer.play();

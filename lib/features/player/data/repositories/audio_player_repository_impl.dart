@@ -36,6 +36,11 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
       _audioHandler.playbackState.map((state) => state.playing).distinct();
 
   @override
+  Future<List<MediaItem>> getQueue() async {
+    return await _audioHandler.getQueue();
+  }
+
+  @override
   Future<void> initSongs(List<SongsEntity> songs) async {
     final mediaItems = songs
         .map(
@@ -49,8 +54,25 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
           ),
         )
         .toList();
-
     await _audioHandler.initSongs(mediaItems: mediaItems);
+  }
+
+  @override
+  Future<List<MediaItem>> songsEntityToMediaItem(
+    List<SongsEntity> songs,
+  ) async {
+    return songs
+        .map(
+          (song) => MediaItem(
+            id: song.uri!,
+            title: song.title ?? 'No Title',
+            album: song.album ?? 'No Album',
+            artist: song.artist ?? 'Unknown Artist',
+            genre: song.genre ?? 'No Genre',
+            duration: song.duration ?? Duration.zero,
+          ),
+        )
+        .toList();
   }
 
   SongsEntity _mapMediaItemToSongEntity(MediaItem item) {
