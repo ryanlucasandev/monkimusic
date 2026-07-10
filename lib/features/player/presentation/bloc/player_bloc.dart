@@ -58,7 +58,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     if (shouldInit) {
       await _audioPlayerRepository.initSongs(event.songs);
     }
-    if (shouldInit || songIndex != event.index) {
+    if (songIndex != event.index) {
       songIndex = event.index;
       emit(AudioPlayerLoading());
       await _audioPlayerRepository.loadTrack(event.index);
