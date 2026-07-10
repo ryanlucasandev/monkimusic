@@ -53,8 +53,13 @@ class PlaylistsLocalDataSourceImpl extends PlaylistsLocalDataSource {
   }
 
   @override
-  Future<int> removeSongFromPlaylist(int playlistId, int songId) =>
-      _playlistsDao.removeSongFromPlaylist(playlistId, songId);
+  Future<int> removeSongFromPlaylist(int playlistId, int songId) {
+    final deleted = _playlistSongsDao.removeSongFromPlaylist(
+      playlistId: playlistId,
+      songId: songId,
+    );
+    return deleted;
+  }
 
   @override
   Future<int> renamePlaylist(int id, String name) =>

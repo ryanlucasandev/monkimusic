@@ -6,6 +6,8 @@ import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist_details_bloc.dart';
+import 'package:monkimusic/features/player/presentation/dialogs/remove_song_from_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/select_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/player_page.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
@@ -72,6 +74,9 @@ class PlaylistSongWidget extends StatelessWidget {
               case 'add':
                 _addSongToPlaylist(context);
                 break;
+              case 'remove':
+                _removeSongFromPlaylist(context);
+                break;
             }
           },
           itemBuilder: (context) => const [
@@ -82,6 +87,16 @@ class PlaylistSongWidget extends StatelessWidget {
                   Icon(Icons.add),
                   SizedBox(width: 12),
                   Text('Add song to playlist'),
+                ],
+              ),
+            ),
+            PopupMenuItem(
+              value: 'remove',
+              child: Row(
+                children: [
+                  Icon(Icons.remove),
+                  SizedBox(width: 12),
+                  Text('Remove song from playlist'),
                 ],
               ),
             ),
@@ -104,6 +119,23 @@ class PlaylistSongWidget extends StatelessWidget {
     if (playlistId != null && context.mounted) {
       context.read<PlaylistBloc>().add(
         AddSongToPlaylist(playlistId: playlistId, song: songs[index]),
+      );
+    }
+  }
+
+  void _removeSongFromPlaylist(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) =>
+          RemoveSongFromPlaylistDialog(songTitle: songs[index].title!),
+    );
+
+    if (confirmed == true && context.mounted) {
+      context.read<PlaylistDetailsBloc>().add(
+        RemoveSongFromPlaylist(
+          playlistId: currentPlaylistId!,
+          songId: songs[index].id!,
+        ),
       );
     }
   }

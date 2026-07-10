@@ -14,6 +14,7 @@ class PlaylistDetailsBloc
     : _playlistsRepository = playlistRepository,
       super(const PlaylistDetailsInitial()) {
     on<LoadPlaylistSongs>(_onLoadPlaylistSongs);
+    on<RemoveSongFromPlaylist>(_onRemoveSongFromPlaylist);
   }
 
   Future<void> _onLoadPlaylistSongs(
@@ -33,6 +34,21 @@ class PlaylistDetailsBloc
       }
 
       emit(PlaylistDetailsLoaded(playlistSongs: playlistSongs));
+    } catch (e) {
+      emit(PlaylistDetailsFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onRemoveSongFromPlaylist(
+    RemoveSongFromPlaylist event,
+    Emitter<PlaylistDetailsState> emit,
+  ) async {
+    try {
+      await _playlistsRepository.removeSongFromPlaylist(
+        event.playlistId,
+        event.songId,
+      );
+      add(LoadPlaylistSongs(playlistId: event.playlistId));
     } catch (e) {
       emit(PlaylistDetailsFailure(e.toString()));
     }

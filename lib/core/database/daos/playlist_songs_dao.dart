@@ -36,6 +36,16 @@ class PlaylistSongsDao extends DatabaseAccessor<AppDb>
     );
   }
 
+  Future<int> removeSongFromPlaylist({
+    required int playlistId,
+    required int songId,
+  }) {
+    final query = delete(playlistSongsTable)
+      ..where((t) => t.playlistId.equals(playlistId))
+      ..where((t) => t.songId.equals(songId));
+    return query.go();
+  }
+
   Future<bool> isSongInPlaylist(int playlistId, int songId) async {
     final result =
         await (select(playlistSongsTable)..where(
