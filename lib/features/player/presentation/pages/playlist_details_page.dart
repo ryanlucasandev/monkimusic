@@ -54,7 +54,11 @@ class PlaylistDetailsPage extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemCount: playlistSongs.length,
               itemBuilder: (context, index) {
-                return PlaylistSongWidget(songs: playlistSongs, index: index);
+                return PlaylistSongWidget(
+                  songs: playlistSongs,
+                  index: index,
+                  currentPlaylistId: playlist.id,
+                );
               },
             );
           }

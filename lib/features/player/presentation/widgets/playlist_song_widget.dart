@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/instance_manager.dart';
+import 'package:monkimusic/core/di/service_locator.dart';
+import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/dialogs/select_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/player_page.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 
@@ -15,10 +19,13 @@ class PlaylistSongWidget extends StatelessWidget {
   // index of the song in the list
   final int index;
 
+  final int? currentPlaylistId;
+
   const PlaylistSongWidget({
     super.key,
     required this.songs,
     required this.index,
+    this.currentPlaylistId,
   });
 
   @override
@@ -58,7 +65,46 @@ class PlaylistSongWidget extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
+        trailing: PopupMenuButton(
+          icon: const Icon(Icons.more_vert),
+          onSelected: (value) async {
+            switch (value) {
+              case 'add':
+                _addSongToPlaylist(context);
+                break;
+            }
+          },
+          itemBuilder: (context) => const [
+            PopupMenuItem(
+              value: 'add',
+              child: Row(
+                children: [
+                  Icon(Icons.add),
+                  SizedBox(width: 12),
+                  Text('Add song to playlist'),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  void _addSongToPlaylist(BuildContext context) async {
+    final playlistId = await showDialog<int>(
+      context: context,
+      builder: (_) => BlocProvider(
+        create: (_) =>
+            PlaylistBloc(playlistRepository: locator<PlaylistsRepository>())
+              ..add(const LoadPlaylists()),
+        child: SelectPlaylistDialog(currentPlaylistId: currentPlaylistId),
+      ),
+    );
+    if (playlistId != null && context.mounted) {
+      context.read<PlaylistBloc>().add(
+        AddSongToPlaylist(playlistId: playlistId, song: songs[index]),
+      );
+    }
   }
 }
