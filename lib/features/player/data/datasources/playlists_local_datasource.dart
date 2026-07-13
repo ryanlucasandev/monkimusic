@@ -13,6 +13,7 @@ abstract class PlaylistsLocalDataSource {
   Future<List<SongsModel>> getPlaylistSongs(int playlistId);
   Future<int> addSongToPlaylist(int playlistId, SongsModel song);
   Future<int> removeSongFromPlaylist(int playlistId, int songId);
+  Future<void> reorderSongsFromPlaylist(int playlistId, List<int> songIds);
   Stream<List<PlaylistsModel>> watchPlaylists();
   Stream<List<PlaylistSongsModel>> watchSongsInPlaylist(int playlistId);
 }
@@ -78,4 +79,11 @@ class PlaylistsLocalDataSourceImpl extends PlaylistsLocalDataSource {
             (playlistSongs) =>
                 playlistSongs.map(PlaylistSongsModel.fromDrift).toList(),
           );
+
+  @override
+  Future<void> reorderSongsFromPlaylist(int playlistId, List<int> songIds) =>
+      _playlistSongsDao.reorderSongsFromPlaylist(
+        playlistId: playlistId,
+        songIds: songIds,
+      );
 }

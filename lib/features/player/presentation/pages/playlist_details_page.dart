@@ -5,14 +5,56 @@ import 'package:monkimusic/features/player/presentation/bloc/playlist_details_bl
 import 'package:monkimusic/features/player/presentation/pages/songs_page.dart';
 import 'package:monkimusic/features/player/presentation/widgets/playlist_song_widget.dart';
 
-class PlaylistDetailsPage extends StatelessWidget {
+class PlaylistDetailsPage extends StatefulWidget {
   const PlaylistDetailsPage({super.key, required this.playlist});
   final PlaylistsEntity playlist;
 
   @override
+  State<PlaylistDetailsPage> createState() => _PlaylistDetailsPageState();
+}
+
+class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(playlist.name)),
+      appBar: AppBar(
+        title: Text(widget.playlist.name),
+        actions: [
+          BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
+            builder: (context, state) {
+              if (state is! PlaylistDetailsLoaded) {
+                return const SizedBox.shrink();
+              }
+
+              if (state.isReordering) {
+                final playlistSongs = state.playlistSongs;
+
+                return TextButton(
+                  onPressed: () {
+                    context.read<PlaylistDetailsBloc>().add(
+                      SavePlaylistOrder(
+                        playlistId: widget.playlist.id!,
+                        songIds: playlistSongs.map((song) => song.id!).toList(),
+                      ),
+                    );
+                  },
+                  child: Text('Done'),
+                );
+              }
+
+              return IconButton(
+                onPressed: () {
+                  context.read<PlaylistDetailsBloc>().add(
+                    const ReorderPlaylistSongs(),
+                  );
+                },
+                icon: const Icon(Icons.reorder_rounded),
+                tooltip: 'Reorder songs',
+              );
+            },
+          ),
+        ],
+      ),
       body: BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
         builder: (context, state) {
           if (state is PlaylistDetailsLoading) {
@@ -50,6 +92,31 @@ class PlaylistDetailsPage extends StatelessWidget {
           if (state is PlaylistDetailsLoaded) {
             final playlistSongs = state.playlistSongs;
 
+            if (state.isReordering) {
+              return ReorderableListView.builder(
+                physics: const BouncingScrollPhysics(),
+                itemCount: playlistSongs.length,
+                onReorderItem: (int oldIndex, int newIndex) {
+                  setState(() {
+                    if (oldIndex < newIndex) {
+                      newIndex;
+                    }
+                    final song = playlistSongs.removeAt(oldIndex);
+                    playlistSongs.insert(newIndex, song);
+                  });
+                },
+                itemBuilder: (context, index) {
+                  final song = playlistSongs[index];
+                  return PlaylistSongWidget(
+                    key: ValueKey(song.id),
+                    songs: playlistSongs,
+                    index: index,
+                    currentPlaylistId: widget.playlist.id,
+                    isReordering: true,
+                  );
+                },
+              );
+            }
             return ListView.builder(
               physics: const BouncingScrollPhysics(),
               itemCount: playlistSongs.length,
@@ -57,7 +124,8 @@ class PlaylistDetailsPage extends StatelessWidget {
                 return PlaylistSongWidget(
                   songs: playlistSongs,
                   index: index,
-                  currentPlaylistId: playlist.id,
+                  currentPlaylistId: widget.playlist.id,
+                  isReordering: false,
                 );
               },
             );

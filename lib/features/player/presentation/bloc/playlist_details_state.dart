@@ -16,11 +16,25 @@ final class PlaylistDetailsLoading extends PlaylistDetailsState {
 }
 
 final class PlaylistDetailsLoaded extends PlaylistDetailsState {
-  const PlaylistDetailsLoaded({this.playlistSongs = const <SongsEntity>[]});
+  const PlaylistDetailsLoaded({
+    this.playlistSongs = const <SongsEntity>[],
+    this.isReordering = false,
+  });
   final List<SongsEntity> playlistSongs;
+  final bool isReordering;
+
+  PlaylistDetailsLoaded copyWith({
+    List<SongsEntity>? playlistSongs,
+    bool? isReordering,
+  }) {
+    return PlaylistDetailsLoaded(
+      playlistSongs: playlistSongs ?? this.playlistSongs,
+      isReordering: isReordering ?? this.isReordering,
+    );
+  }
 
   @override
-  List<Object?> get props => [playlistSongs];
+  List<Object?> get props => [playlistSongs, isReordering];
 }
 
 final class PlaylistDetailsEmpty extends PlaylistDetailsState {

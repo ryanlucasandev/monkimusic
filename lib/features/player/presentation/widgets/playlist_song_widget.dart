@@ -17,25 +17,24 @@ class PlaylistSongWidget extends StatelessWidget {
 
   // MediaItem representing the current song
   final List<SongsEntity> songs;
-
   // index of the song in the list
   final int index;
-
   final int? currentPlaylistId;
+  final bool? isReordering;
 
   const PlaylistSongWidget({
     super.key,
     required this.songs,
     required this.index,
     this.currentPlaylistId,
+    this.isReordering,
   });
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer,
-      ),
+    return Material(
+      key: ValueKey(songs[index].id),
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: ListTile(
         onTap: () {
           context.read<AudioPlayerBloc>().add(
@@ -67,41 +66,46 @@ class PlaylistSongWidget extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: PopupMenuButton(
-          icon: const Icon(Icons.more_vert),
-          onSelected: (value) async {
-            switch (value) {
-              case 'add':
-                _addSongToPlaylist(context);
-                break;
-              case 'remove':
-                _removeSongFromPlaylist(context);
-                break;
-            }
-          },
-          itemBuilder: (context) => const [
-            PopupMenuItem(
-              value: 'add',
-              child: Row(
-                children: [
-                  Icon(Icons.add),
-                  SizedBox(width: 12),
-                  Text('Add song to playlist'),
+        trailing: isReordering!
+            ? ReorderableDelayedDragStartListener(
+                index: index,
+                child: const Icon(Icons.drag_handle),
+              )
+            : PopupMenuButton(
+                icon: const Icon(Icons.more_vert),
+                onSelected: (value) async {
+                  switch (value) {
+                    case 'add':
+                      _addSongToPlaylist(context);
+                      break;
+                    case 'remove':
+                      _removeSongFromPlaylist(context);
+                      break;
+                  }
+                },
+                itemBuilder: (context) => const [
+                  PopupMenuItem(
+                    value: 'add',
+                    child: Row(
+                      children: [
+                        Icon(Icons.add),
+                        SizedBox(width: 12),
+                        Text('Add song to playlist'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'remove',
+                    child: Row(
+                      children: [
+                        Icon(Icons.remove),
+                        SizedBox(width: 12),
+                        Text('Remove song from playlist'),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-            PopupMenuItem(
-              value: 'remove',
-              child: Row(
-                children: [
-                  Icon(Icons.remove),
-                  SizedBox(width: 12),
-                  Text('Remove song from playlist'),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

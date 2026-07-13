@@ -26,10 +26,8 @@ class PlaylistWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer,
-      ),
+    return Material(
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: ListTile(
         onTap: () {
           Navigator.push(

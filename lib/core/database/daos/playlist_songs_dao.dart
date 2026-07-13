@@ -56,7 +56,24 @@ class PlaylistSongsDao extends DatabaseAccessor<AppDb>
     return result != null;
   }
 
-  // removeSong
+  Future<void> reorderSongsFromPlaylist({
+    required int playlistId,
+    required List<int> songIds,
+  }) async {
+    await transaction(() async {
+      await batch((batch) {
+        for (var i = 0; i < songIds.length; i++) {
+          batch.update(
+            playlistSongsTable,
+            PlaylistSongsTableCompanion(position: Value(i)),
+            where: (tbl) =>
+                tbl.playlistId.equals(playlistId) &
+                tbl.songId.equals(songIds[i]),
+          );
+        }
+      });
+    });
+  }
 
   Future<int> getNextPosition(int playlistId) async {
     final maxPosition = playlistSongsTable.position.max();

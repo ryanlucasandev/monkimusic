@@ -62,4 +62,8 @@ class PlaylistsRepositoryImpl implements PlaylistsRepository {
     final stream = _playlistsLocalDataSource.watchSongsInPlaylist(playlistId);
     return stream.map((models) => models.toEntityList());
   }
+
+  @override
+  Future<void> reorderSongsFromPlaylist(int playlistId, List<int> songIds) =>
+      _playlistsLocalDataSource.reorderSongsFromPlaylist(playlistId, songIds);
 }

@@ -10,6 +10,7 @@ abstract class PlaylistsRepository {
   Future<List<SongsEntity>> getPlaylistSongs(int playlistId);
   Future<int> addSongToPlaylist(int playlistId, SongsEntity song);
   Future<int> removeSongFromPlaylist(int playlistId, int songId);
+  Future<void> reorderSongsFromPlaylist(int playlistId, List<int> songIds);
   Stream<List<PlaylistsEntity>> watchPlaylists();
   Stream<List<PlaylistSongsEntity>> watchSongsInPlaylist(int playlistId);
 }

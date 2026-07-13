@@ -6,7 +6,6 @@ import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
-import 'package:monkimusic/features/player/presentation/bloc/playlist_details_bloc.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/select_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/player_page.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
@@ -24,10 +23,8 @@ class SongWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer,
-      ),
+    return Material(
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: ListTile(
         onTap: () {
           context.read<AudioPlayerBloc>().add(
