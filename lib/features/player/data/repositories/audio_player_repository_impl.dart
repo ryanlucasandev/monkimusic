@@ -48,7 +48,7 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
 
   SongsEntity _mapMediaItemToSongEntity(MediaItem item) {
     return SongsEntity(
-      uri: item.id,
+      id: item.id,
       title: item.title,
       album: item.album,
       artist: item.artist,
@@ -76,14 +76,14 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
             );
           },
         )
-        .distinct((prev, next) => prev.song?.uri == next.song?.uri);
+        .distinct((prev, next) => prev.song?.id == next.song?.id);
   }
 }
 
 extension SongsEntityMapper on SongsEntity {
   MediaItem toMediaItem() {
     return MediaItem(
-      id: uri!,
+      id: id!,
       title: title ?? 'No Title',
       album: album ?? 'No Album',
       artist: artist ?? 'Unknown Artist',

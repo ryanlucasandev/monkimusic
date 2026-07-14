@@ -15,7 +15,7 @@ class PlaylistSongsDao extends DatabaseAccessor<AppDb>
         select(songsTable).join([
             innerJoin(
               playlistSongsTable,
-              playlistSongsTable.songId.equalsExp(songsTable.id),
+              playlistSongsTable.songId.equalsExp(songsTable.songId),
             ),
           ])
           ..where(playlistSongsTable.playlistId.equals(playlistId))

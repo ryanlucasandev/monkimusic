@@ -51,7 +51,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     const equality = ListEquality<String>();
     final sameQueue = equality.equals(
       queue.map((e) => e.id).toList(),
-      event.songs.map((e) => e.uri!).toList(),
+      event.songs.map((e) => e.id!).toList(),
     );
 
     final shouldInit = !sameQueue;

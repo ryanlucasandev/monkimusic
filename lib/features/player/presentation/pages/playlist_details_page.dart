@@ -34,7 +34,9 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
                     context.read<PlaylistDetailsBloc>().add(
                       SavePlaylistOrder(
                         playlistId: widget.playlist.id!,
-                        songIds: playlistSongs.map((song) => song.id!).toList(),
+                        songIds: playlistSongs
+                            .map((song) => song.songId!)
+                            .toList(),
                       ),
                     );
                   },

@@ -138,7 +138,7 @@ class PlaylistSongWidget extends StatelessWidget {
       context.read<PlaylistDetailsBloc>().add(
         RemoveSongFromPlaylist(
           playlistId: currentPlaylistId!,
-          songId: songs[index].id!,
+          songId: songs[index].songId!,
         ),
       );
     }

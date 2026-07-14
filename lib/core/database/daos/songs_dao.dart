@@ -12,22 +12,20 @@ class SongsDao extends DatabaseAccessor<AppDb> with _$SongsDaoMixin {
 
   Future<List<SongsTableData>> getSongs() => select(songsTable).get();
 
-  Future<SongsTableData> getSong(int id) =>
+  Future<SongsTableData> getSong(String id) =>
       (select(songsTable)..where((tbl) => tbl.id.equals(id))).getSingle();
 
-  Future<SongsTableData?> getSongByMediaId(int mediaId) => (select(
-    songsTable,
-  )..where((tbl) => tbl.mediaId.equals(mediaId))).getSingleOrNull();
+  Future<SongsTableData?> getSongById(String id) =>
+      (select(songsTable)..where((tbl) => tbl.id.equals(id))).getSingleOrNull();
 
   Future<int> insertOrGetSong(SongsModel song) async {
-    final existingSong = await getSongByMediaId(song.mediaId!);
+    final existingSong = await getSongById(song.id!);
     if (existingSong != null) {
-      return existingSong.id;
+      return existingSong.songId;
     }
     return into(songsTable).insert(
       SongsTableCompanion.insert(
-        mediaId: song.mediaId!,
-        uri: Value(song.uri!),
+        id: song.id!,
         title: Value(song.title!),
         artist: Value(song.artist),
         duration: Value(song.duration!.inMilliseconds),
@@ -43,6 +41,6 @@ class SongsDao extends DatabaseAccessor<AppDb> with _$SongsDaoMixin {
   Future<bool> updateSong(SongsTableCompanion song) =>
       update(songsTable).replace(song);
 
-  Future<int> deleteSong(int id) =>
+  Future<int> deleteSong(String id) =>
       (delete(songsTable)..where((tbl) => tbl.id.equals(id))).go();
 }

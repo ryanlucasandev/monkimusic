@@ -1,10 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 class SongsEntity extends Equatable {
-  final int? id; // Drift ID
-  final int? mediaId; // Android MediaStore ID
-
-  final String? uri;
+  final int? songId;
+  final String? id; // uri or filePath
   final String? title;
   final String? artist;
   final String? album;
@@ -18,9 +16,8 @@ class SongsEntity extends Equatable {
   final int? dateAdded;
 
   const SongsEntity({
+    this.songId,
     this.id,
-    this.mediaId,
-    this.uri,
     this.title,
     this.artist,
     this.album,
@@ -34,9 +31,8 @@ class SongsEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+    songId,
     id,
-    mediaId,
-    uri,
     title,
     artist,
     album,
