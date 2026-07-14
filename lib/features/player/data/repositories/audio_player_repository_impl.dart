@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:monkimusic/features/player/data/services/audio_player_handler.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
@@ -42,37 +41,9 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
 
   @override
   Future<void> initSongs(List<SongsEntity> songs) async {
-    final mediaItems = songs
-        .map(
-          (song) => MediaItem(
-            id: song.uri!,
-            title: song.title ?? 'No Title',
-            album: song.album ?? 'No Album',
-            artist: song.artist ?? 'Unknown Artist',
-            genre: song.genre ?? 'No Genre',
-            duration: song.duration ?? Duration.zero,
-          ),
-        )
-        .toList();
-    await _audioHandler.initSongs(mediaItems: mediaItems);
-  }
-
-  @override
-  Future<List<MediaItem>> songsEntityToMediaItem(
-    List<SongsEntity> songs,
-  ) async {
-    return songs
-        .map(
-          (song) => MediaItem(
-            id: song.uri!,
-            title: song.title ?? 'No Title',
-            album: song.album ?? 'No Album',
-            artist: song.artist ?? 'Unknown Artist',
-            genre: song.genre ?? 'No Genre',
-            duration: song.duration ?? Duration.zero,
-          ),
-        )
-        .toList();
+    await _audioHandler.initSongs(
+      mediaItems: songs.map((song) => song.toMediaItem()).toList(),
+    );
   }
 
   SongsEntity _mapMediaItemToSongEntity(MediaItem item) {
@@ -106,5 +77,18 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
           },
         )
         .distinct((prev, next) => prev.song?.uri == next.song?.uri);
+  }
+}
+
+extension SongsEntityMapper on SongsEntity {
+  MediaItem toMediaItem() {
+    return MediaItem(
+      id: uri!,
+      title: title ?? 'No Title',
+      album: album ?? 'No Album',
+      artist: artist ?? 'Unknown Artist',
+      genre: genre ?? 'No Genre',
+      duration: duration ?? Duration.zero,
+    );
   }
 }
