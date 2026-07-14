@@ -1,3 +1,4 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:monkimusic/core/database/app_db.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 import 'package:on_audio_query_forked/on_audio_query.dart' as plugin;
@@ -52,23 +53,6 @@ class SongsModel extends SongsEntity {
     );
   }
 
-  SongsEntity toEntity() {
-    return SongsEntity(
-      id: id,
-      mediaId: mediaId,
-      uri: uri,
-      title: title,
-      artist: artist,
-      album: album,
-      albumId: albumId,
-      artistId: artistId,
-      duration: duration,
-      track: track,
-      genre: genre,
-      dateAdded: dateAdded,
-    );
-  }
-
   factory SongsModel.fromEntity(SongsEntity entity) {
     return SongsModel(
       id: entity.id,
@@ -83,6 +67,23 @@ class SongsModel extends SongsEntity {
       track: entity.track,
       genre: entity.genre,
       dateAdded: entity.dateAdded,
+    );
+  }
+
+  SongsEntity toEntity() {
+    return SongsEntity(
+      id: id,
+      mediaId: mediaId,
+      uri: uri,
+      title: title,
+      artist: artist,
+      album: album,
+      albumId: albumId,
+      artistId: artistId,
+      duration: duration,
+      track: track,
+      genre: genre,
+      dateAdded: dateAdded,
     );
   }
 }
