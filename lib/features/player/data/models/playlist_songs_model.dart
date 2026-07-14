@@ -1,6 +1,5 @@
 import 'package:monkimusic/core/database/app_db.dart';
 import 'package:monkimusic/features/player/domain/entities/playlist_songs_entity.dart';
-import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
 
 class PlaylistSongsModel {
   final int playlistId;
