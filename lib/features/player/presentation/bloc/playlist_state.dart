@@ -33,3 +33,15 @@ final class PlaylistFailure extends PlaylistState {
   @override
   List<Object?> get props => [message];
 }
+
+final class AddMultipleSongsSuccess extends PlaylistState {
+  const AddMultipleSongsSuccess();
+}
+
+final class AddMultipleSongsFailure extends PlaylistState {
+  final String message;
+  const AddMultipleSongsFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

@@ -66,4 +66,13 @@ class PlaylistsRepositoryImpl implements PlaylistsRepository {
   @override
   Future<void> reorderSongsFromPlaylist(int playlistId, List<int> songIds) =>
       _playlistsLocalDataSource.reorderSongsFromPlaylist(playlistId, songIds);
+
+  @override
+  Future<void> addMultipleSongsToPlaylist(
+    int playlistId,
+    Set<SongsEntity> songs,
+  ) => _playlistsLocalDataSource.addMultipleSongsToPlaylist(
+    playlistId,
+    songs.map((song) => SongsModel.fromEntity(song)).toList(),
+  );
 }

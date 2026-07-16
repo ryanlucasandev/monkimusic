@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
 
 part 'playlist_details_event.dart';
 part 'playlist_details_state.dart';

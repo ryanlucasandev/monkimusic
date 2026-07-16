@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:monkimusic/core/database/tables/playlist_songs.dart';
 import 'package:monkimusic/core/database/tables/songs.dart';
+import 'package:monkimusic/features/player/data/models/songs_model.dart';
 import '../app_db.dart';
 
 part 'playlist_songs_dao.g.dart';
@@ -27,12 +28,21 @@ class PlaylistSongsDao extends DatabaseAccessor<AppDb>
 
   Future<int> addSongToPlaylist(int playlistId, int songId) async {
     final position = await getNextPosition(playlistId);
+    return insertSongToPlaylist(playlistId, songId, position);
+  }
+
+  Future<int> insertSongToPlaylist(
+    int playlistId,
+    int songId,
+    int position,
+  ) async {
     return into(playlistSongsTable).insert(
       PlaylistSongsTableCompanion.insert(
         playlistId: playlistId,
         songId: songId,
         position: position,
       ),
+      mode: InsertMode.insertOrIgnore,
     );
   }
 

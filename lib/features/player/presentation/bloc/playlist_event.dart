@@ -52,3 +52,16 @@ final class AddSongToPlaylist extends PlaylistEvent {
   @override
   List<Object?> get props => [playlistId, song];
 }
+
+final class AddMultipleSongsToPlaylist extends PlaylistEvent {
+  final int playlistId;
+  final Set<SongsEntity> songs;
+
+  const AddMultipleSongsToPlaylist({
+    required this.playlistId,
+    required this.songs,
+  });
+
+  @override
+  List<Object?> get props => [songs];
+}

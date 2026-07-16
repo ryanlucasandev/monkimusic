@@ -10,3 +10,19 @@ sealed class SongsEvent extends Equatable {
 final class LoadSongs extends SongsEvent {
   const LoadSongs();
 }
+
+final class EnterSongSelectionMode extends SongsEvent {
+  const EnterSongSelectionMode();
+}
+
+final class ExitSongSelectionMode extends SongsEvent {
+  const ExitSongSelectionMode();
+}
+
+final class ToggleSongSelection extends SongsEvent {
+  final SongsEntity song;
+  const ToggleSongSelection(this.song);
+
+  @override
+  List<Object?> get props => [song];
+}

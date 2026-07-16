@@ -68,6 +68,7 @@ Future<void> initializeLocator() async {
   // Playlist Data Sources
   locator.registerLazySingleton<PlaylistsLocalDataSource>(
     () => PlaylistsLocalDataSourceImpl(
+      locator<AppDb>(),
       locator<PlaylistsDao>(),
       locator<PlaylistSongsDao>(),
       locator<SongsDao>(),

@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) =>
               PlaylistBloc(playlistRepository: locator<PlaylistsRepository>())
-                ..add(const LoadPlaylists()),
+                ..add(LoadPlaylists()),
         ),
       ],
       child: GetMaterialApp(

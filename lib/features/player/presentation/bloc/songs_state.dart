@@ -16,11 +16,29 @@ final class SongsLoading extends SongsState {
 }
 
 final class SongsLoaded extends SongsState {
-  const SongsLoaded({this.allSongs = const <SongsEntity>[]});
   final List<SongsEntity> allSongs;
+  final Set<SongsEntity> selectedSongs;
+  final bool isSelectingSongs;
+  const SongsLoaded({
+    this.allSongs = const <SongsEntity>[],
+    this.selectedSongs = const {},
+    this.isSelectingSongs = false,
+  });
+
+  SongsLoaded copyWith({
+    List<SongsEntity>? allSongs,
+    Set<SongsEntity>? selectedSongs,
+    bool? isSelectingSongs,
+  }) {
+    return SongsLoaded(
+      allSongs: allSongs ?? this.allSongs,
+      selectedSongs: selectedSongs ?? this.selectedSongs,
+      isSelectingSongs: isSelectingSongs ?? this.isSelectingSongs,
+    );
+  }
 
   @override
-  List<Object?> get props => [allSongs];
+  List<Object?> get props => [allSongs, selectedSongs, isSelectingSongs];
 }
 
 final class SongsEmpty extends SongsState {

@@ -1,3 +1,4 @@
+import 'package:monkimusic/core/database/app_db.dart';
 import 'package:monkimusic/core/database/daos/playlist_songs_dao.dart';
 import 'package:monkimusic/core/database/daos/playlists_dao.dart';
 import 'package:monkimusic/core/database/daos/songs_dao.dart';
@@ -16,13 +17,19 @@ abstract class PlaylistsLocalDataSource {
   Future<void> reorderSongsFromPlaylist(int playlistId, List<int> songIds);
   Stream<List<PlaylistsModel>> watchPlaylists();
   Stream<List<PlaylistSongsModel>> watchSongsInPlaylist(int playlistId);
+  Future<void> addMultipleSongsToPlaylist(
+    int playlistId,
+    List<SongsModel> songs,
+  );
 }
 
 class PlaylistsLocalDataSourceImpl extends PlaylistsLocalDataSource {
+  final AppDb _appDb;
   final PlaylistsDao _playlistsDao;
   final PlaylistSongsDao _playlistSongsDao;
   final SongsDao _songsDao;
   PlaylistsLocalDataSourceImpl(
+    this._appDb,
     this._playlistsDao,
     this._playlistSongsDao,
     this._songsDao,
@@ -86,4 +93,30 @@ class PlaylistsLocalDataSourceImpl extends PlaylistsLocalDataSource {
         playlistId: playlistId,
         songIds: songIds,
       );
+
+  @override
+  Future<void> addMultipleSongsToPlaylist(
+    int playlistId,
+    List<SongsModel> songs,
+  ) async {
+    await _appDb.transaction(() async {
+      var position = await _playlistSongsDao.getNextPosition(playlistId);
+
+      for (final song in songs) {
+        final songId = await _songsDao.insertOrGetSong(song);
+
+        final exists = await _playlistSongsDao.isSongInPlaylist(
+          playlistId,
+          songId,
+        );
+        if (!exists) {
+          await _playlistSongsDao.insertSongToPlaylist(
+            playlistId,
+            songId,
+            position++,
+          );
+        }
+      }
+    });
+  }
 }

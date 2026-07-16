@@ -18,6 +18,7 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
     on<RenamePlaylist>(_onRenamePlaylist);
     on<DeletePlaylist>(_onDeletePlaylist);
     on<AddSongToPlaylist>(_onAddSongToPlaylist);
+    on<AddMultipleSongsToPlaylist>(_onAddMultipleSongsToPlaylist);
   }
 
   Future<void> _onLoadPlaylists(
@@ -84,5 +85,22 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
         event.song,
       );
     } catch (_) {}
+  }
+
+  Future<void> _onAddMultipleSongsToPlaylist(
+    AddMultipleSongsToPlaylist event,
+    Emitter<PlaylistState> emit,
+  ) async {
+    try {
+      await _playlistsRepository.addMultipleSongsToPlaylist(
+        event.playlistId,
+        event.songs,
+      );
+      emit(AddMultipleSongsSuccess());
+
+      add(const LoadPlaylists());
+    } catch (e) {
+      emit(AddMultipleSongsFailure(e.toString()));
+    }
   }
 }
