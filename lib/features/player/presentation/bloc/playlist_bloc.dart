@@ -97,8 +97,7 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
         event.songs,
       );
       emit(AddMultipleSongsSuccess());
-
-      add(const LoadPlaylists());
+      add(LoadPlaylists());
     } catch (e) {
       emit(AddMultipleSongsFailure(e.toString()));
     }

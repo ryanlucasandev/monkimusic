@@ -82,7 +82,7 @@ class SongsPage extends StatelessWidget {
 }
 
 class _SongsPageAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _SongsPageAppBar({super.key});
+  const _SongsPageAppBar();
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +128,7 @@ class _SongsPageAppBar extends StatelessWidget implements PreferredSizeWidget {
               onSelected: (value) async {
                 switch (value) {
                   case SongsPageMenuAction.playlists:
+                    context.read<PlaylistBloc>().add(LoadPlaylists());
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => const PlaylistsPage()),
                     );
@@ -165,7 +166,7 @@ class _SongsPageAppBar extends StatelessWidget implements PreferredSizeWidget {
     if (songsBlocState is! SongsLoaded) return;
     final songs = songsBlocState.selectedSongs.toSet();
 
-    // context.read<PlaylistBloc>().add(const LoadPlaylists());
+    context.read<PlaylistBloc>().add(const LoadPlaylists());
     final playlistId = await showDialog<int>(
       context: context,
       builder: (_) => BlocProvider.value(
