@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:audio_service/audio_service.dart';
 import 'package:monkimusic/features/player/data/services/audio_player_handler.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
@@ -9,22 +8,6 @@ import 'package:rxdart/rxdart.dart';
 class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
   final AudioPlayerHandler _audioHandler;
   AudioPlayerRepositoryImpl(this._audioHandler);
-
-  @override
-  Future<void> initSongs(List<SongsEntity> songs) async {
-    final mediaItems = songs
-        .map(
-          (song) => MediaItem(
-            id: song.id,
-            title: song.title,
-            artist: song.artist,
-            duration: song.duration,
-          ),
-        )
-        .toList();
-
-    await _audioHandler.initSongs(mediaItems: mediaItems);
-  }
 
   @override
   Future<void> loadTrack(int index) => _audioHandler.skiptoQueueItem(index);
@@ -51,12 +34,26 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
   Stream<bool> get isPlayingStream =>
       _audioHandler.playbackState.map((state) => state.playing).distinct();
 
+  @override
+  Future<List<MediaItem>> getQueue() async {
+    return await _audioHandler.getQueue();
+  }
+
+  @override
+  Future<void> initSongs(List<SongsEntity> songs) async {
+    await _audioHandler.initSongs(
+      mediaItems: songs.map((song) => song.toMediaItem()).toList(),
+    );
+  }
+
   SongsEntity _mapMediaItemToSongEntity(MediaItem item) {
     return SongsEntity(
       id: item.id,
       title: item.title,
-      artist: item.artist ?? 'Unknown Artist',
-      duration: item.duration ?? Duration.zero,
+      album: item.album,
+      artist: item.artist,
+      genre: item.genre,
+      duration: item.duration,
     );
   }
 
@@ -80,5 +77,18 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
           },
         )
         .distinct((prev, next) => prev.song?.id == next.song?.id);
+  }
+}
+
+extension SongsEntityMapper on SongsEntity {
+  MediaItem toMediaItem() {
+    return MediaItem(
+      id: id!,
+      title: title ?? 'No Title',
+      album: album ?? 'No Album',
+      artist: artist ?? 'Unknown Artist',
+      genre: genre ?? 'No Genre',
+      duration: duration ?? Duration.zero,
+    );
   }
 }

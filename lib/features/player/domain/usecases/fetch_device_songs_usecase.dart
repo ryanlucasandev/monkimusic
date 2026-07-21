@@ -11,7 +11,7 @@ class FetchDeviceSongsUseCase implements UseCase<List<SongsEntity>, NoParams> {
     final songs = await _repository.fetchDeviceSongs();
 
     songs.sort(
-      (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
+      (a, b) => a.title!.toLowerCase().compareTo(b.title!.toLowerCase()),
     );
 
     return songs;

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
+import 'package:collection/collection.dart';
 part 'player_event.dart';
 part 'player_state.dart';
 
@@ -46,6 +47,17 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     LoadTrackEvent event,
     Emitter<AudioPlayerState> emit,
   ) async {
+    final queue = await _audioPlayerRepository.getQueue();
+    const equality = ListEquality<String>();
+    final sameQueue = equality.equals(
+      queue.map((e) => e.id).toList(),
+      event.songs.map((e) => e.id!).toList(),
+    );
+
+    final shouldInit = !sameQueue;
+    if (shouldInit) {
+      await _audioPlayerRepository.initSongs(event.songs);
+    }
     if (songIndex != event.index) {
       songIndex = event.index;
       emit(AudioPlayerLoading());

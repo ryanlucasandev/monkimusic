@@ -16,11 +16,12 @@ final class SkipToPreviousEvent extends AudioPlayerEvent {
 }
 
 final class LoadTrackEvent extends AudioPlayerEvent {
+  final List<SongsEntity> songs;
   final int index;
-  const LoadTrackEvent({required this.index});
+  const LoadTrackEvent({required this.index, required this.songs});
 
   @override
-  List<Object?> get props => [index];
+  List<Object?> get props => [index, songs];
 }
 
 final class SeekPositionEvent extends AudioPlayerEvent {
