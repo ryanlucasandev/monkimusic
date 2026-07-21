@@ -75,4 +75,13 @@ class PlaylistsRepositoryImpl implements PlaylistsRepository {
     playlistId,
     songs.map((song) => SongsModel.fromEntity(song)).toList(),
   );
+
+  @override
+  Future<void> removeMultipleSongsFromPlaylist(
+    int playlistId,
+    Set<int> songIds,
+  ) => _playlistsLocalDataSource.removeMultipleSongsFromPlaylist(
+    playlistId,
+    songIds,
+  );
 }

@@ -21,6 +21,10 @@ abstract class PlaylistsLocalDataSource {
     int playlistId,
     List<SongsModel> songs,
   );
+  Future<void> removeMultipleSongsFromPlaylist(
+    int playlistId,
+    Set<int> songIds,
+  );
 }
 
 class PlaylistsLocalDataSourceImpl extends PlaylistsLocalDataSource {
@@ -93,6 +97,14 @@ class PlaylistsLocalDataSourceImpl extends PlaylistsLocalDataSource {
         playlistId: playlistId,
         songIds: songIds,
       );
+
+  @override
+  Future<void> removeMultipleSongsFromPlaylist(
+    int playlistId,
+    Set<int> songIds,
+  ) async {
+    _playlistSongsDao.removeMultipleSongsFromPlaylist(playlistId, songIds);
+  }
 
   @override
   Future<void> addMultipleSongsToPlaylist(

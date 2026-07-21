@@ -16,25 +16,39 @@ final class PlaylistDetailsLoading extends PlaylistDetailsState {
 }
 
 final class PlaylistDetailsLoaded extends PlaylistDetailsState {
+  final List<SongsEntity> playlistSongs;
+  final bool isReordering;
+  final bool isSelectingSongs;
+  final Set<int> selectedSongIds;
+
   const PlaylistDetailsLoaded({
     this.playlistSongs = const <SongsEntity>[],
     this.isReordering = false,
+    this.isSelectingSongs = false,
+    this.selectedSongIds = const {},
   });
-  final List<SongsEntity> playlistSongs;
-  final bool isReordering;
 
   PlaylistDetailsLoaded copyWith({
     List<SongsEntity>? playlistSongs,
     bool? isReordering,
+    bool? isSelectingSongs,
+    Set<int>? selectedSongIds,
   }) {
     return PlaylistDetailsLoaded(
       playlistSongs: playlistSongs ?? this.playlistSongs,
       isReordering: isReordering ?? this.isReordering,
+      isSelectingSongs: isSelectingSongs ?? this.isSelectingSongs,
+      selectedSongIds: selectedSongIds ?? this.selectedSongIds,
     );
   }
 
   @override
-  List<Object?> get props => [playlistSongs, isReordering];
+  List<Object?> get props => [
+    playlistSongs,
+    isReordering,
+    isSelectingSongs,
+    selectedSongIds,
+  ];
 }
 
 final class PlaylistDetailsEmpty extends PlaylistDetailsState {

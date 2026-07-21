@@ -15,6 +15,10 @@ abstract class PlaylistsRepository {
     int playlistId,
     Set<SongsEntity> songs,
   );
+  Future<void> removeMultipleSongsFromPlaylist(
+    int playlistId,
+    Set<int> songsIds,
+  );
   Stream<List<PlaylistsEntity>> watchPlaylists();
   Stream<List<PlaylistSongsEntity>> watchSongsInPlaylist(int playlistId);
 }
