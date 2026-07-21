@@ -79,4 +79,36 @@ class SongsModel extends SongsEntity {
       dateAdded: dateAdded,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'artist': artist,
+      'album': album,
+      'albumId': albumId,
+      'artistId': artistId,
+      'duration': duration?.inMilliseconds,
+      'track': track,
+      'genre': genre,
+      'dateAdded': dateAdded,
+    };
+  }
+
+  factory SongsModel.fromJson(Map<String, dynamic> json) {
+    return SongsModel(
+      id: json['id'] as String,
+      title: json['title'] as String?,
+      artist: json['artist'] as String?,
+      album: json['album'] as String?,
+      albumId: json['albumId'] as int?,
+      artistId: json['artistId'] as int?,
+      duration: json['duration'] != null
+          ? Duration(milliseconds: json['duration'] as int)
+          : null,
+      track: json['track'] as int?,
+      genre: json['genre'] as String?,
+      dateAdded: json['dateAdded'] as int?,
+    );
+  }
 }

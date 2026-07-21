@@ -62,6 +62,24 @@ class PlaylistsModel {
       createdAt: createdAt,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'coverArtPath': coverArtPath,
+      'createdAt': createdAt,
+    };
+  }
+
+  factory PlaylistsModel.fromJson(Map<String, dynamic> json) {
+    return PlaylistsModel(
+      id: json['id'] as int,
+      name: json['name'] as String,
+      coverArtPath: json['coverArtPath'] as String,
+      createdAt: json['createdAt'] as DateTime,
+    );
+  }
 }
 
 extension PlaylistsModelX on List<PlaylistsModel> {
