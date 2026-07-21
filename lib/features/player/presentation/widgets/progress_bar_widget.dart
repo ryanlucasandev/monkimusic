@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 
 class ProgressBarWidget extends StatelessWidget {
-  final MediaItem item;
+  final SongsEntity item;
 
   const ProgressBarWidget({super.key, required this.item});
 

@@ -1,127 +1,142 @@
 import 'dart:async';
-
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
-
+import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
+import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
+import 'package:collection/collection.dart';
 part 'player_event.dart';
 part 'player_state.dart';
 
 class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
-  final AudioPlayerHandler _audioHandler;
+  final AudioPlayerRepository _audioPlayerRepository;
   StreamSubscription? _mediaItemSubscription;
   StreamSubscription? _playbackStateSubscription;
-  StreamSubscription? _audioServicePosition;
 
-  AudioPlayerBloc({required AudioPlayerHandler audioHandler})
-    : _audioHandler = audioHandler,
+  SongsEntity? _currentSong;
+  bool _isPlaying = false;
+  int? songIndex = -1;
+
+  AudioPlayerBloc({required AudioPlayerRepository audioPlayerRepository})
+    : _audioPlayerRepository = audioPlayerRepository,
       super(AudioPlayerIdle()) {
     on<LoadTrackEvent>(_onLoadTrack);
-    on<UpdateCurrentItemEvent>(_onUpdateCurrentItem);
-    on<UpdatePlaybackStateEvent>(_onUpdatePlaybackState);
-    on<PlayPausePressedEvent>(_onPlayPausePressed);
     on<SkipToNextEvent>(_onSkipToNext);
     on<SkipToPreviousEvent>(_onSkipToPrevious);
     on<SeekPositionEvent>(_onSeekPosition);
-
-    // Listen to the audio handler stream behind the scenes
-    _mediaItemSubscription = _audioHandler.mediaItem
-        .map((item) => item?.id)
-        .distinct()
-        .listen((_) {
-          add(UpdateCurrentItemEvent(newItem: _audioHandler.mediaItem.value));
-        });
-
-    _playbackStateSubscription = _audioHandler.playbackState.listen((state) {
-      add(UpdatePlaybackStateEvent(state: state));
-    });
+    on<PlayPausePressedEvent>(_onPlayPausePressed);
+    on<UpdateCurrentItemEvent>(_onUpdateCurrentItem);
+    on<UpdatePlaybackStateEvent>(_onUpdatePlaybackState);
+    initStreamSubscriptions();
   }
 
-  Future<void> _onSeekPosition(
-    SeekPositionEvent event,
-    Emitter<AudioPlayerState> emit,
-  ) async {
-    _audioHandler.seek(event.position);
+  void initStreamSubscriptions() {
+    _mediaItemSubscription = _audioPlayerRepository.currentSongStream.listen((
+      data,
+    ) {
+      add(UpdateCurrentItemEvent(newItem: data.song, newIndex: data.index));
+    });
+
+    _playbackStateSubscription = _audioPlayerRepository.isPlayingStream.listen((
+      isPlaying,
+    ) {
+      add(UpdatePlaybackStateEvent(playing: isPlaying));
+    });
   }
 
   Future<void> _onLoadTrack(
     LoadTrackEvent event,
     Emitter<AudioPlayerState> emit,
   ) async {
-    emit(AudioPlayerLoading());
-    _audioHandler.skiptoQueueItem(event.index);
+    final queue = await _audioPlayerRepository.getQueue();
+    const equality = ListEquality<String>();
+    final sameQueue = equality.equals(
+      queue.map((e) => e.id).toList(),
+      event.songs.map((e) => e.id!).toList(),
+    );
+
+    final shouldInit = !sameQueue;
+    if (shouldInit) {
+      await _audioPlayerRepository.initSongs(event.songs);
+    }
+    if (songIndex != event.index) {
+      songIndex = event.index;
+      emit(AudioPlayerLoading());
+      await _audioPlayerRepository.loadTrack(event.index);
+    }
+
+    if (!_isPlaying) {
+      await _audioPlayerRepository.playPause(!_isPlaying);
+    }
+  }
+
+  Future<void> _onSeekPosition(
+    SeekPositionEvent event,
+    Emitter<AudioPlayerState> emit,
+  ) async {
+    await _audioPlayerRepository.seek(event.position);
   }
 
   void _onUpdateCurrentItem(
     UpdateCurrentItemEvent event,
     Emitter<AudioPlayerState> emit,
   ) {
-    if (event.newItem == null) {
+    _currentSong = event.newItem;
+    songIndex = event.newIndex;
+
+    if (_currentSong == null) {
       emit(AudioPlayerIdle());
       return;
     }
-    final isPlaying = state is AudioPlayerReady
-        ? (state as AudioPlayerReady).isPlaying
-        : false;
-    final position = state is AudioPlayerReady
-        ? (state as AudioPlayerReady).position
-        : Duration.zero;
 
     emit(
       AudioPlayerReady(
-        isPlaying: isPlaying,
-        currentItem: event.newItem,
-        position: position,
+        isPlaying: _isPlaying,
+        currentItem: _currentSong,
+        position: Duration.zero,
       ),
     );
   }
 
-  void _onSkipToNext(SkipToNextEvent event, Emitter<AudioPlayerState> emit) {
-    _audioHandler.skipToNext();
+  void _onSkipToNext(
+    SkipToNextEvent event,
+    Emitter<AudioPlayerState> emit,
+  ) async {
+    await _audioPlayerRepository.skipToNext();
   }
 
   void _onSkipToPrevious(
     SkipToPreviousEvent event,
     Emitter<AudioPlayerState> emit,
-  ) {
-    _audioHandler.skipToPrevious();
+  ) async {
+    await _audioPlayerRepository.skipToPrevious();
   }
 
   void _onPlayPausePressed(
     PlayPausePressedEvent event,
     Emitter<AudioPlayerState> emit,
   ) async {
-    if (event.isPlaying) {
-      _audioHandler.pause();
-    } else {
-      _audioHandler.play();
-    }
+    await _audioPlayerRepository.playPause(!event.playing);
   }
 
   void _onUpdatePlaybackState(
     UpdatePlaybackStateEvent event,
     Emitter<AudioPlayerState> emit,
   ) {
-    final processingState = event.state.processingState;
+    _isPlaying = event.playing;
 
-    if (processingState == AudioProcessingState.idle ||
-        processingState == AudioProcessingState.completed) {
+    if (state is AudioPlayerLoading) return;
+
+    if (_currentSong == null) {
       emit(AudioPlayerIdle());
       return;
     }
-
-    final isPlaying = event.state.playing;
-
-    final position = state is AudioPlayerReady
-        ? (state as AudioPlayerReady).position
-        : Duration.zero;
-
     emit(
       AudioPlayerReady(
-        isPlaying: isPlaying,
-        currentItem: _audioHandler.mediaItem.value,
-        position: position,
+        isPlaying: _isPlaying,
+        currentItem: _currentSong!,
+        position: state is AudioPlayerReady
+            ? (state as AudioPlayerReady).position
+            : Duration.zero,
       ),
     );
   }
@@ -130,7 +145,6 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   Future<void> close() {
     _mediaItemSubscription?.cancel();
     _playbackStateSubscription?.cancel();
-    _audioServicePosition?.cancel();
     return super.close();
   }
 }

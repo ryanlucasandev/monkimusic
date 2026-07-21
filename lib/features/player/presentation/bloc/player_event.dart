@@ -7,20 +7,21 @@ sealed class AudioPlayerEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-final class LoadTrackEvent extends AudioPlayerEvent {
-  final int index;
-  final MediaItem item;
-  const LoadTrackEvent({required this.index, required this.item});
-
-  @override
-  List<Object?> get props => [index, item];
+final class SkipToNextEvent extends AudioPlayerEvent {
+  const SkipToNextEvent();
 }
 
-final class UpdateCurrentItemEvent extends AudioPlayerEvent {
-  final MediaItem? newItem;
-  const UpdateCurrentItemEvent({required this.newItem});
+final class SkipToPreviousEvent extends AudioPlayerEvent {
+  const SkipToPreviousEvent();
+}
+
+final class LoadTrackEvent extends AudioPlayerEvent {
+  final List<SongsEntity> songs;
+  final int index;
+  const LoadTrackEvent({required this.index, required this.songs});
+
   @override
-  List<Object?> get props => [newItem];
+  List<Object?> get props => [index, songs];
 }
 
 final class SeekPositionEvent extends AudioPlayerEvent {
@@ -32,25 +33,25 @@ final class SeekPositionEvent extends AudioPlayerEvent {
 }
 
 final class UpdatePlaybackStateEvent extends AudioPlayerEvent {
-  final PlaybackState state;
-  const UpdatePlaybackStateEvent({required this.state});
+  final bool playing;
+  const UpdatePlaybackStateEvent({required this.playing});
 
   @override
-  List<Object?> get props => [state];
+  List<Object?> get props => [playing];
 }
 
 final class PlayPausePressedEvent extends AudioPlayerEvent {
-  final bool isPlaying;
-  const PlayPausePressedEvent({required this.isPlaying});
+  final bool playing;
+  const PlayPausePressedEvent({required this.playing});
 
   @override
-  List<Object?> get props => [isPlaying];
+  List<Object?> get props => [playing];
 }
 
-final class SkipToNextEvent extends AudioPlayerEvent {
-  const SkipToNextEvent();
-}
-
-final class SkipToPreviousEvent extends AudioPlayerEvent {
-  const SkipToPreviousEvent();
+final class UpdateCurrentItemEvent extends AudioPlayerEvent {
+  final SongsEntity? newItem;
+  final int newIndex;
+  const UpdateCurrentItemEvent({required this.newItem, required this.newIndex});
+  @override
+  List<Object?> get props => [newItem, newIndex];
 }

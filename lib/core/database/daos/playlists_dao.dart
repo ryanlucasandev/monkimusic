@@ -1,0 +1,35 @@
+import 'package:drift/drift.dart';
+import 'package:monkimusic/core/database/tables/playlist_songs.dart';
+
+import '../app_db.dart';
+import '../tables/playlists.dart';
+
+part 'playlists_dao.g.dart';
+
+@DriftAccessor(tables: [PlaylistsTable, PlaylistSongsTable])
+class PlaylistsDao extends DatabaseAccessor<AppDb> with _$PlaylistsDaoMixin {
+  PlaylistsDao(super.db);
+
+  Future<List<PlaylistsTableData>> getPlaylists() =>
+      select(playlistsTable).get();
+
+  Future<int> createPlaylist(String name) =>
+      into(playlistsTable).insert(PlaylistsTableCompanion.insert(name: name));
+
+  Future<int> renamePlaylist(int id, String name) =>
+      (update(playlistsTable)..where((tbl) => tbl.id.equals(id))).write(
+        PlaylistsTableCompanion(name: Value(name)),
+      );
+
+  Future<int> deletePlaylist(int id) =>
+      (delete(playlistsTable)..where((tbl) => tbl.id.equals(id))).go();
+
+  Stream<List<PlaylistsTableData>> watchPlaylists() =>
+      select(playlistsTable).watch();
+
+  Stream<List<PlaylistSongsTableData>> watchSongsInPlaylist(int playlistId) =>
+      (select(playlistSongsTable)
+            ..where((tbl) => tbl.playlistId.equals(playlistId))
+            ..orderBy([(tbl) => OrderingTerm.asc(tbl.position)]))
+          .watch();
+}

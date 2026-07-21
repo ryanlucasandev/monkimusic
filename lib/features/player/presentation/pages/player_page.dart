@@ -42,7 +42,7 @@ class PlayerPage extends StatelessWidget {
                   Column(
                     children: [
                       Text(
-                        item!.title,
+                        item!.title!,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: const TextStyle(fontSize: 20),

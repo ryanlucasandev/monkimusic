@@ -15,29 +15,29 @@ final class AudioPlayerLoading extends AudioPlayerState {
 }
 
 final class AudioPlayerReady extends AudioPlayerState {
-  final MediaItem? currentItem;
   final bool isPlaying;
   final Duration position;
+  final SongsEntity? currentItem;
   const AudioPlayerReady({
-    this.currentItem,
     required this.isPlaying,
     required this.position,
+    this.currentItem,
   });
 
   AudioPlayerReady copyWith({
-    MediaItem? currentItem,
     bool? isPlaying,
     Duration? position,
+    SongsEntity? currentItem,
   }) {
     return AudioPlayerReady(
       isPlaying: isPlaying ?? this.isPlaying,
-      currentItem: currentItem ?? this.currentItem,
       position: position ?? this.position,
+      currentItem: currentItem ?? this.currentItem,
     );
   }
 
   @override
-  List<Object?> get props => [isPlaying, currentItem, position];
+  List<Object?> get props => [isPlaying, position, currentItem];
 }
 
 final class AudioPlayerError extends AudioPlayerState {

@@ -3,10 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
-import 'package:monkimusic/features/player/data/datasources/audio_player_handler.dart';
+import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
+import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
-import 'package:monkimusic/features/songs_list/presentation/bloc/songs_list_bloc.dart';
-import 'package:monkimusic/features/songs_list/presentation/pages/songs_list.dart';
+import 'package:monkimusic/features/player/domain/usecases/fetch_device_songs_usecase.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/songs_bloc.dart';
+import 'package:monkimusic/features/player/presentation/pages/songs_page.dart';
 import 'package:monkimusic/simple_bloc_observer.dart';
 
 Future<void> main() async {
@@ -27,18 +30,24 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) =>
-              SongsListBloc(audioHandler: locator<AudioPlayerHandler>())
-                ..add(SongsListFetched()),
+              SongsBloc(fetchDeviceSongs: locator<FetchDeviceSongsUseCase>())
+                ..add(LoadSongs()),
+        ),
+        BlocProvider(
+          create: (context) => AudioPlayerBloc(
+            audioPlayerRepository: locator<AudioPlayerRepository>(),
+          ),
         ),
         BlocProvider(
           create: (context) =>
-              AudioPlayerBloc(audioHandler: locator<AudioPlayerHandler>()),
+              PlaylistBloc(playlistRepository: locator<PlaylistsRepository>())
+                ..add(LoadPlaylists()),
         ),
       ],
       child: GetMaterialApp(
         theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
         debugShowCheckedModeBanner: false,
-        home: SongsListPage(),
+        home: SongsPage(),
       ),
     );
   }
