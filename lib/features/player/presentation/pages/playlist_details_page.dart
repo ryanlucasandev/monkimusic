@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_details_bloc.dart';
+import 'package:monkimusic/features/player/presentation/dialogs/remove_songs_from_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/songs_page.dart';
 import 'package:monkimusic/features/player/presentation/widgets/playlist_song_widget.dart';
+
+enum PlaylistDetailsPageMenuAction { reOrderSongs, removeSongs, share }
 
 class PlaylistDetailsPage extends StatefulWidget {
   const PlaylistDetailsPage({super.key, required this.playlist});
@@ -17,46 +20,7 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.playlist.name),
-        actions: [
-          BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
-            builder: (context, state) {
-              if (state is! PlaylistDetailsLoaded) {
-                return const SizedBox.shrink();
-              }
-
-              if (state.isReordering) {
-                final playlistSongs = state.playlistSongs;
-
-                return TextButton(
-                  onPressed: () {
-                    context.read<PlaylistDetailsBloc>().add(
-                      SavePlaylistOrder(
-                        playlistId: widget.playlist.id!,
-                        songIds: playlistSongs
-                            .map((song) => song.songId!)
-                            .toList(),
-                      ),
-                    );
-                  },
-                  child: Text('Done'),
-                );
-              }
-
-              return IconButton(
-                onPressed: () {
-                  context.read<PlaylistDetailsBloc>().add(
-                    const ReorderPlaylistSongs(),
-                  );
-                },
-                icon: const Icon(Icons.reorder_rounded),
-                tooltip: 'Reorder songs',
-              );
-            },
-          ),
-        ],
-      ),
+      appBar: _AppBar(playlist: widget.playlist),
       body: BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
         builder: (context, state) {
           if (state is PlaylistDetailsLoading) {
@@ -78,9 +42,10 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
                   const SizedBox(height: 24),
                   FilledButton.icon(
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (_) => SongsPage()),
+                        (route) => false,
                       );
                     },
                     icon: const Icon(Icons.add),
@@ -136,5 +101,144 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
         },
       ),
     );
+  }
+}
+
+class _AppBar extends StatelessWidget implements PreferredSizeWidget {
+  final PlaylistsEntity playlist;
+  const _AppBar({required this.playlist});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
+        builder: (context, state) {
+          if (state is PlaylistDetailsLoaded && state.isSelectingSongs) {
+            return Text('${state.selectedSongIds.length} selected');
+          }
+          return Text(playlist.name);
+        },
+      ),
+      actions: [
+        BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
+          builder: (context, state) {
+            if (state is! PlaylistDetailsLoaded) {
+              return const SizedBox.shrink();
+            }
+
+            if (state.isSelectingSongs) {
+              return Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      context.read<PlaylistDetailsBloc>().add(
+                        ExitSongSelectionMode(),
+                      );
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: state.selectedSongIds.isEmpty
+                        ? null
+                        : () {
+                            _removeSongsFromPlaylist(context);
+                          },
+                    child: const Text('Done'),
+                  ),
+                ],
+              );
+            }
+
+            if (state.isReordering) {
+              final playlistSongs = state.playlistSongs;
+
+              return TextButton(
+                onPressed: () {
+                  context.read<PlaylistDetailsBloc>().add(
+                    SavePlaylistOrder(
+                      playlistId: playlist.id!,
+                      songIds: playlistSongs
+                          .map((song) => song.songId!)
+                          .toList(),
+                    ),
+                  );
+                },
+                child: Text('Done'),
+              );
+            }
+
+            return PopupMenuButton<PlaylistDetailsPageMenuAction>(
+              icon: const Icon(Icons.add),
+              onSelected: (value) async {
+                switch (value) {
+                  case PlaylistDetailsPageMenuAction.reOrderSongs:
+                    context.read<PlaylistDetailsBloc>().add(
+                      const ReorderPlaylistSongs(),
+                    );
+                    break;
+                  case PlaylistDetailsPageMenuAction.removeSongs:
+                    context.read<PlaylistDetailsBloc>().add(
+                      EnterSongSelectionMode(),
+                    );
+                    break;
+                  case PlaylistDetailsPageMenuAction.share:
+                    // context.read<PlaylistDetailsBloc>().add(
+                    //   EnterSongSelectionMode(),
+                    // );
+                    break;
+                }
+              },
+              itemBuilder: (context) => const [
+                PopupMenuItem(
+                  value: PlaylistDetailsPageMenuAction.reOrderSongs,
+                  child: ListTile(
+                    leading: Icon(Icons.reorder_rounded),
+                    title: Text('Reorder songs'),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: PlaylistDetailsPageMenuAction.removeSongs,
+                  child: ListTile(
+                    leading: Icon(Icons.remove),
+                    title: Text('Remove songs'),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: PlaylistDetailsPageMenuAction.share,
+                  child: ListTile(
+                    leading: Icon(Icons.share),
+                    title: Text('Share This Playlist'),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  void _removeSongsFromPlaylist(BuildContext context) async {
+    final state = context.read<PlaylistDetailsBloc>().state;
+    if (state is! PlaylistDetailsLoaded) return;
+    final selectedSongs = state.playlistSongs
+        .where((song) => state.selectedSongIds.contains(song.songId))
+        .toList();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (_) => RemoveSongsFromPlaylistDialog(songs: selectedSongs),
+    );
+
+    if (confirmed == true && context.mounted) {
+      context.read<PlaylistDetailsBloc>().add(
+        RemoveMultipleSongsFromPlaylist(
+          playlistId: playlist.id!,
+          songIds: state.selectedSongIds,
+        ),
+      );
+    }
   }
 }

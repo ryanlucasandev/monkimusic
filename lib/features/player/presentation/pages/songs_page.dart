@@ -164,7 +164,7 @@ class _SongsPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   void _selectPlaylist(BuildContext context) async {
     final songsBlocState = context.read<SongsBloc>().state;
     if (songsBlocState is! SongsLoaded) return;
-    final songs = songsBlocState.selectedSongs.toSet();
+    final selectedSongs = songsBlocState.selectedSongs.toSet();
 
     context.read<PlaylistBloc>().add(const LoadPlaylists());
     final playlistId = await showDialog<int>(
@@ -176,7 +176,10 @@ class _SongsPageAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
     if (playlistId != null && context.mounted) {
       context.read<PlaylistBloc>().add(
-        AddMultipleSongsToPlaylist(playlistId: playlistId, songs: songs),
+        AddMultipleSongsToPlaylist(
+          playlistId: playlistId,
+          songs: selectedSongs,
+        ),
       );
     }
   }

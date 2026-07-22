@@ -28,6 +28,8 @@ final locator = GetIt.instance;
 Future<void> initializeLocator() async {
   locator.registerLazySingleton<AudioPlayer>(() => AudioPlayer());
 
+  locator.registerLazySingleton<OnAudioQuery>(() => OnAudioQuery());
+
   final audioHandler = await AudioService.init(
     builder: () => AudioPlayerHandler(locator<AudioPlayer>()),
     config: const AudioServiceConfig(
@@ -37,9 +39,8 @@ Future<void> initializeLocator() async {
     ),
   );
 
-  locator.registerSingleton<AudioPlayerHandler>(audioHandler);
+  locator.registerLazySingleton<AudioPlayerHandler>(() => audioHandler);
 
-  locator.registerLazySingleton<OnAudioQuery>(() => OnAudioQuery());
   locator.registerLazySingleton<SongsLocalDataSource>(
     () => SongsLocalDataSourceImpl(locator<OnAudioQuery>()),
   );

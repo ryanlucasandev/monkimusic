@@ -56,6 +56,58 @@ class PlaylistDetailsBloc
       session: session,
       connection: connection,
     );
+    on<RemoveMultipleSongsFromPlaylist>(_onRemoveMultipleSongsFromPlaylist);
+    on<EnterSongSelectionMode>(_onEnterSongSelectionMode);
+    on<ExitSongSelectionMode>(_onExitSongSelectionMode);
+    on<ToggleSongSelection>(_onToggleSongSelection);
+  }
+
+  Future<void> _onToggleSongSelection(
+    ToggleSongSelection event,
+    Emitter<PlaylistDetailsState> emit,
+  ) async {
+    if (state is PlaylistDetailsLoaded) {
+      final currentState = state as PlaylistDetailsLoaded;
+      final selected = Set<int>.from(currentState.selectedSongIds);
+
+      if (selected.contains(event.songId)) {
+        selected.remove(event.songId);
+      } else {
+        selected.add(event.songId);
+      }
+
+      emit(
+        currentState.copyWith(
+          selectedSongIds: selected,
+          isSelectingSongs: selected.isNotEmpty,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onEnterSongSelectionMode(
+    EnterSongSelectionMode event,
+    Emitter<PlaylistDetailsState> emit,
+  ) async {
+    if (state is PlaylistDetailsLoaded) {
+      final currentState = state as PlaylistDetailsLoaded;
+      emit(currentState.copyWith(isSelectingSongs: true));
+    }
+  }
+
+  Future<void> _onExitSongSelectionMode(
+    ExitSongSelectionMode event,
+    Emitter<PlaylistDetailsState> emit,
+  ) async {
+    if (state is PlaylistDetailsLoaded) {
+      final currentState = state as PlaylistDetailsLoaded;
+      emit(
+        currentState.copyWith(
+          isSelectingSongs: false,
+          selectedSongIds: <int>{},
+        ),
+      );
+    }
   }
 
   Future<void> _onSavePlaylistOrder(
@@ -113,6 +165,21 @@ class PlaylistDetailsBloc
         event.songId,
       );
       add(LoadPlaylistSongs(playlist: event.playlist));
+    } catch (e) {
+      emit(PlaylistDetailsFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onRemoveMultipleSongsFromPlaylist(
+    RemoveMultipleSongsFromPlaylist event,
+    Emitter<PlaylistDetailsState> emit,
+  ) async {
+    try {
+      await _playlistsRepository.removeMultipleSongsFromPlaylist(
+        event.playlistId,
+        event.songIds,
+      );
+      add(LoadPlaylistSongs(playlistId: event.playlistId));
     } catch (e) {
       emit(PlaylistDetailsFailure(e.toString()));
     }
