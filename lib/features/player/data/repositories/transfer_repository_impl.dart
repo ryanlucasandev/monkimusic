@@ -15,7 +15,7 @@ class TransferRepositoryImpl implements TransferRepository {
   final LocalHttpServer server;
   final LocalTransferClient client;
 
-  TransferRepositoryImpl({required this.server, required this.client});
+  TransferRepositoryImpl(this.server, this.client);
 
   @override
   Future<TransferSessionEntity> fetchTransferSession(

@@ -5,8 +5,13 @@ import 'package:monkimusic/core/database/app_db.dart';
 import 'package:monkimusic/core/database/daos/playlist_songs_dao.dart';
 import 'package:monkimusic/core/database/daos/playlists_dao.dart';
 import 'package:monkimusic/core/database/daos/songs_dao.dart';
+import 'package:monkimusic/core/network/network_info.dart';
+import 'package:monkimusic/core/network/network_info_impl.dart';
+import 'package:monkimusic/features/player/data/datasources/local_transfer/local_http_server.dart';
+import 'package:monkimusic/features/player/data/datasources/local_transfer/local_transfer_client.dart';
 import 'package:monkimusic/features/player/data/datasources/playlists_local_datasource.dart';
 import 'package:monkimusic/features/player/data/repositories/playlists_repository_impl.dart';
+import 'package:monkimusic/features/player/data/repositories/transfer_repository_impl.dart';
 import 'package:monkimusic/features/player/data/services/audio_player_handler.dart';
 import 'package:monkimusic/features/player/data/repositories/audio_player_repository_impl.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
@@ -14,6 +19,7 @@ import 'package:monkimusic/features/player/domain/repositories/playlists_reposit
 import 'package:monkimusic/features/player/data/datasources/songs_local_datasource.dart';
 import 'package:monkimusic/features/player/data/repositories/songs_repository_impl.dart';
 import 'package:monkimusic/features/player/domain/repositories/songs_repository.dart';
+import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
 import 'package:monkimusic/features/player/domain/usecases/fetch_device_songs_usecase.dart';
 import 'package:on_audio_query_forked/on_audio_query.dart';
 
@@ -78,5 +84,20 @@ Future<void> initializeLocator() async {
   // Playlist Repositories
   locator.registerLazySingleton<PlaylistsRepository>(
     () => PlaylistsRepositoryImpl(locator<PlaylistsLocalDataSource>()),
+  );
+
+  locator.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
+
+  locator.registerLazySingleton<LocalHttpServer>(() => LocalHttpServer());
+
+  locator.registerLazySingleton<LocalTransferClient>(
+    () => LocalTransferClient(),
+  );
+
+  locator.registerLazySingleton<TransferRepository>(
+    () => TransferRepositoryImpl(
+      locator<LocalHttpServer>(),
+      locator<LocalTransferClient>(),
+    ),
   );
 }

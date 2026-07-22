@@ -17,9 +17,11 @@ final class PlaylistDetailsLoading extends PlaylistDetailsState {
 
 final class PlaylistDetailsLoaded extends PlaylistDetailsState {
   const PlaylistDetailsLoaded({
+    required this.playlist,
     this.playlistSongs = const <SongsEntity>[],
     this.isReordering = false,
   });
+  final PlaylistsEntity playlist;
   final List<SongsEntity> playlistSongs;
   final bool isReordering;
 
@@ -28,6 +30,7 @@ final class PlaylistDetailsLoaded extends PlaylistDetailsState {
     bool? isReordering,
   }) {
     return PlaylistDetailsLoaded(
+      playlist: playlist,
       playlistSongs: playlistSongs ?? this.playlistSongs,
       isReordering: isReordering ?? this.isReordering,
     );
