@@ -78,7 +78,7 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
                     key: ValueKey(song.id),
                     songs: playlistSongs,
                     index: index,
-                    currentPlaylistId: widget.playlist.id,
+                    playlist: widget.playlist,
                     isReordering: true,
                   );
                 },
@@ -91,7 +91,7 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
                 return PlaylistSongWidget(
                   songs: playlistSongs,
                   index: index,
-                  currentPlaylistId: widget.playlist.id,
+                  playlist: widget.playlist,
                   isReordering: false,
                 );
               },

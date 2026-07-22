@@ -1,0 +1,19 @@
+import 'package:monkimusic/features/player/domain/entities/local_transfer/file_entity.dart';
+import 'package:monkimusic/features/player/domain/entities/local_transfer/share_connection_entity.dart';
+import 'package:monkimusic/features/player/domain/entities/local_transfer/transfer_session_entity.dart';
+import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
+
+abstract class TransferRepository {
+  Future<void> startServer({
+    required TransferSessionEntity session,
+    required ShareConnectionEntity connection,
+  });
+  Future<TransferSessionEntity> fetchTransferSession(
+    ShareConnectionEntity connection,
+  );
+  Future<FileEntity> downloadSong({
+    required ShareConnectionEntity connection,
+    required SongsEntity song,
+    required String savePath,
+  });
+}

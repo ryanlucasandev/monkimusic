@@ -1,7 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monkimusic/core/network/network_info.dart';
+import 'package:monkimusic/features/player/domain/entities/local_transfer/share_connection_entity.dart';
+import 'package:monkimusic/features/player/domain/entities/local_transfer/transfer_session_entity.dart';
+import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
+import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
+import 'package:uuid/uuid.dart';
 
 part 'playlist_details_event.dart';
 part 'playlist_details_state.dart';
@@ -9,14 +15,47 @@ part 'playlist_details_state.dart';
 class PlaylistDetailsBloc
     extends Bloc<PlaylistDetailsEvent, PlaylistDetailsState> {
   final PlaylistsRepository _playlistsRepository;
+  final NetworkInfo _networkInfo;
+  final TransferRepository _transferRepository;
 
-  PlaylistDetailsBloc({required PlaylistsRepository playlistRepository})
-    : _playlistsRepository = playlistRepository,
-      super(const PlaylistDetailsInitial()) {
+  PlaylistDetailsBloc({
+    required PlaylistsRepository playlistRepository,
+    required NetworkInfo networkInfo,
+    required TransferRepository transferRepository,
+  }) : _playlistsRepository = playlistRepository,
+       _networkInfo = networkInfo,
+       _transferRepository = transferRepository,
+       super(const PlaylistDetailsInitial()) {
     on<LoadPlaylistSongs>(_onLoadPlaylistSongs);
     on<RemoveSongFromPlaylist>(_onRemoveSongFromPlaylist);
     on<ReorderPlaylistSongs>(_onReorderPlaylistSongs);
     on<SavePlaylistOrder>(_onSavePlaylistOrder);
+    on<SharePlaylist>(_onSharePlaylist);
+  }
+
+  Future<void> _onSharePlaylist(
+    SharePlaylist event,
+    Emitter<PlaylistDetailsState> emit,
+  ) async {
+    final state = this.state;
+    if (state is! PlaylistDetailsLoaded) return;
+    final ip = await _networkInfo.getLocalIp();
+
+    final connection = ShareConnectionEntity(
+      ip: ip!,
+      port: 8080,
+      token: const Uuid().v4(),
+    );
+
+    final session = TransferSessionEntity(
+      playlist: state.playlist,
+      songs: state.playlistSongs,
+    );
+
+    await _transferRepository.startServer(
+      session: session,
+      connection: connection,
+    );
     on<RemoveMultipleSongsFromPlaylist>(_onRemoveMultipleSongsFromPlaylist);
     on<EnterSongSelectionMode>(_onEnterSongSelectionMode);
     on<ExitSongSelectionMode>(_onExitSongSelectionMode);
@@ -97,7 +136,7 @@ class PlaylistDetailsBloc
 
     try {
       final playlistSongs = await _playlistsRepository.getPlaylistSongs(
-        event.playlistId,
+        event.playlist.id!,
       );
 
       if (playlistSongs.isEmpty) {
@@ -105,7 +144,12 @@ class PlaylistDetailsBloc
         return;
       }
 
-      emit(PlaylistDetailsLoaded(playlistSongs: playlistSongs));
+      emit(
+        PlaylistDetailsLoaded(
+          playlistSongs: playlistSongs,
+          playlist: event.playlist,
+        ),
+      );
     } catch (e) {
       emit(PlaylistDetailsFailure(e.toString()));
     }
@@ -117,10 +161,10 @@ class PlaylistDetailsBloc
   ) async {
     try {
       await _playlistsRepository.removeSongFromPlaylist(
-        event.playlistId,
+        event.playlist.id!,
         event.songId,
       );
-      add(LoadPlaylistSongs(playlistId: event.playlistId));
+      add(LoadPlaylistSongs(playlist: event.playlist));
     } catch (e) {
       emit(PlaylistDetailsFailure(e.toString()));
     }

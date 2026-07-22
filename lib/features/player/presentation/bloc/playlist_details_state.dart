@@ -22,11 +22,15 @@ final class PlaylistDetailsLoaded extends PlaylistDetailsState {
   final Set<int> selectedSongIds;
 
   const PlaylistDetailsLoaded({
+    required this.playlist,
     this.playlistSongs = const <SongsEntity>[],
     this.isReordering = false,
     this.isSelectingSongs = false,
     this.selectedSongIds = const {},
   });
+  final PlaylistsEntity playlist;
+  final List<SongsEntity> playlistSongs;
+  final bool isReordering;
 
   PlaylistDetailsLoaded copyWith({
     List<SongsEntity>? playlistSongs,
@@ -35,6 +39,7 @@ final class PlaylistDetailsLoaded extends PlaylistDetailsState {
     Set<int>? selectedSongIds,
   }) {
     return PlaylistDetailsLoaded(
+      playlist: playlist,
       playlistSongs: playlistSongs ?? this.playlistSongs,
       isReordering: isReordering ?? this.isReordering,
       isSelectingSongs: isSelectingSongs ?? this.isSelectingSongs,

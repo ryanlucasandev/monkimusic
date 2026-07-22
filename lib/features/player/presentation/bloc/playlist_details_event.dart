@@ -8,24 +8,21 @@ sealed class PlaylistDetailsEvent extends Equatable {
 }
 
 final class LoadPlaylistSongs extends PlaylistDetailsEvent {
-  final int playlistId;
-  const LoadPlaylistSongs({required this.playlistId});
+  final PlaylistsEntity playlist;
+  const LoadPlaylistSongs({required this.playlist});
 
   @override
-  List<Object?> get props => [playlistId];
+  List<Object?> get props => [playlist];
 }
 
 final class RemoveSongFromPlaylist extends PlaylistDetailsEvent {
-  final int playlistId;
+  final PlaylistsEntity playlist;
   final int songId;
 
-  const RemoveSongFromPlaylist({
-    required this.playlistId,
-    required this.songId,
-  });
+  const RemoveSongFromPlaylist({required this.playlist, required this.songId});
 
   @override
-  List<Object?> get props => [playlistId, songId];
+  List<Object?> get props => [playlist, songId];
 }
 
 final class RemoveMultipleSongsFromPlaylist extends PlaylistDetailsEvent {
@@ -66,4 +63,8 @@ final class SavePlaylistOrder extends PlaylistDetailsEvent {
 
   @override
   List<Object?> get props => [playlistId, songIds];
+}
+
+final class SharePlaylist extends PlaylistDetailsEvent {
+  const SharePlaylist();
 }

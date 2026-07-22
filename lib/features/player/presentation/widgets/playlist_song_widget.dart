@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/instance_manager.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
+import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
@@ -19,14 +20,14 @@ class PlaylistSongWidget extends StatelessWidget {
   final List<SongsEntity> songs;
   // index of the song in the list
   final int index;
-  final int? currentPlaylistId;
+  final PlaylistsEntity? playlist;
   final bool? isReordering;
 
   const PlaylistSongWidget({
     super.key,
     required this.songs,
     required this.index,
-    this.currentPlaylistId,
+    this.playlist,
     this.isReordering,
   });
 
@@ -142,7 +143,7 @@ class PlaylistSongWidget extends StatelessWidget {
         create: (_) =>
             PlaylistBloc(playlistRepository: locator<PlaylistsRepository>())
               ..add(const LoadPlaylists()),
-        child: SelectPlaylistDialog(currentPlaylistId: currentPlaylistId),
+        child: SelectPlaylistDialog(currentPlaylistId: playlist!.id),
       ),
     );
     if (playlistId != null && context.mounted) {
@@ -162,7 +163,7 @@ class PlaylistSongWidget extends StatelessWidget {
     if (confirmed == true && context.mounted) {
       context.read<PlaylistDetailsBloc>().add(
         RemoveSongFromPlaylist(
-          playlistId: currentPlaylistId!,
+          playlist: playlist!,
           songId: songs[index].songId!,
         ),
       );

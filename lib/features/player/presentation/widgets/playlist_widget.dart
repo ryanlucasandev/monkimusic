@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide Transition;
 import 'package:monkimusic/core/di/service_locator.dart';
+import 'package:monkimusic/core/network/network_info.dart';
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
+import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_details_bloc.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/create_playlist_dialog.dart';
@@ -36,7 +38,9 @@ class PlaylistWidget extends StatelessWidget {
               builder: (_) => BlocProvider(
                 create: (_) => PlaylistDetailsBloc(
                   playlistRepository: locator<PlaylistsRepository>(),
-                )..add(LoadPlaylistSongs(playlistId: playlist.id!)),
+                  networkInfo: locator<NetworkInfo>(),
+                  transferRepository: locator<TransferRepository>(),
+                )..add(LoadPlaylistSongs(playlist: playlist)),
                 child: PlaylistDetailsPage(playlist: playlist),
               ),
             ),
