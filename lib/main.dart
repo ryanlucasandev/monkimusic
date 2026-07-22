@@ -13,8 +13,8 @@ import 'package:monkimusic/features/player/presentation/pages/songs_page.dart';
 import 'package:monkimusic/simple_bloc_observer.dart';
 
 Future<void> main() async {
-  Bloc.observer = SimpleBlocObserver();
   WidgetsFlutterBinding.ensureInitialized();
+  Bloc.observer = SimpleBlocObserver();
 
   await initializeLocator();
   runApp(const MyApp());
