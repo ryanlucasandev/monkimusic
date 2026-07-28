@@ -25,7 +25,9 @@ class SongsModel extends SongsEntity {
       album: song.album,
       albumId: song.albumId,
       artistId: song.artistId,
-      duration: Duration(milliseconds: song.duration!),
+      duration: song.duration != null
+          ? Duration(milliseconds: song.duration!)
+          : null,
       track: song.track,
       genre: song.genre,
       dateAdded: song.dateAdded,
@@ -41,7 +43,9 @@ class SongsModel extends SongsEntity {
       album: data.album,
       albumId: data.albumId,
       artistId: data.artistId,
-      duration: Duration(milliseconds: data.duration!),
+      duration: data.duration != null
+          ? Duration(milliseconds: data.duration!)
+          : null,
       track: data.track,
       genre: data.genre,
       dateAdded: data.dateAdded,
@@ -97,7 +101,7 @@ class SongsModel extends SongsEntity {
 
   factory SongsModel.fromJson(Map<String, dynamic> json) {
     return SongsModel(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       title: json['title'] as String?,
       artist: json['artist'] as String?,
       album: json['album'] as String?,

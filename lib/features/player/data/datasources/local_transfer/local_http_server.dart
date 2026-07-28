@@ -50,6 +50,7 @@ class LocalHttpServer {
 
       case '/session':
         await _sendJson(request, {
+          'sessionId': _session.sessionId,
           'playlist': _session.playlist.toJson(),
           'songs': _session.songs.map((song) => song.toJson()).toList(),
         });

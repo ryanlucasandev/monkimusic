@@ -26,16 +26,16 @@ final class RemoveSongFromPlaylist extends PlaylistDetailsEvent {
 }
 
 final class RemoveMultipleSongsFromPlaylist extends PlaylistDetailsEvent {
-  final int playlistId;
+  final PlaylistsEntity playlist;
   final Set<int> songIds;
 
   const RemoveMultipleSongsFromPlaylist({
-    required this.playlistId,
+    required this.playlist,
     required this.songIds,
   });
 
   @override
-  List<Object?> get props => [playlistId, songIds];
+  List<Object?> get props => [playlist, songIds];
 }
 
 final class ReorderPlaylistSongs extends PlaylistDetailsEvent {

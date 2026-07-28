@@ -35,7 +35,11 @@ class PlaylistSongWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
       builder: (context, state) {
-        final currentState = state as PlaylistDetailsLoaded;
+        if (state is! PlaylistDetailsLoaded) {
+          return const SizedBox.shrink();
+        }
+
+        final currentState = state;
         final isSelected = currentState.selectedSongIds.contains(
           songs[index].songId,
         );
