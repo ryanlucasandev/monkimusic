@@ -16,6 +16,7 @@ final class PlaylistDetailsLoading extends PlaylistDetailsState {
 }
 
 final class PlaylistDetailsLoaded extends PlaylistDetailsState {
+  final PlaylistsEntity playlist;
   final List<SongsEntity> playlistSongs;
   final bool isReordering;
   final bool isSelectingSongs;
@@ -28,9 +29,6 @@ final class PlaylistDetailsLoaded extends PlaylistDetailsState {
     this.isSelectingSongs = false,
     this.selectedSongIds = const {},
   });
-  final PlaylistsEntity playlist;
-  final List<SongsEntity> playlistSongs;
-  final bool isReordering;
 
   PlaylistDetailsLoaded copyWith({
     List<SongsEntity>? playlistSongs,
@@ -66,4 +64,10 @@ final class PlaylistDetailsFailure extends PlaylistDetailsState {
 
   @override
   List<Object?> get props => [errorMessage];
+}
+
+final class PlaylistShareReady extends PlaylistDetailsState {
+  final TransferSessionEntity session;
+  final ShareConnectionEntity connection;
+  const PlaylistShareReady(this.session, this.connection);
 }

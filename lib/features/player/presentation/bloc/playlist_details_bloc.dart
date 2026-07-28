@@ -30,6 +30,10 @@ class PlaylistDetailsBloc
     on<RemoveSongFromPlaylist>(_onRemoveSongFromPlaylist);
     on<ReorderPlaylistSongs>(_onReorderPlaylistSongs);
     on<SavePlaylistOrder>(_onSavePlaylistOrder);
+    on<RemoveMultipleSongsFromPlaylist>(_onRemoveMultipleSongsFromPlaylist);
+    on<EnterSongSelectionMode>(_onEnterSongSelectionMode);
+    on<ExitSongSelectionMode>(_onExitSongSelectionMode);
+    on<ToggleSongSelection>(_onToggleSongSelection);
     on<SharePlaylist>(_onSharePlaylist);
   }
 
@@ -48,6 +52,7 @@ class PlaylistDetailsBloc
     );
 
     final session = TransferSessionEntity(
+      sessionId: const Uuid().v4(),
       playlist: state.playlist,
       songs: state.playlistSongs,
     );
@@ -56,10 +61,8 @@ class PlaylistDetailsBloc
       session: session,
       connection: connection,
     );
-    on<RemoveMultipleSongsFromPlaylist>(_onRemoveMultipleSongsFromPlaylist);
-    on<EnterSongSelectionMode>(_onEnterSongSelectionMode);
-    on<ExitSongSelectionMode>(_onExitSongSelectionMode);
-    on<ToggleSongSelection>(_onToggleSongSelection);
+
+    emit(PlaylistShareReady(session, connection));
   }
 
   Future<void> _onToggleSongSelection(
@@ -176,10 +179,10 @@ class PlaylistDetailsBloc
   ) async {
     try {
       await _playlistsRepository.removeMultipleSongsFromPlaylist(
-        event.playlistId,
+        event.playlist.id!,
         event.songIds,
       );
-      add(LoadPlaylistSongs(playlistId: event.playlistId));
+      add(LoadPlaylistSongs(playlist: event.playlist));
     } catch (e) {
       emit(PlaylistDetailsFailure(e.toString()));
     }

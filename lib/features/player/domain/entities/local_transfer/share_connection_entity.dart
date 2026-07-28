@@ -8,4 +8,8 @@ class ShareConnectionEntity {
     required this.port,
     required this.token,
   });
+
+  String get qrData {
+    return 'http://$ip:$port/transfer/$token';
+  }
 }

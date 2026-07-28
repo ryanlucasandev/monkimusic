@@ -4,6 +4,7 @@ import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart
 import 'package:monkimusic/features/player/presentation/bloc/playlist_details_bloc.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/remove_songs_from_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/songs_page.dart';
+import 'package:monkimusic/features/player/presentation/pages/transfer_qr_page.dart';
 import 'package:monkimusic/features/player/presentation/widgets/playlist_song_widget.dart';
 
 enum PlaylistDetailsPageMenuAction { reOrderSongs, removeSongs, share }
@@ -19,86 +20,107 @@ class PlaylistDetailsPage extends StatefulWidget {
 class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _AppBar(playlist: widget.playlist),
-      body: BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
-        builder: (context, state) {
-          if (state is PlaylistDetailsLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state is PlaylistDetailsFailure) {
-            return const Center(child: Text('Failed to load songs.'));
-          }
-
-          if (state is PlaylistDetailsEmpty) {
-            return Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.queue_music_outlined, size: 72),
-                  const SizedBox(height: 16),
-                  const Text('This playlist is empty'),
-                  const SizedBox(height: 24),
-                  FilledButton.icon(
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (_) => SongsPage()),
-                        (route) => false,
-                      );
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Add songs'),
-                  ),
-                ],
+    return BlocListener<PlaylistDetailsBloc, PlaylistDetailsState>(
+      listener: (context, state) {
+        if (state is PlaylistShareReady) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => TransferQrPage(
+                connection: state.connection,
+                session: state.session,
               ),
-            );
-          }
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: _AppBar(playlist: widget.playlist),
+        body: BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
+          builder: (context, state) {
+            if (state is PlaylistDetailsLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          if (state is PlaylistDetailsLoaded) {
-            final playlistSongs = state.playlistSongs;
+            if (state is PlaylistDetailsFailure) {
+              return const Center(child: Text('Failed to load songs.'));
+            }
 
-            if (state.isReordering) {
-              return ReorderableListView.builder(
+            if (state is PlaylistDetailsEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.queue_music_outlined, size: 72),
+                    const SizedBox(height: 16),
+                    const Text('This playlist is empty'),
+                    const SizedBox(height: 24),
+                    FilledButton.icon(
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => SongsPage()),
+                          (route) => false,
+                        );
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text('Add songs'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (state is PlaylistDetailsLoaded) {
+              final playlistSongs = state.playlistSongs;
+
+              if (state.isReordering) {
+                return ReorderableListView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: playlistSongs.length,
+                  onReorderItem: (int oldIndex, int newIndex) {
+                    setState(() {
+                      if (oldIndex < newIndex) {
+                        newIndex;
+                      }
+                      final song = playlistSongs.removeAt(oldIndex);
+                      playlistSongs.insert(newIndex, song);
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    final song = playlistSongs[index];
+                    return KeyedSubtree(
+                      key: ValueKey(song.id),
+                      child: BlocProvider.value(
+                        value: context.read<PlaylistDetailsBloc>(),
+                        child: PlaylistSongWidget(
+                          key: ValueKey(song.id),
+                          songs: playlistSongs,
+                          index: index,
+                          playlist: widget.playlist,
+                          isReordering: true,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }
+              return ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 itemCount: playlistSongs.length,
-                onReorderItem: (int oldIndex, int newIndex) {
-                  setState(() {
-                    if (oldIndex < newIndex) {
-                      newIndex;
-                    }
-                    final song = playlistSongs.removeAt(oldIndex);
-                    playlistSongs.insert(newIndex, song);
-                  });
-                },
                 itemBuilder: (context, index) {
-                  final song = playlistSongs[index];
                   return PlaylistSongWidget(
-                    key: ValueKey(song.id),
                     songs: playlistSongs,
                     index: index,
                     playlist: widget.playlist,
-                    isReordering: true,
+                    isReordering: false,
                   );
                 },
               );
             }
-            return ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              itemCount: playlistSongs.length,
-              itemBuilder: (context, index) {
-                return PlaylistSongWidget(
-                  songs: playlistSongs,
-                  index: index,
-                  playlist: widget.playlist,
-                  isReordering: false,
-                );
-              },
-            );
-          }
-          return const SizedBox.shrink();
-        },
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }
@@ -182,9 +204,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
                     );
                     break;
                   case PlaylistDetailsPageMenuAction.share:
-                    // context.read<PlaylistDetailsBloc>().add(
-                    //   EnterSongSelectionMode(),
-                    // );
+                    context.read<PlaylistDetailsBloc>().add(SharePlaylist());
                     break;
                 }
               },
@@ -235,7 +255,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
     if (confirmed == true && context.mounted) {
       context.read<PlaylistDetailsBloc>().add(
         RemoveMultipleSongsFromPlaylist(
-          playlistId: playlist.id!,
+          playlist: playlist,
           songIds: state.selectedSongIds,
         ),
       );

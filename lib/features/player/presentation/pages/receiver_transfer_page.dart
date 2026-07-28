@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monkimusic/core/di/service_locator.dart';
+import 'package:monkimusic/features/player/domain/entities/local_transfer/share_connection_entity.dart';
+import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
+import 'package:monkimusic/features/player/presentation/bloc/transfer_bloc.dart';
+
+class ReceiverTransferPage extends StatelessWidget {
+  final ShareConnectionEntity connection;
+  const ReceiverTransferPage({super.key, required this.connection});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          TransferBloc(transferRepository: locator<TransferRepository>())
+            ..add(ConnectToSender(connection)),
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Receive Music')),
+        body: BlocBuilder<TransferBloc, TransferState>(
+          builder: (context, state) {
+            if (state is TransferConnecting) {
+              return const Center(child: Text('Connecting...'));
+            }
+
+            if (state is TransferFailure) {
+              return Center(child: Text(state.errorMessage!));
+            }
+
+            if (state is TransferDownloading) {
+              return const Center(child: Text('TransferProgressWidget'));
+            }
+
+            if (state is TransferConnected) {
+              final session = state.session;
+
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.check_circle, size: 64),
+
+                    const SizedBox(height: 16),
+                    const Text('Connected', style: TextStyle(fontSize: 24)),
+                    const SizedBox(height: 24),
+
+                    Text(
+                      session!.playlist.name,
+                      style: const TextStyle(fontSize: 18),
+                    ),
+
+                    Text('${session.songs.length} songs'),
+
+                    const SizedBox(height: 32),
+
+                    FilledButton(
+                      onPressed: () {},
+                      child: const Text('Receive'),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            if (state is TransferCompleted) {
+              return const Center(child: Text('Transfer Complete'));
+            }
+
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+  }
+}

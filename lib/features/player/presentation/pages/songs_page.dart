@@ -1,12 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monkimusic/features/player/data/models/local_transfer/share_connection_model.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
 import 'package:monkimusic/features/player/presentation/bloc/songs_bloc.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/select_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/playlists_page.dart';
+import 'package:monkimusic/features/player/presentation/pages/qr_scanner_page.dart';
+import 'package:monkimusic/features/player/presentation/pages/receiver_transfer_page.dart';
 import 'package:monkimusic/features/player/presentation/widgets/song_widget.dart';
 
-enum SongsPageMenuAction { playlists, addSongs }
+enum SongsPageMenuAction { playlists, addSongs, scanQr }
 
 class SongsPage extends StatelessWidget {
   const SongsPage({super.key});
@@ -136,6 +141,24 @@ class _SongsPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                   case SongsPageMenuAction.addSongs:
                     context.read<SongsBloc>().add(EnterSongSelectionMode());
                     break;
+                  case SongsPageMenuAction.scanQr:
+                    final scannedQr = await Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const QrScannerPage()),
+                    );
+
+                    if (!context.mounted || scannedQr == null) return;
+
+                    final json = jsonDecode(scannedQr);
+                    final connection = ShareConnectionModel.fromJson(json);
+
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => ReceiverTransferPage(
+                          connection: connection.toEntity(),
+                        ),
+                      ),
+                    );
+                    break;
                 }
               },
               itemBuilder: (context) => const [
@@ -151,6 +174,13 @@ class _SongsPageAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: ListTile(
                     leading: Icon(Icons.playlist_add),
                     title: Text('Add songs to playlist'),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: SongsPageMenuAction.scanQr,
+                  child: ListTile(
+                    leading: Icon(Icons.qr_code_scanner),
+                    title: Text('Receive music'),
                   ),
                 ),
               ],

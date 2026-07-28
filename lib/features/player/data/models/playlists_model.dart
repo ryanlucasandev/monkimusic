@@ -68,7 +68,7 @@ class PlaylistsModel {
       'id': id,
       'name': name,
       'coverArtPath': coverArtPath,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 
@@ -76,8 +76,8 @@ class PlaylistsModel {
     return PlaylistsModel(
       id: json['id'] as int,
       name: json['name'] as String,
-      coverArtPath: json['coverArtPath'] as String,
-      createdAt: json['createdAt'] as DateTime,
+      coverArtPath: json['coverArtPath'] as String?,
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 }
