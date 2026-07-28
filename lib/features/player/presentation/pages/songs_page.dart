@@ -7,8 +7,8 @@ import 'package:monkimusic/features/player/presentation/bloc/playlist/playlist_b
 import 'package:monkimusic/features/player/presentation/bloc/songs/songs_bloc.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/select_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/playlists_page.dart';
-import 'package:monkimusic/features/player/presentation/pages/qr_scanner_page.dart';
-import 'package:monkimusic/features/player/presentation/pages/receiver_transfer_page.dart';
+import 'package:monkimusic/features/player/presentation/pages/transfer/qr_scanner_page.dart';
+import 'package:monkimusic/features/player/presentation/pages/transfer/receiver_transfer_page.dart';
 import 'package:monkimusic/features/player/presentation/widgets/song_widget.dart';
 
 enum SongsPageMenuAction { playlists, addSongs, scanQr }

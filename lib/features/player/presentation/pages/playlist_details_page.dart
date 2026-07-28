@@ -4,7 +4,7 @@ import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart
 import 'package:monkimusic/features/player/presentation/bloc/playlist_details/playlist_details_bloc.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/remove_songs_from_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/songs_page.dart';
-import 'package:monkimusic/features/player/presentation/pages/transfer_qr_page.dart';
+import 'package:monkimusic/features/player/presentation/pages/transfer/transfer_qr_page.dart';
 import 'package:monkimusic/features/player/presentation/widgets/playlist_song_widget.dart';
 
 enum PlaylistDetailsPageMenuAction { reOrderSongs, removeSongs, share }
