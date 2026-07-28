@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
-import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/player/player_bloc.dart';
 
 void main() {
   group('AudioPlayerState Equality', () {

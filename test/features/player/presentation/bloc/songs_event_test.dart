@@ -1,4 +1,4 @@
-import 'package:monkimusic/features/player/presentation/bloc/songs_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/songs/songs_bloc.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 

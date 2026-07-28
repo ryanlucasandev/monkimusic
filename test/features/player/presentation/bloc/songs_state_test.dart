@@ -1,5 +1,5 @@
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
-import 'package:monkimusic/features/player/presentation/bloc/songs_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/songs/songs_bloc.dart';
 import 'package:test/test.dart';
 
 void main() {

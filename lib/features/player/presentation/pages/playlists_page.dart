@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist/playlist_bloc.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/create_playlist_dialog.dart';
 
 import 'package:monkimusic/features/player/presentation/widgets/playlist_widget.dart';
