@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist/playlist_bloc.dart';
 
 class SelectPlaylistDialog extends StatelessWidget {
   const SelectPlaylistDialog({super.key, this.currentPlaylistId});

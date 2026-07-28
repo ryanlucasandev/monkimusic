@@ -5,10 +5,10 @@ import 'package:get/get.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
-import 'package:monkimusic/features/player/presentation/bloc/player_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/player/player_bloc.dart';
 import 'package:monkimusic/features/player/domain/usecases/fetch_device_songs_usecase.dart';
-import 'package:monkimusic/features/player/presentation/bloc/playlist_bloc.dart';
-import 'package:monkimusic/features/player/presentation/bloc/songs_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/songs/songs_bloc.dart';
 import 'package:monkimusic/features/player/presentation/pages/songs_page.dart';
 import 'package:monkimusic/simple_bloc_observer.dart';
 

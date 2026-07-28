@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/domain/entities/local_transfer/share_connection_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
-import 'package:monkimusic/features/player/presentation/bloc/transfer_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/transfer/transfer_bloc.dart';
 
 class ReceiverTransferPage extends StatelessWidget {
   final ShareConnectionEntity connection;
