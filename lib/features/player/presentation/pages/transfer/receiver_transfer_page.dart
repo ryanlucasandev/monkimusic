@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/domain/entities/local_transfer/share_connection_entity.dart';
+import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
+import 'package:monkimusic/features/player/presentation/bloc/songs/songs_bloc.dart';
 import 'package:monkimusic/features/player/presentation/bloc/transfer/transfer_bloc.dart';
 
 class ReceiverTransferPage extends StatelessWidget {
@@ -12,12 +14,19 @@ class ReceiverTransferPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          TransferBloc(transferRepository: locator<TransferRepository>())
-            ..add(ConnectToSender(connection)),
+      create: (context) => TransferBloc(
+        transferRepository: locator<TransferRepository>(),
+        playlistRepository: locator<PlaylistsRepository>(),
+      )..add(ConnectToSender(connection)),
       child: Scaffold(
         appBar: AppBar(title: const Text('Receive Music')),
-        body: BlocBuilder<TransferBloc, TransferState>(
+        body: BlocConsumer<TransferBloc, TransferState>(
+          listenWhen: (previous, current) => current is TransferCompleted,
+          listener: (context, state) {
+            if (state is TransferCompleted) {
+              context.read<SongsBloc>().add(LoadSongs());
+            }
+          },
           builder: (context, state) {
             if (state is TransferConnecting) {
               return const Center(child: Text('Connecting...'));

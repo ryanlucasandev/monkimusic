@@ -22,6 +22,10 @@ final class PlaylistLoaded extends PlaylistState {
   List<Object?> get props => [playlists];
 }
 
+final class PlaylistCreated extends PlaylistState {
+  const PlaylistCreated();
+}
+
 final class PlaylistEmpty extends PlaylistState {
   const PlaylistEmpty();
 }

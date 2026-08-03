@@ -44,7 +44,13 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
     Emitter<PlaylistState> emit,
   ) async {
     try {
+      final existing = await _playlistsRepository.getPlaylistByName(event.name);
+      if (existing != null) {
+        emit(PlaylistFailure('Playlist name already exists'));
+        return;
+      }
       await _playlistsRepository.createPlaylist(event.name);
+      emit(PlaylistCreated());
       add(const LoadPlaylists());
     } catch (e) {
       emit(PlaylistFailure(e.toString()));

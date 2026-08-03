@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist/playlist_bloc.dart';
 
 class CreatePlaylistDialog extends StatefulWidget {
   const CreatePlaylistDialog({
@@ -34,15 +36,31 @@ class _CreatePlaylistDialogState extends State<CreatePlaylistDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.title),
-      content: TextField(
-        controller: _controller,
-        autofocus: true,
-        textInputAction: TextInputAction.done,
-        decoration: const InputDecoration(
-          labelText: 'Playlist name',
-          border: OutlineInputBorder(),
-        ),
-        onSubmitted: (_) => _submit(),
+      content: BlocConsumer<PlaylistBloc, PlaylistState>(
+        listener: (context, state) {
+          if (state is PlaylistCreated) {
+            Navigator.pop(context);
+          }
+        },
+        builder: (context, state) {
+          String? errorText;
+
+          if (state is PlaylistFailure) {
+            errorText = state.message;
+          }
+
+          return TextField(
+            controller: _controller,
+            autofocus: true,
+            textInputAction: TextInputAction.done,
+            decoration: InputDecoration(
+              labelText: 'Playlist name',
+              border: OutlineInputBorder(),
+              errorText: errorText,
+            ),
+            onSubmitted: (_) => _submit(),
+          );
+        },
       ),
       actions: [
         TextButton(
@@ -59,6 +77,6 @@ class _CreatePlaylistDialogState extends State<CreatePlaylistDialog> {
 
     if (name.isEmpty) return;
 
-    Navigator.pop(context, name);
+    context.read<PlaylistBloc>().add(CreatePlaylist(name: name));
   }
 }

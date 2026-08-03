@@ -8,6 +8,7 @@ import 'package:monkimusic/features/player/data/models/songs_model.dart';
 
 abstract class PlaylistsLocalDataSource {
   Future<List<PlaylistsModel>> getPlaylists();
+  Future<PlaylistsModel?> getPlaylistByName(String name);
   Future<int> createPlaylist(String name);
   Future<int> renamePlaylist(int id, String name);
   Future<int> deletePlaylist(int id);
@@ -25,6 +26,7 @@ abstract class PlaylistsLocalDataSource {
     int playlistId,
     Set<int> songIds,
   );
+  Future<void> importPlaylist(PlaylistsModel playlist, List<SongsModel> songs);
 }
 
 class PlaylistsLocalDataSourceImpl extends PlaylistsLocalDataSource {
@@ -49,6 +51,12 @@ class PlaylistsLocalDataSourceImpl extends PlaylistsLocalDataSource {
   Future<List<PlaylistsModel>> getPlaylists() async {
     final playlists = await _playlistsDao.getPlaylists();
     return playlists.map(PlaylistsModel.fromDrift).toList();
+  }
+
+  @override
+  Future<PlaylistsModel?> getPlaylistByName(String name) async {
+    final playlist = await _playlistsDao.getPlaylistByName(name);
+    return playlist == null ? null : PlaylistsModel.fromDrift(playlist);
   }
 
   @override
@@ -129,6 +137,18 @@ class PlaylistsLocalDataSourceImpl extends PlaylistsLocalDataSource {
           );
         }
       }
+    });
+  }
+
+  @override
+  Future<void> importPlaylist(
+    PlaylistsModel playlist,
+    List<SongsModel> songs,
+  ) async {
+    await _appDb.transaction(() async {
+      final playlistId = await _playlistsDao.createPlaylist(playlist.name);
+
+      await addMultipleSongsToPlaylist(playlistId, songs);
     });
   }
 }

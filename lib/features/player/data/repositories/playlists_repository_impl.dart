@@ -84,4 +84,26 @@ class PlaylistsRepositoryImpl implements PlaylistsRepository {
     playlistId,
     songIds,
   );
+
+  @override
+  Future<void> importPlaylist(
+    PlaylistsEntity playlist,
+    List<SongsEntity> songs,
+  ) async {
+    final List<SongsModel> setSongs = songs
+        .map((song) => SongsModel.fromEntity(song))
+        .toList();
+    await _playlistsLocalDataSource.importPlaylist(
+      PlaylistsModel.fromEntity(playlist),
+      setSongs,
+    );
+  }
+
+  @override
+  Future<PlaylistsEntity?> getPlaylistByName(String name) async {
+    final playlist = await _playlistsLocalDataSource.getPlaylistByName(
+      name.trim(),
+    );
+    return playlist?.toEntity();
+  }
 }

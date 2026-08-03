@@ -4,6 +4,7 @@ import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 
 abstract class PlaylistsRepository {
   Future<List<PlaylistsEntity>> getPlaylists();
+  Future<PlaylistsEntity?> getPlaylistByName(String name);
   Future<int> createPlaylist(String name);
   Future<int> renamePlaylist(int id, String name);
   Future<int> deletePlaylist(int id);
@@ -18,6 +19,10 @@ abstract class PlaylistsRepository {
   Future<void> removeMultipleSongsFromPlaylist(
     int playlistId,
     Set<int> songsIds,
+  );
+  Future<void> importPlaylist(
+    PlaylistsEntity playlist,
+    List<SongsEntity> songs,
   );
   Stream<List<PlaylistsEntity>> watchPlaylists();
   Stream<List<PlaylistSongsEntity>> watchSongsInPlaylist(int playlistId);

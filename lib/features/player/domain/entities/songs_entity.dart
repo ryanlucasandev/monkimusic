@@ -31,6 +31,34 @@ class SongsEntity extends Equatable {
     this.dateAdded,
   });
 
+  SongsEntity copyWith({
+    String? id,
+    String? filePath,
+    String? title,
+    String? artist,
+    String? album,
+    int? albumId,
+    int? artistId,
+    Duration? duration,
+    int? track,
+    String? genre,
+    int? dateAdded,
+  }) {
+    return SongsEntity(
+      id: id ?? this.id,
+      filePath: filePath ?? this.filePath,
+      title: title ?? this.title,
+      artist: artist ?? this.artist,
+      album: album ?? this.album,
+      albumId: albumId ?? this.albumId,
+      artistId: artistId ?? this.artistId,
+      duration: duration ?? this.duration,
+      track: track ?? this.track,
+      genre: genre ?? this.genre,
+      dateAdded: dateAdded ?? this.dateAdded,
+    );
+  }
+
   @override
   List<Object?> get props => [
     songId,
