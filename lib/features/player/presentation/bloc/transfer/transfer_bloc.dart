@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/features/player/domain/entities/local_transfer/share_connection_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/local_transfer/transfer_session_entity.dart';
+import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -25,17 +26,41 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     try {
       final directory = await getApplicationDocumentsDirectory();
 
-      for (final song in event.session.songs) {
-        final uri = await _transferRepository.downloadSong(
-          connection: event.connection,
-          song: song,
-          directory: directory.path,
-        );
+      final totalSongs = event.session.songs.length;
+
+      for (var i = 0; i < totalSongs; i++) {
+        final song = event.session.songs[i];
+
+        try {
+          final filePath = await _transferRepository.downloadSong(
+            connection: event.connection,
+            song: song,
+            directory: directory.path,
+            onProgress: (progress) {
+              print('BLOC PROGRESS: $progress');
+              emit(
+                TransferDownloading(
+                  currentSong: i + 1,
+                  totalSongs: totalSongs,
+                  currentSongProgress: progress,
+                  song: song,
+                ),
+              );
+            },
+          );
+
+          if (filePath == null) {
+            throw Exception('Failed to download ${song.title}');
+          }
+        } catch (e) {
+          print('FAILED DOWNLOADING ${song.title}: $e');
+          continue;
+        }
       }
 
       emit(TransferCompleted());
     } catch (e) {
-      TransferFailure(errorMessage: e.toString());
+      emit(TransferFailure(errorMessage: e.toString()));
     }
   }
 

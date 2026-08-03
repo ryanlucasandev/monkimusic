@@ -14,5 +14,6 @@ abstract class TransferRepository {
     required ShareConnectionEntity connection,
     required SongsEntity song,
     required String directory,
+    void Function(double progress)? onProgress,
   });
 }

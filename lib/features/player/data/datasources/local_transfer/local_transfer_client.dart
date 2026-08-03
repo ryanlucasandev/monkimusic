@@ -91,7 +91,9 @@ class LocalTransferClient {
         print('RECEIVED: $receivedBytes bytes');
 
         if (response.contentLength > 0) {
-          onProgress?.call(receivedBytes / response.contentLength);
+          final progress = receivedBytes / response.contentLength;
+          print('DOWNLOAD PROGRESS: $progress');
+          onProgress?.call(progress);
         }
       }
 
@@ -122,8 +124,10 @@ class LocalTransferClient {
       }
 
       if (result != null) {
-        print('DELETING TEMP FILE');
-        await file.delete();
+        if (await file.exists()) {
+          print('DELETING TEMP FILE');
+          await file.delete();
+        }
       }
 
       return result?.uri.toString();
@@ -168,6 +172,26 @@ class LocalTransferClient {
     print("SAVED TO: $result");
 
     return file;
+  }
+
+  Future<String> getUniqueFilename(Directory directory, String filename) async {
+    final dotIndex = filename.lastIndexOf('.');
+
+    final baseName = dotIndex == -1
+        ? filename
+        : filename.substring(0, dotIndex);
+
+    final extension = dotIndex == -1 ? '' : filename.substring(dotIndex);
+
+    var uniqueName = filename;
+    var counter = 1;
+
+    while (await File('${directory.path}/$uniqueName').exists()) {
+      uniqueName = '$baseName ($counter)$extension';
+      counter++;
+    }
+
+    return uniqueName;
   }
 
   void dispose() {

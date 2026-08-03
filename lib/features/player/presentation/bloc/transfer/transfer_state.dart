@@ -26,11 +26,22 @@ final class TransferWaitingConfirmation extends TransferState {
 }
 
 final class TransferDownloading extends TransferState {
-  final int completed;
-  final int total;
-  final String currentSong;
+  final int currentSong;
+  final int totalSongs;
+  final double currentSongProgress;
+  final SongsEntity song;
+  final List<SongsEntity> failedSongs;
 
-  const TransferDownloading(this.completed, this.total, this.currentSong);
+  const TransferDownloading({
+    required this.currentSong,
+    required this.totalSongs,
+    required this.currentSongProgress,
+    required this.song,
+    this.failedSongs = const [],
+  });
+
+  @override
+  List<Object?> get props => [currentSong, totalSongs, currentSongProgress];
 }
 
 final class TransferCompleted extends TransferState {
@@ -42,6 +53,5 @@ final class TransferFailure extends TransferState {
   const TransferFailure({this.errorMessage});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [errorMessage];
 }

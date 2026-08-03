@@ -42,6 +42,7 @@ class TransferRepositoryImpl implements TransferRepository {
     required ShareConnectionEntity connection,
     required SongsEntity song,
     required String directory,
+    void Function(double progress)? onProgress,
   }) async {
     final connectionModel = ShareConnectionModel.fromEntity(connection);
     final songModel = SongsModel.fromEntity(song);
@@ -51,6 +52,7 @@ class TransferRepositoryImpl implements TransferRepository {
       connectionModel,
       songModel,
       saveDirectory,
+      onProgress: onProgress,
     );
 
     return uri;

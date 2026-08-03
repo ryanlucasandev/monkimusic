@@ -28,7 +28,31 @@ class ReceiverTransferPage extends StatelessWidget {
             }
 
             if (state is TransferDownloading) {
-              return const Center(child: Text('TransferProgressWidget'));
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Receiving songs',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(state.song.title!),
+                    const SizedBox(height: 24),
+                    Text(state.song.artist!),
+                    const SizedBox(height: 24),
+
+                    Text(
+                      '${state.currentSong} / ${state.totalSongs}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+
+                    const SizedBox(height: 32),
+
+                    LinearProgressIndicator(value: state.currentSongProgress),
+                  ],
+                ),
+              );
             }
 
             if (state is TransferConnected) {
