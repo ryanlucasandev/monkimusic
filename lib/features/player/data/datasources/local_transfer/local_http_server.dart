@@ -38,6 +38,7 @@ class LocalHttpServer {
   }
 
   Future<void> _handleRequest(HttpRequest request) async {
+    print('INCOMING REQUEST: ${request.method} ${request.uri}');
     if (!_isAuthorized(request)) {
       await _sendError(request, HttpStatus.forbidden, 'Invalid token');
       return;
@@ -49,27 +50,49 @@ class LocalHttpServer {
         return;
 
       case '/session':
-        await _sendJson(request, {
+        print('SESSION REQUEST RECEIVED');
+
+        final data = {
           'sessionId': _session.sessionId,
           'playlist': _session.playlist.toJson(),
           'songs': _session.songs.map((song) => song.toJson()).toList(),
-        });
+        };
+
+        print('SESSION JSON CREATED');
+
+        await _sendJson(request, data);
+
+        print('SESSION RESPONSE SENT');
         return;
 
       case '/download':
+        print('DOWNLOAD REQUEST: ${request.uri}');
+
         final songId = int.tryParse(
           request.uri.queryParameters['songId'] ?? '',
         );
 
-        final song = _session.songs.firstWhere((song) => song.songId == songId);
+        print('REQUEST SONG ID: $songId');
 
-        if (song.id == null) {
-          await _sendError(request, HttpStatus.badRequest, 'Song path missing');
+        if (songId == null) {
+          await _sendError(request, HttpStatus.badRequest, 'Invalid song id');
 
           return;
         }
 
-        final file = File(song.id!);
+        final song = _session.songs.firstWhere((song) => song.songId == songId);
+
+        print('FOUND SONG: ${song.title}');
+        print('FILE PATH: ${song.filePath}');
+
+        if (song.filePath == null) {
+          await _sendError(request, HttpStatus.badRequest, 'Song path missing');
+          return;
+        }
+
+        final file = File(song.filePath!);
+
+        print('FILE EXISTS: ${await file.exists()}');
 
         if (!await file.exists()) {
           await _sendError(request, HttpStatus.notFound, 'Song file not found');
@@ -83,17 +106,20 @@ class LocalHttpServer {
             : '$filename.mp3';
 
         request.response.headers.contentType = ContentType('audio', 'mpeg');
+
         request.response.headers.set(
           HttpHeaders.contentDisposition,
-          'attachment; filename="${Uri.encodeComponent(downloadName)}"',
+          'attachment; filename="$downloadName"',
         );
 
-        request.response.headers.set('Accept-Ranges', 'bytes');
+        request.response.headers.contentLength = await file.length();
 
-        final fileLength = await file.length();
-        request.response.headers.contentLength = fileLength;
+        print('SENDING FILE: ${file.path}');
+        print('FILE SIZE: ${await file.length()}');
 
         await file.openRead().pipe(request.response);
+
+        print('FILE SENT');
 
         return;
 

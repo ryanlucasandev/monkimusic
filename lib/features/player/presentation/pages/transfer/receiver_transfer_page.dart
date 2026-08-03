@@ -54,7 +54,14 @@ class ReceiverTransferPage extends StatelessWidget {
                     const SizedBox(height: 32),
 
                     FilledButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.read<TransferBloc>().add(
+                          StartDownload(
+                            connection: connection,
+                            session: session,
+                          ),
+                        );
+                      },
                       child: const Text('Receive'),
                     ),
                   ],

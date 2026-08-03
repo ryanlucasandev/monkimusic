@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:media_store_plus/media_store_plus.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/domain/repositories/audio_player_repository.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
@@ -17,6 +18,8 @@ Future<void> main() async {
   Bloc.observer = SimpleBlocObserver();
 
   await initializeLocator();
+  await MediaStore.ensureInitialized();
+  MediaStore.appFolder = "MonkiMusic";
   runApp(const MyApp());
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 }

@@ -5,24 +5,23 @@ import 'package:monkimusic/features/player/data/datasources/local_transfer/local
 import 'package:monkimusic/features/player/data/models/local_transfer/share_connection_model.dart';
 import 'package:monkimusic/features/player/data/models/local_transfer/transfer_session_model.dart';
 import 'package:monkimusic/features/player/data/models/songs_model.dart';
-import 'package:monkimusic/features/player/domain/entities/local_transfer/file_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/local_transfer/share_connection_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/local_transfer/transfer_session_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
 
 class TransferRepositoryImpl implements TransferRepository {
-  final LocalHttpServer server;
-  final LocalTransferClient client;
+  final LocalHttpServer _server;
+  final LocalTransferClient _client;
 
-  TransferRepositoryImpl(this.server, this.client);
+  TransferRepositoryImpl(this._server, this._client);
 
   @override
   Future<TransferSessionEntity> fetchTransferSession(
     ShareConnectionEntity connection,
   ) async {
     final connectionModel = ShareConnectionModel.fromEntity(connection);
-    final model = await client.fetchTransferSession(connectionModel);
+    final model = await _client.fetchTransferSession(connectionModel);
 
     return model.toEntity();
   }
@@ -32,30 +31,28 @@ class TransferRepositoryImpl implements TransferRepository {
     required TransferSessionEntity session,
     required ShareConnectionEntity connection,
   }) async {
-    await server.start(
+    await _server.start(
       session: TransferSessionModel.fromEntity(session),
       connection: ShareConnectionModel.fromEntity(connection),
     );
   }
 
   @override
-  Future<FileEntity> downloadSong({
+  Future<String?> downloadSong({
     required ShareConnectionEntity connection,
     required SongsEntity song,
-    required String savePath,
+    required String directory,
   }) async {
     final connectionModel = ShareConnectionModel.fromEntity(connection);
-
     final songModel = SongsModel.fromEntity(song);
+    final saveDirectory = Directory(directory);
 
-    final saveDirectory = Directory(savePath);
-
-    final file = await client.downloadSong(
+    final uri = await _client.downloadSong(
       connectionModel,
       songModel,
       saveDirectory,
     );
 
-    return FileEntity(path: file.path, name: file.uri.pathSegments.last);
+    return uri;
   }
 }

@@ -3,8 +3,10 @@ import 'package:drift/drift.dart';
 class SongsTable extends Table {
   IntColumn get songId => integer().autoIncrement()();
 
-  // filePath
+  // content URI
   TextColumn get id => text().unique()();
+  // file path for sharing playlist
+  TextColumn get filePath => text().unique()();
 
   // Metadata
   TextColumn get title => text().nullable()();

@@ -6,6 +6,7 @@ class SongsModel extends SongsEntity {
   const SongsModel({
     super.songId,
     super.id,
+    super.filePath,
     super.title,
     super.artist,
     super.album,
@@ -20,6 +21,7 @@ class SongsModel extends SongsEntity {
   factory SongsModel.fromPackage(plugin.SongModel song) {
     return SongsModel(
       id: song.uri,
+      filePath: song.data,
       title: song.title,
       artist: song.artist == '<unknown>' ? 'Unknown Artist' : song.artist,
       album: song.album,
@@ -38,6 +40,7 @@ class SongsModel extends SongsEntity {
     return SongsModel(
       songId: data.songId,
       id: data.id,
+      filePath: data.filePath,
       title: data.title,
       artist: data.artist,
       album: data.album,
@@ -56,6 +59,7 @@ class SongsModel extends SongsEntity {
     return SongsModel(
       songId: entity.songId,
       id: entity.id,
+      filePath: entity.filePath,
       title: entity.title,
       artist: entity.artist,
       album: entity.album,
@@ -72,6 +76,7 @@ class SongsModel extends SongsEntity {
     return SongsEntity(
       songId: songId,
       id: id,
+      filePath: filePath,
       title: title,
       artist: artist,
       album: album,
@@ -86,7 +91,9 @@ class SongsModel extends SongsEntity {
 
   Map<String, dynamic> toJson() {
     return {
+      'songId': songId,
       'id': id,
+      'filePath': filePath,
       'title': title,
       'artist': artist,
       'album': album,
@@ -101,7 +108,9 @@ class SongsModel extends SongsEntity {
 
   factory SongsModel.fromJson(Map<String, dynamic> json) {
     return SongsModel(
+      songId: json['songId'] as int?,
       id: json['id'] as String?,
+      filePath: json['filePath'] as String?,
       title: json['title'] as String?,
       artist: json['artist'] as String?,
       album: json['album'] as String?,

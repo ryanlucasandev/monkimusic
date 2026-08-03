@@ -11,3 +11,10 @@ final class ConnectToSender extends TransferEvent {
   final ShareConnectionEntity connection;
   const ConnectToSender(this.connection);
 }
+
+final class StartDownload extends TransferEvent {
+  final ShareConnectionEntity connection;
+  final TransferSessionEntity session;
+
+  const StartDownload({required this.connection, required this.session});
+}

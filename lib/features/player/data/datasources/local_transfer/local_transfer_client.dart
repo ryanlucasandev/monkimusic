@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:monkimusic/features/player/data/models/local_transfer/share_connection_model.dart';
 import 'package:monkimusic/features/player/data/models/songs_model.dart';
 import 'package:monkimusic/features/player/data/models/local_transfer/transfer_session_model.dart';
+import 'package:media_store_plus/media_store_plus.dart';
 
 class LocalTransferClient {
   final HttpClient _client = HttpClient();
@@ -12,6 +13,7 @@ class LocalTransferClient {
   Future<TransferSessionModel> fetchTransferSession(
     ShareConnectionModel connection,
   ) async {
+    print('CONNECTING TO ${connection.ip}:${connection.port}');
     try {
       final uri = Uri.parse(
         'http://${connection.ip}:${connection.port}/session?token=${connection.token}',
@@ -41,15 +43,15 @@ class LocalTransferClient {
     }
   }
 
-  Future<File> downloadSong(
+  Future<String?> downloadSong(
     ShareConnectionModel connection,
     SongsModel song,
-    Directory saveDirectory, {
+    Directory directory, {
     void Function(double progress)? onProgress,
   }) async {
     try {
-      if (!await saveDirectory.exists()) {
-        await saveDirectory.create(recursive: true);
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
       }
       final uri = Uri.parse(
         'http://${connection.ip}:${connection.port}'
@@ -68,29 +70,63 @@ class LocalTransferClient {
 
       final filename = '${_sanitizeFilename(song.title ?? 'Unknown Song')}.mp3';
 
-      final file = File('${saveDirectory.path}/$filename');
+      final file = File('${directory.path}/$filename');
+
+      print('DIRECTORY EXISTS: ${await directory.exists()}');
+      print('FILE PATH: ${file.path}');
+
+      print('OPENING FILE');
 
       final sink = file.openWrite();
 
-      final totalBytes = response.contentLength;
+      print('STATUS CODE: ${response.statusCode}');
+      print('CONTENT LENGTH: ${response.contentLength}');
 
       var receivedBytes = 0;
 
       await for (final chunk in response) {
+        receivedBytes += chunk.length;
         sink.add(chunk);
 
-        receivedBytes += chunk.length;
+        print('RECEIVED: $receivedBytes bytes');
 
-        if (totalBytes > 0) {
-          onProgress?.call(receivedBytes / totalBytes);
+        if (response.contentLength > 0) {
+          onProgress?.call(receivedBytes / response.contentLength);
         }
       }
 
       await sink.close();
 
-      onProgress?.call(1.0);
+      print('STREAM FINISHED');
+      print('FILE EXISTS: ${await file.exists()}');
+      print('FILE SIZE: ${await file.length()}');
 
-      return file;
+      print('STARTING MEDI_STORE SAVE');
+
+      final mediaStore = MediaStore();
+
+      SaveInfo? result;
+
+      try {
+        result = await mediaStore.saveFile(
+          tempFilePath: file.path,
+          dirType: DirType.audio,
+          dirName: DirName.music,
+          relativePath: "MonkiMusic",
+        );
+        print('SAVED TO: $result');
+        print('URI: ${result?.uri}');
+      } catch (e, stack) {
+        print('MEDIA STORE ERROR: $e');
+        print(stack);
+      }
+
+      if (result != null) {
+        print('DELETING TEMP FILE');
+        await file.delete();
+      }
+
+      return result?.uri.toString();
     } on SocketException {
       throw Exception('Disconnected from sender');
     } on TimeoutException {
@@ -117,6 +153,21 @@ class LocalTransferClient {
 
   String _sanitizeFilename(String name) {
     return name.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
+  }
+
+  Future<File> saveSongToMusicFolder(File file, String filename) async {
+    final mediaStore = MediaStore();
+
+    final result = await mediaStore.saveFile(
+      tempFilePath: file.path,
+      dirType: DirType.audio,
+      dirName: DirName.music,
+      relativePath: "MonkiMusic",
+    );
+
+    print("SAVED TO: $result");
+
+    return file;
   }
 
   void dispose() {

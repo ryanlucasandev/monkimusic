@@ -26,6 +26,7 @@ class SongsDao extends DatabaseAccessor<AppDb> with _$SongsDaoMixin {
     return into(songsTable).insert(
       SongsTableCompanion.insert(
         id: song.id!,
+        filePath: song.filePath!,
         title: Value(song.title!),
         artist: Value(song.artist),
         duration: Value(song.duration!.inMilliseconds),

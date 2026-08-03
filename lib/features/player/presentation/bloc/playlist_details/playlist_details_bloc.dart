@@ -51,6 +51,10 @@ class PlaylistDetailsBloc
       token: const Uuid().v4(),
     );
 
+    print('QR IP: ${connection.ip}');
+    print('QR PORT: ${connection.port}');
+    print('QR TOKEN: ${connection.token}');
+
     final session = TransferSessionEntity(
       sessionId: const Uuid().v4(),
       playlist: state.playlist,
