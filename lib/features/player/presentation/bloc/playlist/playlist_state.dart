@@ -16,10 +16,21 @@ final class PlaylistLoading extends PlaylistState {
 
 final class PlaylistLoaded extends PlaylistState {
   final List<PlaylistsEntity> playlists;
-  const PlaylistLoaded(this.playlists);
+  final String? errorMessage;
+  const PlaylistLoaded({required this.playlists, this.errorMessage});
+
+  PlaylistLoaded copyWith({
+    List<PlaylistsEntity>? playlists,
+    String? errorMessage,
+  }) {
+    return PlaylistLoaded(
+      playlists: playlists ?? this.playlists,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
 
   @override
-  List<Object?> get props => [playlists];
+  List<Object?> get props => [playlists, errorMessage];
 }
 
 final class PlaylistCreated extends PlaylistState {
@@ -31,11 +42,11 @@ final class PlaylistEmpty extends PlaylistState {
 }
 
 final class PlaylistFailure extends PlaylistState {
-  final String message;
-  const PlaylistFailure(this.message);
+  final String errorMessage;
+  const PlaylistFailure(this.errorMessage);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [errorMessage];
 }
 
 final class AddMultipleSongsSuccess extends PlaylistState {

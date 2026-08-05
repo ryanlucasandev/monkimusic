@@ -32,7 +32,7 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
       if (playlists.isEmpty) {
         emit(const PlaylistEmpty());
       } else {
-        emit(PlaylistLoaded(playlists));
+        emit(PlaylistLoaded(playlists: playlists));
       }
     } catch (e) {
       emit(PlaylistFailure(e.toString()));
@@ -46,7 +46,13 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
     try {
       final existing = await _playlistsRepository.getPlaylistByName(event.name);
       if (existing != null) {
-        emit(PlaylistFailure('Playlist name already exists'));
+        final currentState = state as PlaylistLoaded;
+        emit(
+          PlaylistLoaded(
+            playlists: currentState.playlists,
+            errorMessage: 'Playlist name already exists',
+          ),
+        );
         return;
       }
       await _playlistsRepository.createPlaylist(event.name);
@@ -62,7 +68,19 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
     Emitter<PlaylistState> emit,
   ) async {
     try {
+      final currentState = state as PlaylistLoaded;
+      final existing = await _playlistsRepository.getPlaylistByName(event.name);
+      if (existing != null) {
+        emit(
+          PlaylistLoaded(
+            playlists: currentState.playlists,
+            errorMessage: 'Playlist name already exists',
+          ),
+        );
+        return;
+      }
       await _playlistsRepository.renamePlaylist(event.id, event.name);
+      emit(PlaylistCreated());
       add(const LoadPlaylists());
     } catch (e) {
       emit(PlaylistFailure(e.toString()));

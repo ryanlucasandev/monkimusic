@@ -90,11 +90,15 @@ class PlaylistsRepositoryImpl implements PlaylistsRepository {
     PlaylistsEntity playlist,
     List<SongsEntity> songs,
   ) async {
+    final uniqueName = await getUniquePlaylistName(playlist.name);
+
+    final importedPlaylist = playlist.copyWith(name: uniqueName);
+
     final List<SongsModel> setSongs = songs
         .map((song) => SongsModel.fromEntity(song))
         .toList();
     await _playlistsLocalDataSource.importPlaylist(
-      PlaylistsModel.fromEntity(playlist),
+      PlaylistsModel.fromEntity(importedPlaylist),
       setSongs,
     );
   }
@@ -105,5 +109,17 @@ class PlaylistsRepositoryImpl implements PlaylistsRepository {
       name.trim(),
     );
     return playlist?.toEntity();
+  }
+
+  Future<String> getUniquePlaylistName(String name) async {
+    var newName = name;
+    var count = 1;
+
+    while (await getPlaylistByName(newName) != null) {
+      newName = '$name ($count)';
+      count++;
+    }
+
+    return newName;
   }
 }

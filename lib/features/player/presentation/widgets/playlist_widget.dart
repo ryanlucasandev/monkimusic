@@ -71,19 +71,22 @@ class PlaylistWidget extends StatelessWidget {
             final playlistBloc = context.read<PlaylistBloc>();
             switch (value) {
               case 'rename':
-                final name = await showDialog<String>(
+                context.read<PlaylistBloc>().add(LoadPlaylists());
+
+                await showDialog<String>(
                   context: context,
                   builder: (_) => CreatePlaylistDialog(
                     title: 'Rename Playlist',
                     confirmText: 'Save',
                     initialName: playlist.name,
+                    onSubmit: (name) => {
+                      playlistBloc.add(
+                        RenamePlaylist(name: name, id: playlist.id!),
+                      ),
+                    },
                   ),
                 );
-                if (name != null) {
-                  playlistBloc.add(
-                    RenamePlaylist(name: name, id: playlist.id!),
-                  );
-                }
+
                 break;
               case 'delete':
                 final confirmed = await showDialog<bool>(

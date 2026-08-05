@@ -46,16 +46,17 @@ class PlaylistsPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final playlistBloc = context.read<PlaylistBloc>();
-          final name = await showDialog<String>(
+          playlistBloc.add(LoadPlaylists());
+          await showDialog<String>(
             context: context,
             builder: (_) => CreatePlaylistDialog(
               title: 'Create Playlist',
               confirmText: 'Create',
+              onSubmit: (name) => {
+                playlistBloc.add(CreatePlaylist(name: name)),
+              },
             ),
           );
-          if (name != null) {
-            playlistBloc.add(CreatePlaylist(name: name));
-          }
         },
         child: const Icon(Icons.add),
       ),

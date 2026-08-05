@@ -8,10 +8,12 @@ class CreatePlaylistDialog extends StatefulWidget {
     required this.title,
     required this.confirmText,
     this.initialName = '',
+    required this.onSubmit,
   });
   final String title;
   final String confirmText;
   final String initialName;
+  final ValueChanged<String> onSubmit;
 
   @override
   State<CreatePlaylistDialog> createState() => _CreatePlaylistDialogState();
@@ -45,8 +47,8 @@ class _CreatePlaylistDialogState extends State<CreatePlaylistDialog> {
         builder: (context, state) {
           String? errorText;
 
-          if (state is PlaylistFailure) {
-            errorText = state.message;
+          if (state is PlaylistLoaded) {
+            errorText = state.errorMessage;
           }
 
           return TextField(
@@ -77,6 +79,6 @@ class _CreatePlaylistDialogState extends State<CreatePlaylistDialog> {
 
     if (name.isEmpty) return;
 
-    context.read<PlaylistBloc>().add(CreatePlaylist(name: name));
+    widget.onSubmit(name);
   }
 }
