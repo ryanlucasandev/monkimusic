@@ -18,39 +18,50 @@ final class PlaylistDetailsLoading extends PlaylistDetailsState {
 final class PlaylistDetailsLoaded extends PlaylistDetailsState {
   final PlaylistsEntity playlist;
   final List<SongsEntity> playlistSongs;
+  final List<SongsEntity> filteredSongs;
   final bool isReordering;
   final bool isSelectingSongs;
   final Set<int> selectedSongIds;
+  final String? searchQuery;
 
   const PlaylistDetailsLoaded({
     required this.playlist,
     this.playlistSongs = const <SongsEntity>[],
+    this.filteredSongs = const <SongsEntity>[],
     this.isReordering = false,
     this.isSelectingSongs = false,
     this.selectedSongIds = const {},
+    this.searchQuery = '',
   });
 
   PlaylistDetailsLoaded copyWith({
+    PlaylistsEntity? playlist,
     List<SongsEntity>? playlistSongs,
+    List<SongsEntity>? filteredSongs,
     bool? isReordering,
     bool? isSelectingSongs,
     Set<int>? selectedSongIds,
+    String? searchQuery,
   }) {
     return PlaylistDetailsLoaded(
-      playlist: playlist,
+      playlist: playlist ?? this.playlist,
       playlistSongs: playlistSongs ?? this.playlistSongs,
+      filteredSongs: filteredSongs ?? this.filteredSongs,
       isReordering: isReordering ?? this.isReordering,
       isSelectingSongs: isSelectingSongs ?? this.isSelectingSongs,
       selectedSongIds: selectedSongIds ?? this.selectedSongIds,
+      searchQuery: searchQuery ?? this.searchQuery,
     );
   }
 
   @override
   List<Object?> get props => [
     playlistSongs,
+    filteredSongs,
     isReordering,
     isSelectingSongs,
     selectedSongIds,
+    searchQuery,
   ];
 }
 

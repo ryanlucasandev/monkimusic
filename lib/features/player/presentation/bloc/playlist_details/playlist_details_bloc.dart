@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/core/network/network_info.dart';
+import 'package:monkimusic/core/utils/search_utils.dart';
 import 'package:monkimusic/features/player/domain/entities/local_transfer/share_connection_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/local_transfer/transfer_session_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
@@ -35,6 +36,71 @@ class PlaylistDetailsBloc
     on<ExitSongSelectionMode>(_onExitSongSelectionMode);
     on<ToggleSongSelection>(_onToggleSongSelection);
     on<SharePlaylist>(_onSharePlaylist);
+    on<SearchChanged>(_onSearchChanged);
+  }
+
+  Future<void> _onLoadPlaylistSongs(
+    LoadPlaylistSongs event,
+    Emitter<PlaylistDetailsState> emit,
+  ) async {
+    emit(const PlaylistDetailsLoading());
+
+    try {
+      final playlistSongs = await _playlistsRepository.getPlaylistSongs(
+        event.playlist.id!,
+      );
+
+      if (playlistSongs.isEmpty) {
+        emit(const PlaylistDetailsEmpty());
+        return;
+      }
+
+      emit(
+        PlaylistDetailsLoaded(
+          playlistSongs: playlistSongs,
+          filteredSongs: playlistSongs,
+          playlist: event.playlist,
+        ),
+      );
+    } catch (e) {
+      emit(PlaylistDetailsFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onSearchChanged(
+    SearchChanged event,
+    Emitter<PlaylistDetailsState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! PlaylistDetailsLoaded) return;
+    final query = normalizeSearch(event.query);
+
+    if (query.isEmpty) {
+      emit(
+        currentState.copyWith(
+          filteredSongs: currentState.playlistSongs,
+          searchQuery: '',
+        ),
+      );
+      return;
+    }
+
+    final filteredSongs = currentState.playlistSongs.where((song) {
+      final title = normalizeSearch(song.title ?? '');
+      final artist = normalizeSearch(song.artist ?? '');
+      final album = normalizeSearch(song.album ?? '');
+
+      return title.contains(query) ||
+          artist.contains(query) ||
+          album.contains(query);
+    }).toList();
+
+    emit(
+      currentState.copyWith(
+        searchQuery: event.query,
+        filteredSongs: filteredSongs,
+      ),
+    );
   }
 
   Future<void> _onSharePlaylist(
@@ -130,33 +196,6 @@ class PlaylistDetailsBloc
       );
 
       emit(currentState.copyWith(isReordering: false));
-    } catch (e) {
-      emit(PlaylistDetailsFailure(e.toString()));
-    }
-  }
-
-  Future<void> _onLoadPlaylistSongs(
-    LoadPlaylistSongs event,
-    Emitter<PlaylistDetailsState> emit,
-  ) async {
-    emit(const PlaylistDetailsLoading());
-
-    try {
-      final playlistSongs = await _playlistsRepository.getPlaylistSongs(
-        event.playlist.id!,
-      );
-
-      if (playlistSongs.isEmpty) {
-        emit(const PlaylistDetailsEmpty());
-        return;
-      }
-
-      emit(
-        PlaylistDetailsLoaded(
-          playlistSongs: playlistSongs,
-          playlist: event.playlist,
-        ),
-      );
     } catch (e) {
       emit(PlaylistDetailsFailure(e.toString()));
     }

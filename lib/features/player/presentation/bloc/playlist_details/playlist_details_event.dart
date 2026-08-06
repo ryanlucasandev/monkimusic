@@ -65,6 +65,11 @@ final class SavePlaylistOrder extends PlaylistDetailsEvent {
   List<Object?> get props => [playlistId, songIds];
 }
 
+final class SearchChanged extends PlaylistDetailsEvent {
+  final String query;
+  const SearchChanged(this.query);
+}
+
 final class SharePlaylist extends PlaylistDetailsEvent {
   const SharePlaylist();
 }

@@ -18,6 +18,14 @@ class PlaylistDetailsPage extends StatefulWidget {
 }
 
 class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<PlaylistDetailsBloc, PlaylistDetailsState>(
@@ -35,7 +43,7 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
         }
       },
       child: Scaffold(
-        appBar: _AppBar(playlist: widget.playlist),
+        appBar: _AppBar(playlist: widget.playlist, controller: _controller),
         body: BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
           builder: (context, state) {
             if (state is PlaylistDetailsLoading) {
@@ -72,7 +80,7 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
             }
 
             if (state is PlaylistDetailsLoaded) {
-              final playlistSongs = state.playlistSongs;
+              final playlistSongs = state.filteredSongs;
 
               if (state.isReordering) {
                 return ReorderableListView.builder(
@@ -128,18 +136,37 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
 
 class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   final PlaylistsEntity playlist;
-  const _AppBar({required this.playlist});
+  final TextEditingController controller;
+  const _AppBar({required this.playlist, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
-        builder: (context, state) {
-          if (state is PlaylistDetailsLoaded && state.isSelectingSongs) {
-            return Text('${state.selectedSongIds.length} selected');
-          }
-          return Text(playlist.name);
-        },
+      title: Row(
+        children: [
+          BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
+            builder: (context, state) {
+              if (state is PlaylistDetailsLoaded && state.isSelectingSongs) {
+                return Text('${state.selectedSongIds.length} selected');
+              }
+              return Text(playlist.name);
+            },
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: TextField(
+                controller: controller,
+                autofocus: false,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
+                onChanged: (value) {
+                  context.read<PlaylistDetailsBloc>().add(SearchChanged(value));
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       actions: [
         BlocBuilder<PlaylistDetailsBloc, PlaylistDetailsState>(
