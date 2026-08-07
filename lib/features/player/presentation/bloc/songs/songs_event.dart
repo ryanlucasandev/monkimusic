@@ -26,3 +26,8 @@ final class ToggleSongSelection extends SongsEvent {
   @override
   List<Object?> get props => [song];
 }
+
+final class SearchChanged extends SongsEvent {
+  final String query;
+  const SearchChanged(this.query);
+}

@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/features/player/data/models/local_transfer/share_connection_model.dart';
-import 'package:monkimusic/features/player/presentation/bloc/playlist/playlist_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/playlist/playlist_bloc.dart'
+    hide SearchChanged;
 import 'package:monkimusic/features/player/presentation/bloc/songs/songs_bloc.dart';
 import 'package:monkimusic/features/player/presentation/dialogs/select_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/playlists_page.dart';
@@ -13,8 +13,21 @@ import 'package:monkimusic/features/player/presentation/widgets/song_widget.dart
 
 enum SongsPageMenuAction { playlists, addSongs, scanQr }
 
-class SongsPage extends StatelessWidget {
+class SongsPage extends StatefulWidget {
   const SongsPage({super.key});
+
+  @override
+  State<SongsPage> createState() => _SongsPageState();
+}
+
+class _SongsPageState extends State<SongsPage> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +43,7 @@ class SongsPage extends StatelessWidget {
         }
       },
       child: Scaffold(
-        appBar: const _SongsPageAppBar(),
+        appBar: _SongsPageAppBar(_controller),
         body: BlocBuilder<SongsBloc, SongsState>(
           builder: (context, state) {
             if (state is SongsLoading) {
@@ -46,7 +59,7 @@ class SongsPage extends StatelessWidget {
             }
 
             if (state is SongsLoaded) {
-              final songs = state.allSongs;
+              final songs = state.filteredSongs;
 
               return ListView.builder(
                 physics: const BouncingScrollPhysics(),
@@ -87,18 +100,37 @@ class SongsPage extends StatelessWidget {
 }
 
 class _SongsPageAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _SongsPageAppBar();
+  const _SongsPageAppBar(this.controller);
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: BlocBuilder<SongsBloc, SongsState>(
-        builder: (context, state) {
-          if (state is SongsLoaded && state.isSelectingSongs) {
-            return Text('${state.selectedSongs.length} selected');
-          }
-          return const Text('Monki Music');
-        },
+      title: Row(
+        children: [
+          BlocBuilder<SongsBloc, SongsState>(
+            builder: (context, state) {
+              if (state is SongsLoaded && state.isSelectingSongs) {
+                return Text('${state.selectedSongs.length} selected');
+              }
+              return const Text('Monki Music');
+            },
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: TextField(
+                controller: controller,
+                autofocus: false,
+                textInputAction: TextInputAction.done,
+                decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
+                onChanged: (value) {
+                  context.read<SongsBloc>().add(SearchChanged(value));
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       actions: [
         BlocBuilder<SongsBloc, SongsState>(

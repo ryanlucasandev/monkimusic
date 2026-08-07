@@ -42,7 +42,12 @@ final class PlaylistLoaded extends PlaylistState {
   }
 
   @override
-  List<Object?> get props => [playlists, filteredPlaylists, errorMessage];
+  List<Object?> get props => [
+    playlists,
+    filteredPlaylists,
+    errorMessage,
+    searchQuery,
+  ];
 }
 
 final class PlaylistCreated extends PlaylistState {
