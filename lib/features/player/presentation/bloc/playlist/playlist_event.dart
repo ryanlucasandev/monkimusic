@@ -10,6 +10,11 @@ final class LoadPlaylists extends PlaylistEvent {
   const LoadPlaylists();
 }
 
+final class SearchChanged extends PlaylistEvent {
+  final String query;
+  const SearchChanged(this.query);
+}
+
 final class CreatePlaylist extends PlaylistEvent {
   final String name;
   const CreatePlaylist({required this.name});

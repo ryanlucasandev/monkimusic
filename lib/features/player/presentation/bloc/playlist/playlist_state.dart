@@ -16,21 +16,33 @@ final class PlaylistLoading extends PlaylistState {
 
 final class PlaylistLoaded extends PlaylistState {
   final List<PlaylistsEntity> playlists;
-  final String? errorMessage;
-  const PlaylistLoaded({required this.playlists, this.errorMessage});
+  final List<PlaylistsEntity> filteredPlaylists;
+  final String errorMessage;
+  final String searchQuery;
+
+  const PlaylistLoaded({
+    required this.playlists,
+    this.filteredPlaylists = const <PlaylistsEntity>[],
+    this.errorMessage = '',
+    this.searchQuery = '',
+  });
 
   PlaylistLoaded copyWith({
     List<PlaylistsEntity>? playlists,
+    List<PlaylistsEntity>? filteredPlaylists,
     String? errorMessage,
+    String? searchQuery,
   }) {
     return PlaylistLoaded(
       playlists: playlists ?? this.playlists,
+      filteredPlaylists: filteredPlaylists ?? this.filteredPlaylists,
       errorMessage: errorMessage ?? this.errorMessage,
+      searchQuery: searchQuery ?? this.searchQuery,
     );
   }
 
   @override
-  List<Object?> get props => [playlists, errorMessage];
+  List<Object?> get props => [playlists, filteredPlaylists, errorMessage];
 }
 
 final class PlaylistCreated extends PlaylistState {

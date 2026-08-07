@@ -5,13 +5,46 @@ import 'package:monkimusic/features/player/presentation/dialogs/create_playlist_
 
 import 'package:monkimusic/features/player/presentation/widgets/playlist_widget.dart';
 
-class PlaylistsPage extends StatelessWidget {
+class PlaylistsPage extends StatefulWidget {
   const PlaylistsPage({super.key});
+
+  @override
+  State<PlaylistsPage> createState() => _PlaylistsPageState();
+}
+
+class _PlaylistsPageState extends State<PlaylistsPage> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Monki Playlists')),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            const Text('Monki Playlists'),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: TextField(
+                  controller: _controller,
+                  autofocus: false,
+                  textInputAction: TextInputAction.done,
+                  decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
+                  onChanged: (value) {
+                    context.read<PlaylistBloc>().add(SearchChanged(value));
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: BlocBuilder<PlaylistBloc, PlaylistState>(
         builder: (context, state) {
           if (state is PlaylistLoading) {
@@ -29,7 +62,7 @@ class PlaylistsPage extends StatelessWidget {
           }
 
           if (state is PlaylistLoaded) {
-            final playlists = state.playlists;
+            final playlists = state.filteredPlaylists;
 
             return ListView.builder(
               physics: const BouncingScrollPhysics(),

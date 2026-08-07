@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:monkimusic/core/utils/search_utils.dart';
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
@@ -19,6 +20,39 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
     on<DeletePlaylist>(_onDeletePlaylist);
     on<AddSongToPlaylist>(_onAddSongToPlaylist);
     on<AddMultipleSongsToPlaylist>(_onAddMultipleSongsToPlaylist);
+    on<SearchChanged>(_onSearchChanged);
+  }
+
+  Future<void> _onSearchChanged(
+    SearchChanged event,
+    Emitter<PlaylistState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! PlaylistLoaded) return;
+    final query = normalizeSearch(event.query);
+    if (query.isEmpty) {
+      emit(
+        currentState.copyWith(
+          filteredPlaylists: currentState.playlists,
+          searchQuery: '',
+        ),
+      );
+      return;
+    }
+
+    final filteredPlaylists = currentState.playlists.where((playlist) {
+      final name = normalizeSearch(playlist.name);
+      return name.contains(query);
+    }).toList();
+
+    print(filteredPlaylists);
+
+    emit(
+      currentState.copyWith(
+        searchQuery: event.query,
+        filteredPlaylists: filteredPlaylists,
+      ),
+    );
   }
 
   Future<void> _onLoadPlaylists(
@@ -31,9 +65,10 @@ class PlaylistBloc extends Bloc<PlaylistEvent, PlaylistState> {
 
       if (playlists.isEmpty) {
         emit(const PlaylistEmpty());
-      } else {
-        emit(PlaylistLoaded(playlists: playlists));
+        return;
       }
+
+      emit(PlaylistLoaded(playlists: playlists, filteredPlaylists: playlists));
     } catch (e) {
       emit(PlaylistFailure(e.toString()));
     }

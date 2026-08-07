@@ -22,7 +22,7 @@ final class PlaylistDetailsLoaded extends PlaylistDetailsState {
   final bool isReordering;
   final bool isSelectingSongs;
   final Set<int> selectedSongIds;
-  final String? searchQuery;
+  final String searchQuery;
 
   const PlaylistDetailsLoaded({
     required this.playlist,
