@@ -9,6 +9,8 @@ abstract class AudioPlayerRepository {
   Future<void> skipToNext();
   Future<void> skipToPrevious();
   Future<void> playPause(bool playing);
+  Future<void> setShuffleMode(bool enabled);
   Stream<bool> get isPlayingStream;
   Stream<({SongsEntity? song, int index})> get currentSongStream;
+  Stream<bool> get shuffleModeEnabled;
 }

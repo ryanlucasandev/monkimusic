@@ -11,6 +11,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   final AudioPlayerRepository _audioPlayerRepository;
   StreamSubscription? _mediaItemSubscription;
   StreamSubscription? _playbackStateSubscription;
+  StreamSubscription<bool>? _shuffleModeSubscription;
 
   SongsEntity? _currentSong;
   bool _isPlaying = false;
@@ -26,6 +27,8 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     on<PlayPausePressedEvent>(_onPlayPausePressed);
     on<UpdateCurrentItemEvent>(_onUpdateCurrentItem);
     on<UpdatePlaybackStateEvent>(_onUpdatePlaybackState);
+    on<ToggleShuffle>(_onToggleShuffle);
+    on<ShuffleModeChanged>(_onShuffleModeChanged);
     initStreamSubscriptions();
   }
 
@@ -41,6 +44,12 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     ) {
       add(UpdatePlaybackStateEvent(playing: isPlaying));
     });
+
+    _shuffleModeSubscription = _audioPlayerRepository.shuffleModeEnabled.listen(
+      (enabled) {
+        add(ShuffleModeChanged(enabled: enabled));
+      },
+    );
   }
 
   Future<void> _onLoadTrack(
@@ -67,6 +76,25 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
     if (!_isPlaying) {
       await _audioPlayerRepository.playPause(!_isPlaying);
     }
+  }
+
+  Future<void> _onToggleShuffle(
+    ToggleShuffle event,
+    Emitter<AudioPlayerState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! AudioPlayerReady) return;
+    final enabled = !currentState.isShuffleEnabled;
+    await _audioPlayerRepository.setShuffleMode(enabled);
+  }
+
+  Future<void> _onShuffleModeChanged(
+    ShuffleModeChanged event,
+    Emitter<AudioPlayerState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! AudioPlayerReady) return;
+    emit(currentState.copyWith(isShuffleEnabled: event.enabled));
   }
 
   Future<void> _onSeekPosition(
@@ -145,6 +173,7 @@ class AudioPlayerBloc extends Bloc<AudioPlayerEvent, AudioPlayerState> {
   Future<void> close() {
     _mediaItemSubscription?.cancel();
     _playbackStateSubscription?.cancel();
+    _shuffleModeSubscription?.cancel();
     return super.close();
   }
 }

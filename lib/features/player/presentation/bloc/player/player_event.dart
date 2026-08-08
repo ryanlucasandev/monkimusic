@@ -48,6 +48,15 @@ final class PlayPausePressedEvent extends AudioPlayerEvent {
   List<Object?> get props => [playing];
 }
 
+final class ToggleShuffle extends AudioPlayerEvent {
+  const ToggleShuffle();
+}
+
+final class ShuffleModeChanged extends AudioPlayerEvent {
+  final bool enabled;
+  const ShuffleModeChanged({required this.enabled});
+}
+
 final class UpdateCurrentItemEvent extends AudioPlayerEvent {
   final SongsEntity? newItem;
   final int newIndex;

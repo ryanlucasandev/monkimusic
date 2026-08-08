@@ -46,6 +46,18 @@ class AudioPlayerRepositoryImpl implements AudioPlayerRepository {
     );
   }
 
+  @override
+  Future<void> setShuffleMode(bool enabled) {
+    return _audioHandler.setShuffleMode(
+      enabled ? AudioServiceShuffleMode.all : AudioServiceShuffleMode.none,
+    );
+  }
+
+  @override
+  Stream<bool> get shuffleModeEnabled => _audioHandler.playbackState.map(
+    (state) => state.shuffleMode != AudioServiceShuffleMode.none,
+  );
+
   SongsEntity _mapMediaItemToSongEntity(MediaItem item) {
     return SongsEntity(
       id: item.id,

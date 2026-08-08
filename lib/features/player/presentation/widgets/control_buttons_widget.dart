@@ -11,9 +11,18 @@ class ControlButtonsWidget extends StatelessWidget {
       builder: (context, state) {
         if (state is AudioPlayerReady) {
           final bool playing = state.isPlaying;
+          final bool shuffleEnabled = state.isShuffleEnabled;
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              IconButton.filledTonal(
+                onPressed: () {
+                  context.read<AudioPlayerBloc>().add(ToggleShuffle());
+                },
+                icon: shuffleEnabled
+                    ? const Icon(Icons.shuffle_on_sharp)
+                    : const Icon(Icons.shuffle),
+              ),
               IconButton.filledTonal(
                 onPressed: () {
                   context.read<AudioPlayerBloc>().add(SkipToPreviousEvent());
@@ -28,11 +37,10 @@ class ControlButtonsWidget extends StatelessWidget {
                 },
                 icon: playing
                     ? const Icon(Icons.pause_rounded, size: 75)
-                    : Icon(Icons.play_arrow_rounded, size: 75),
+                    : const Icon(Icons.play_arrow_rounded, size: 75),
               ),
               IconButton.filledTonal(
                 onPressed: () {
-                  // audioHandler.skipToNext();
                   context.read<AudioPlayerBloc>().add(SkipToNextEvent());
                 },
                 icon: Icon(Icons.skip_next_rounded),
