@@ -72,7 +72,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
         event.session.playlist,
         downloadedSongs,
       );
-
+      await _transferRepository.transferComplete(event.connection);
       emit(TransferCompleted());
     } catch (e) {
       emit(TransferFailure(errorMessage: e.toString()));

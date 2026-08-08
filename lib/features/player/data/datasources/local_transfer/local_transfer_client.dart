@@ -43,6 +43,21 @@ class LocalTransferClient {
     }
   }
 
+  Future<void> transferComplete(ShareConnectionModel connection) async {
+    final uri = Uri.parse(
+      'http://${connection.ip}:${connection.port}/complete?token=${connection.token}',
+    );
+
+    final request = await _client.postUrl(uri);
+    final response = await request.close();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw HttpException(
+        'Failed to complete transfer: ${response.statusCode}',
+      );
+    }
+  }
+
   Future<String?> downloadSong(
     ShareConnectionModel connection,
     SongsModel song,

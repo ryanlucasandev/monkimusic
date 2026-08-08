@@ -16,4 +16,6 @@ abstract class TransferRepository {
     required String directory,
     void Function(double progress)? onProgress,
   });
+
+  Future<void> transferComplete(ShareConnectionEntity connection);
 }

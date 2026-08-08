@@ -33,8 +33,10 @@ class LocalHttpServer {
   }
 
   Future<void> stop() async {
+    print('SERVER: stopping...');
     await _server?.close();
     _server = null;
+    print('SERVER: stopped');
   }
 
   Future<void> _handleRequest(HttpRequest request) async {
