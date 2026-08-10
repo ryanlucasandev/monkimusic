@@ -22,6 +22,19 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
        super(TransferInitial()) {
     on<ConnectToSender>(_onConnectToSender);
     on<StartDownload>(_onStartDownload);
+    on<TransferCancel>(_onTransferCancel);
+  }
+
+  Future<void> _onTransferCancel(
+    TransferCancel event,
+    Emitter<TransferState> emit,
+  ) async {
+    try {
+      await _transferRepository.transferCancel(event.connection);
+      emit(const TransferCancelled());
+    } catch (e) {
+      emit(TransferFailure(errorMessage: e.toString()));
+    }
   }
 
   Future<void> _onStartDownload(

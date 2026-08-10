@@ -131,6 +131,12 @@ class LocalHttpServer {
         await stop();
         return;
 
+      case '/cancel':
+        await _sendJson(request, {'message': 'Transfer cancelled'});
+
+        await stop();
+        return;
+
       default:
         await _sendError(request, HttpStatus.notFound, 'Route not found');
     }

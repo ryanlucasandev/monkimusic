@@ -18,3 +18,8 @@ final class StartDownload extends TransferEvent {
 
   const StartDownload({required this.connection, required this.session});
 }
+
+final class TransferCancel extends TransferEvent {
+  final ShareConnectionEntity connection;
+  const TransferCancel(this.connection);
+}

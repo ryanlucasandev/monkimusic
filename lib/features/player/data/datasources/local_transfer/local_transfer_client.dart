@@ -58,6 +58,19 @@ class LocalTransferClient {
     }
   }
 
+  Future<void> transferCancel(ShareConnectionModel connection) async {
+    final uri = Uri.parse(
+      'http://${connection.ip}:${connection.port}/cancel?token=${connection.token}',
+    );
+
+    final request = await _client.postUrl(uri);
+    final response = await request.close();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw HttpException('Failed to cancel transfer: ${response.statusCode}');
+    }
+  }
+
   Future<String?> downloadSong(
     ShareConnectionModel connection,
     SongsModel song,

@@ -48,6 +48,10 @@ final class TransferCompleted extends TransferState {
   const TransferCompleted();
 }
 
+final class TransferCancelled extends TransferState {
+  const TransferCancelled();
+}
+
 final class TransferFailure extends TransferState {
   final String? errorMessage;
   const TransferFailure({this.errorMessage});

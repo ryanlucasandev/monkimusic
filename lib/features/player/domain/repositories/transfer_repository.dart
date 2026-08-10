@@ -18,4 +18,5 @@ abstract class TransferRepository {
   });
 
   Future<void> transferComplete(ShareConnectionEntity connection);
+  Future<void> transferCancel(ShareConnectionEntity connection);
 }

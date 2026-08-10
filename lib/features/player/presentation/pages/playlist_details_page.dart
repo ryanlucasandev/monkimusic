@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/domain/entities/playlists_entity.dart';
+import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
+import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
 import 'package:monkimusic/features/player/presentation/bloc/playlist_details/playlist_details_bloc.dart';
+import 'package:monkimusic/features/player/presentation/bloc/transfer/transfer_bloc.dart';
+
 import 'package:monkimusic/features/player/presentation/dialogs/remove_songs_from_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/songs_page.dart';
 import 'package:monkimusic/features/player/presentation/pages/transfer/transfer_qr_page.dart';
@@ -34,9 +39,12 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => TransferQrPage(
-                connection: state.connection,
-                session: state.session,
+              builder: (_) => BlocProvider(
+                create: (context) => TransferBloc(
+                  transferRepository: locator<TransferRepository>(),
+                  playlistRepository: locator<PlaylistsRepository>(),
+                ),
+                child: TransferQrPage(connection: state.connection),
               ),
             ),
           );

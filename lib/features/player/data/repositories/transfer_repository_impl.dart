@@ -63,4 +63,10 @@ class TransferRepositoryImpl implements TransferRepository {
     final connectionModel = ShareConnectionModel.fromEntity(connection);
     await _client.transferComplete(connectionModel);
   }
+
+  @override
+  Future<void> transferCancel(ShareConnectionEntity connection) async {
+    final connectionModel = ShareConnectionModel.fromEntity(connection);
+    await _client.transferCancel(connectionModel);
+  }
 }
