@@ -7,11 +7,11 @@ import 'package:monkimusic/features/player/data/models/local_transfer/transfer_s
 import 'package:monkimusic/features/player/domain/server_events/transfer_server_event.dart';
 
 class LocalHttpServer {
-  final _tranferEventsController =
-      StreamController<TransferServerEvent>.broadcast();
+  final _senderEventsController =
+      StreamController<SenderServerEvent>.broadcast();
 
-  Stream<TransferServerEvent> get transferEvents =>
-      _tranferEventsController.stream;
+  Stream<SenderServerEvent> get transferEvents =>
+      _senderEventsController.stream;
   HttpServer? _server;
 
   late TransferSessionModel _session;
@@ -76,7 +76,7 @@ class LocalHttpServer {
         return;
 
       case '/connected':
-        _tranferEventsController.add(ReceiverConnected());
+        _senderEventsController.add(ReceiverConnected());
 
         await _sendJson(request, {'message': 'Receiver connected'});
         _onReceiverConnected?.call();
@@ -158,21 +158,21 @@ class LocalHttpServer {
 
         print('SONG COMPLETED: ${song.title}');
 
-        _tranferEventsController.add(SongCompleted(songId));
+        _senderEventsController.add(SongCompleted(songId));
 
         await _sendJson(request, {'message': 'Song completed'});
 
         return;
 
       case '/complete':
-        _tranferEventsController.add(TransferCompleted());
+        _senderEventsController.add(TransferCompleted());
         await _sendJson(request, {'message': 'Transfer completed'});
 
         await stop();
         return;
 
       case '/cancel':
-        _tranferEventsController.add(TransferCancelled());
+        _senderEventsController.add(TransferCancelled());
         await _sendJson(request, {'message': 'Transfer cancelled'});
 
         await stop();

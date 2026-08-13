@@ -78,7 +78,7 @@ class TransferRepositoryImpl implements TransferRepository {
   }
 
   @override
-  Stream<TransferServerEvent> get transferEvents => _server.transferEvents;
+  Stream<SenderServerEvent> get transferEvents => _server.transferEvents;
 
   @override
   Future<void> songDownloadCompleted(

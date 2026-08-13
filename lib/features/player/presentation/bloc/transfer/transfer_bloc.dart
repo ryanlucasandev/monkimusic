@@ -17,7 +17,7 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   final TransferRepository _transferRepository;
   final PlaylistsRepository _playlistsRepository;
   final TransferSessionEntity? session;
-  StreamSubscription<TransferServerEvent>? _transferEventSubscription;
+  StreamSubscription<SenderServerEvent>? _transferEventSubscription;
 
   TransferBloc({
     required TransferRepository transferRepository,

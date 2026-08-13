@@ -25,5 +25,5 @@ abstract class TransferRepository {
     ShareConnectionEntity connection,
     int songId,
   );
-  Stream<TransferServerEvent> get transferEvents;
+  Stream<SenderServerEvent> get transferEvents;
 }
