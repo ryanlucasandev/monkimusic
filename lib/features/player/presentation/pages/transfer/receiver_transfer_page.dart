@@ -20,6 +20,28 @@ class ReceiverTransferPage extends StatelessWidget {
         transferRepository: locator<TransferRepository>(),
         playlistRepository: locator<PlaylistsRepository>(),
       )..add(ConnectToSenderEvent(connection)),
+      child: _ReceiverTransferView(connection: connection),
+    );
+  }
+}
+
+class _ReceiverTransferView extends StatelessWidget {
+  final ShareConnectionEntity connection;
+  const _ReceiverTransferView({required this.connection});
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+
+        context.read<TransferBloc>().add(DisconnectReceiver(connection));
+
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
+      },
       child: Scaffold(
         appBar: AppBar(title: const Text('Receive Music')),
         body: BlocConsumer<TransferBloc, TransferState>(

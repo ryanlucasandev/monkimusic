@@ -43,6 +43,18 @@ class LocalTransferClient {
     }
   }
 
+  Future<void> receiverDisconnected(ShareConnectionModel connection) async {
+    final uri = Uri.parse(
+      'http://${connection.ip}:${connection.port}/disconnect?token=${connection.token}',
+    );
+    final request = await _client.postUrl(uri);
+    final response = await request.close();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw HttpException('Failed to notify sender that receiver disconnected');
+    }
+  }
+
   Future<void> receiverConnected(ShareConnectionModel connection) async {
     final uri = Uri.parse(
       'http://${connection.ip}:${connection.port}/connected?token=${connection.token}',

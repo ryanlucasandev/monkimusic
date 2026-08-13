@@ -89,4 +89,10 @@ class TransferRepositoryImpl implements TransferRepository {
 
     await _client.songDownloadCompleted(connectionModel, songId);
   }
+
+  @override
+  Future<void> receiverDisconnected(ShareConnectionEntity connection) async {
+    final connectionModel = ShareConnectionModel.fromEntity(connection);
+    await _client.receiverDisconnected(connectionModel);
+  }
 }

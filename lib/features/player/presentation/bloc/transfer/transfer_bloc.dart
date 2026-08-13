@@ -30,15 +30,21 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
     on<StartDownloadEvent>(_onStartDownload);
     on<CancelTransferEvent>(_onCancelTransfer);
     on<ReceiverConnectedEvent>(_onReceiverConnected);
+    on<ReceiverDisconnectedEvent>(_onReceiverDisconnectedEvent);
     on<TransferCompletedEvent>(_onTransferCompletedEvent);
     on<TransferCancelledEvent>(_onTransferCancelledEvent);
     on<SongCompletedEvent>(_onSongCompletedEvent);
+    on<DisconnectReceiver>(_onDisconnectReceiver);
     _transferEventSubscription = _transferRepository.transferEvents.listen((
       event,
     ) {
       switch (event) {
         case ReceiverConnected():
           add(ReceiverConnectedEvent());
+          break;
+
+        case ReceiverDisconnected():
+          add(ReceiverDisconnectedEvent());
           break;
 
         case SongCompleted(:final songId):
@@ -54,6 +60,23 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
           break;
       }
     });
+  }
+
+  Future<void> _onDisconnectReceiver(
+    DisconnectReceiver event,
+    Emitter<TransferState> emit,
+  ) async {
+    await _transferRepository.receiverDisconnected(event.connection);
+  }
+
+  Future<void> _onReceiverDisconnectedEvent(
+    ReceiverDisconnectedEvent event,
+    Emitter<TransferState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! ReceiverConnectedState) return;
+
+    emit(TransferInitialState(session: currentState.session));
   }
 
   Future<void> _onSongCompletedEvent(
@@ -118,7 +141,6 @@ class TransferBloc extends Bloc<TransferEvent, TransferState> {
   ) async {
     try {
       await _transferRepository.transferCancel(event.connection);
-      emit(const TransferCancelledState());
     } catch (e) {
       emit(TransferFailedState(errorMessage: e.toString()));
     }

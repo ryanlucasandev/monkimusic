@@ -21,6 +21,7 @@ abstract class TransferRepository {
   Future<void> transferComplete(ShareConnectionEntity connection);
   Future<void> transferCancel(ShareConnectionEntity connection);
   Future<void> receiverConnected(ShareConnectionEntity connection);
+  Future<void> receiverDisconnected(ShareConnectionEntity connection);
   Future<void> songDownloadCompleted(
     ShareConnectionEntity connection,
     int songId,

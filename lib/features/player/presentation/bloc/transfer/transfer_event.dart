@@ -24,8 +24,17 @@ final class CancelTransferEvent extends TransferEvent {
   const CancelTransferEvent(this.connection);
 }
 
+final class DisconnectReceiver extends TransferEvent {
+  final ShareConnectionEntity connection;
+  const DisconnectReceiver(this.connection);
+}
+
 final class ReceiverConnectedEvent extends TransferEvent {
   const ReceiverConnectedEvent();
+}
+
+final class ReceiverDisconnectedEvent extends TransferEvent {
+  const ReceiverDisconnectedEvent();
 }
 
 final class SongCompletedEvent extends TransferEvent {

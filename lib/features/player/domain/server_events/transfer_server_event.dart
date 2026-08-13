@@ -15,6 +15,10 @@ final class TransferCompleted extends SenderServerEvent {
   const TransferCompleted();
 }
 
-class TransferCancelled extends SenderServerEvent {
+final class TransferCancelled extends SenderServerEvent {
   const TransferCancelled();
+}
+
+final class ReceiverDisconnected extends SenderServerEvent {
+  const ReceiverDisconnected();
 }

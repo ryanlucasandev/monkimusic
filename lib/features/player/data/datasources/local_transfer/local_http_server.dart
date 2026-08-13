@@ -76,10 +76,16 @@ class LocalHttpServer {
         return;
 
       case '/connected':
-        _senderEventsController.add(ReceiverConnected());
+        _senderEventsController.add(const ReceiverConnected());
 
         await _sendJson(request, {'message': 'Receiver connected'});
         _onReceiverConnected?.call();
+        return;
+
+      case '/disconnect':
+        print('RECEIVER DISCONNECTED');
+        _senderEventsController.add(const ReceiverDisconnected());
+        await _sendJson(request, {'message': 'Receiver disconnected'});
         return;
 
       case '/download':
