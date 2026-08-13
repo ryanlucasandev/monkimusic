@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monkimusic/core/di/service_locator.dart';
 import 'package:monkimusic/features/player/domain/entities/local_transfer/share_connection_entity.dart';
+
 import 'package:monkimusic/features/player/domain/repositories/playlists_repository.dart';
 import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
 import 'package:monkimusic/features/player/presentation/bloc/songs/songs_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:monkimusic/features/player/presentation/bloc/transfer/transfer_b
 
 class ReceiverTransferPage extends StatelessWidget {
   final ShareConnectionEntity connection;
+
   const ReceiverTransferPage({super.key, required this.connection});
 
   @override
@@ -17,26 +19,26 @@ class ReceiverTransferPage extends StatelessWidget {
       create: (context) => TransferBloc(
         transferRepository: locator<TransferRepository>(),
         playlistRepository: locator<PlaylistsRepository>(),
-      )..add(ConnectToSender(connection)),
+      )..add(ConnectToSenderEvent(connection)),
       child: Scaffold(
         appBar: AppBar(title: const Text('Receive Music')),
         body: BlocConsumer<TransferBloc, TransferState>(
-          listenWhen: (previous, current) => current is TransferCompleted,
+          listenWhen: (previous, current) => current is TransferCompletedState,
           listener: (context, state) {
-            if (state is TransferCompleted) {
+            if (state is TransferCompletedState) {
               context.read<SongsBloc>().add(LoadSongs());
             }
           },
           builder: (context, state) {
-            if (state is TransferConnecting) {
+            if (state is ReceiverConnectingState) {
               return const Center(child: Text('Connecting...'));
             }
 
-            if (state is TransferFailure) {
+            if (state is TransferFailedState) {
               return Center(child: Text(state.errorMessage!));
             }
 
-            if (state is TransferDownloading) {
+            if (state is ReceiverProgressState) {
               return Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -58,13 +60,19 @@ class ReceiverTransferPage extends StatelessWidget {
 
                     const SizedBox(height: 32),
 
+                    // Row(
+                    //   children: [
+
+                    //     Text('${(state.currentSongProgress * 100).toInt()}%'),
+                    //   ],
+                    // ),
                     LinearProgressIndicator(value: state.currentSongProgress),
                   ],
                 ),
               );
             }
 
-            if (state is TransferConnected) {
+            if (state is ReceiverConnectedState) {
               final session = state.session;
 
               return Center(
@@ -78,7 +86,7 @@ class ReceiverTransferPage extends StatelessWidget {
                     const SizedBox(height: 24),
 
                     Text(
-                      session!.playlist.name,
+                      session.playlist.name,
                       style: const TextStyle(fontSize: 18),
                     ),
 
@@ -89,7 +97,7 @@ class ReceiverTransferPage extends StatelessWidget {
                     FilledButton(
                       onPressed: () {
                         context.read<TransferBloc>().add(
-                          StartDownload(
+                          StartDownloadEvent(
                             connection: connection,
                             session: session,
                           ),
@@ -102,7 +110,7 @@ class ReceiverTransferPage extends StatelessWidget {
               );
             }
 
-            if (state is TransferCompleted) {
+            if (state is TransferCompletedState) {
               return const Center(child: Text('Transfer Complete'));
             }
 

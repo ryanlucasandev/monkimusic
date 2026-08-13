@@ -7,19 +7,36 @@ sealed class TransferEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-final class ConnectToSender extends TransferEvent {
+final class ConnectToSenderEvent extends TransferEvent {
   final ShareConnectionEntity connection;
-  const ConnectToSender(this.connection);
+  const ConnectToSenderEvent(this.connection);
 }
 
-final class StartDownload extends TransferEvent {
+final class StartDownloadEvent extends TransferEvent {
   final ShareConnectionEntity connection;
   final TransferSessionEntity session;
 
-  const StartDownload({required this.connection, required this.session});
+  const StartDownloadEvent({required this.connection, required this.session});
 }
 
-final class TransferCancel extends TransferEvent {
+final class CancelTransferEvent extends TransferEvent {
   final ShareConnectionEntity connection;
-  const TransferCancel(this.connection);
+  const CancelTransferEvent(this.connection);
+}
+
+final class ReceiverConnectedEvent extends TransferEvent {
+  const ReceiverConnectedEvent();
+}
+
+final class SongCompletedEvent extends TransferEvent {
+  final int songId;
+  const SongCompletedEvent(this.songId);
+}
+
+final class TransferCompletedEvent extends TransferEvent {
+  const TransferCompletedEvent();
+}
+
+final class TransferCancelledEvent extends TransferEvent {
+  const TransferCancelledEvent();
 }

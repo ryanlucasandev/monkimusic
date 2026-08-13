@@ -1,15 +1,23 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:monkimusic/features/player/data/models/local_transfer/share_connection_model.dart';
 import 'package:monkimusic/features/player/data/models/local_transfer/transfer_session_model.dart';
 
+import 'package:monkimusic/features/player/domain/server_events/transfer_server_event.dart';
+
 class LocalHttpServer {
+  final _tranferEventsController =
+      StreamController<TransferServerEvent>.broadcast();
+
+  Stream<TransferServerEvent> get transferEvents =>
+      _tranferEventsController.stream;
   HttpServer? _server;
 
   late TransferSessionModel _session;
   late ShareConnectionModel _connection;
+
+  void Function()? _onReceiverConnected;
 
   Future<void> start({
     required TransferSessionModel session,
@@ -65,6 +73,13 @@ class LocalHttpServer {
         await _sendJson(request, data);
 
         print('SESSION RESPONSE SENT');
+        return;
+
+      case '/connected':
+        _tranferEventsController.add(ReceiverConnected());
+
+        await _sendJson(request, {'message': 'Receiver connected'});
+        _onReceiverConnected?.call();
         return;
 
       case '/download':
@@ -125,13 +140,39 @@ class LocalHttpServer {
 
         return;
 
+      case '/song-complete':
+        print('SONG-COMPLETE REQUEST RECEIVED');
+
+        final songId = int.tryParse(
+          request.uri.queryParameters['songId'] ?? '',
+        );
+
+        print('SONG ID: $songId');
+
+        if (songId == null) {
+          await _sendError(request, HttpStatus.badRequest, 'Invalid song id');
+          return;
+        }
+
+        final song = _session.songs.firstWhere((song) => song.songId == songId);
+
+        print('SONG COMPLETED: ${song.title}');
+
+        _tranferEventsController.add(SongCompleted(songId));
+
+        await _sendJson(request, {'message': 'Song completed'});
+
+        return;
+
       case '/complete':
+        _tranferEventsController.add(TransferCompleted());
         await _sendJson(request, {'message': 'Transfer completed'});
 
         await stop();
         return;
 
       case '/cancel':
+        _tranferEventsController.add(TransferCancelled());
         await _sendJson(request, {'message': 'Transfer cancelled'});
 
         await stop();

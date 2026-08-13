@@ -43,6 +43,19 @@ class LocalTransferClient {
     }
   }
 
+  Future<void> receiverConnected(ShareConnectionModel connection) async {
+    final uri = Uri.parse(
+      'http://${connection.ip}:${connection.port}/connected?token=${connection.token}',
+    );
+
+    final request = await _client.postUrl(uri);
+    final response = await request.close();
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw HttpException('Failed to notify sender that receiver connected');
+    }
+  }
+
   Future<void> transferComplete(ShareConnectionModel connection) async {
     final uri = Uri.parse(
       'http://${connection.ip}:${connection.port}/complete?token=${connection.token}',
@@ -116,11 +129,11 @@ class LocalTransferClient {
         receivedBytes += chunk.length;
         sink.add(chunk);
 
-        print('RECEIVED: $receivedBytes bytes');
+        // print('RECEIVED: $receivedBytes bytes');
 
         if (response.contentLength > 0) {
           final progress = receivedBytes / response.contentLength;
-          print('DOWNLOAD PROGRESS: $progress');
+          // print('DOWNLOAD PROGRESS: $progress');
           onProgress?.call(progress);
         }
       }
@@ -165,6 +178,27 @@ class LocalTransferClient {
       throw Exception('Download timeout ${song.title}');
     } catch (e) {
       throw Exception('Failed downloading ${song.title}: $e');
+    }
+  }
+
+  Future<void> songDownloadCompleted(
+    ShareConnectionModel connection,
+    int songId,
+  ) async {
+    final uri = Uri.parse(
+      'http://${connection.ip}:${connection.port}/song-complete?token=${connection.token}&songId=$songId',
+    );
+
+    print('SONG COMPLETE URI: $uri');
+
+    final request = await _client.postUrl(uri);
+
+    final response = await request.close();
+
+    print('SONG COMPLETE STATUS: ${response.statusCode}');
+
+    if (response.statusCode != HttpStatus.ok) {
+      throw HttpException('Failed to notify sender that song was downloaded');
     }
   }
 

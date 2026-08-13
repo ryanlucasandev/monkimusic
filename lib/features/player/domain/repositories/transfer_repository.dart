@@ -1,6 +1,7 @@
 import 'package:monkimusic/features/player/domain/entities/local_transfer/share_connection_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/local_transfer/transfer_session_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
+import 'package:monkimusic/features/player/domain/server_events/transfer_server_event.dart';
 
 abstract class TransferRepository {
   Future<void> startServer({
@@ -19,4 +20,10 @@ abstract class TransferRepository {
 
   Future<void> transferComplete(ShareConnectionEntity connection);
   Future<void> transferCancel(ShareConnectionEntity connection);
+  Future<void> receiverConnected(ShareConnectionEntity connection);
+  Future<void> songDownloadCompleted(
+    ShareConnectionEntity connection,
+    int songId,
+  );
+  Stream<TransferServerEvent> get transferEvents;
 }

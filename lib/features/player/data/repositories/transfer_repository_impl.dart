@@ -9,6 +9,7 @@ import 'package:monkimusic/features/player/domain/entities/local_transfer/share_
 import 'package:monkimusic/features/player/domain/entities/local_transfer/transfer_session_entity.dart';
 import 'package:monkimusic/features/player/domain/entities/songs_entity.dart';
 import 'package:monkimusic/features/player/domain/repositories/transfer_repository.dart';
+import 'package:monkimusic/features/player/domain/server_events/transfer_server_event.dart';
 
 class TransferRepositoryImpl implements TransferRepository {
   final LocalHttpServer _server;
@@ -68,5 +69,24 @@ class TransferRepositoryImpl implements TransferRepository {
   Future<void> transferCancel(ShareConnectionEntity connection) async {
     final connectionModel = ShareConnectionModel.fromEntity(connection);
     await _client.transferCancel(connectionModel);
+  }
+
+  @override
+  Future<void> receiverConnected(ShareConnectionEntity connection) async {
+    final connectionModel = ShareConnectionModel.fromEntity(connection);
+    await _client.receiverConnected(connectionModel);
+  }
+
+  @override
+  Stream<TransferServerEvent> get transferEvents => _server.transferEvents;
+
+  @override
+  Future<void> songDownloadCompleted(
+    ShareConnectionEntity connection,
+    int songId,
+  ) async {
+    final connectionModel = ShareConnectionModel.fromEntity(connection);
+
+    await _client.songDownloadCompleted(connectionModel, songId);
   }
 }

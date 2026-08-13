@@ -9,7 +9,7 @@ import 'package:monkimusic/features/player/presentation/bloc/transfer/transfer_b
 
 import 'package:monkimusic/features/player/presentation/dialogs/remove_songs_from_playlist_dialog.dart';
 import 'package:monkimusic/features/player/presentation/pages/songs_page.dart';
-import 'package:monkimusic/features/player/presentation/pages/transfer/transfer_qr_page.dart';
+import 'package:monkimusic/features/player/presentation/pages/transfer/sender_qr_page.dart';
 import 'package:monkimusic/features/player/presentation/widgets/playlist_song_widget.dart';
 
 enum PlaylistDetailsPageMenuAction { reOrderSongs, removeSongs, share }
@@ -43,11 +43,18 @@ class _PlaylistDetailsPageState extends State<PlaylistDetailsPage> {
                 create: (context) => TransferBloc(
                   transferRepository: locator<TransferRepository>(),
                   playlistRepository: locator<PlaylistsRepository>(),
+                  session: state.session,
                 ),
-                child: TransferQrPage(connection: state.connection),
+                child: SenderQrPage(connection: state.connection),
               ),
             ),
           );
+
+          if (context.mounted) {
+            context.read<PlaylistDetailsBloc>().add(
+              LoadPlaylistSongs(playlist: widget.playlist),
+            );
+          }
         }
       },
       child: Scaffold(
